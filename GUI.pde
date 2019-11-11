@@ -158,7 +158,7 @@ void mouseWheel(MouseEvent event) { // reads mouse wheel and uses to zoom
   }
 
 //**************************** text for name, title and help  ****************************
-String title ="Field-Aligned Triangle-Mesh",            name ="Jarek Rossignac",
+String title ="Field-Aligned Triangle-Mesh",            name ="Harish Krupo KPS, Pranshu Gupta",
        subtitle = "",
 
        menu="?:(show/hide) help, ~/!/@:snap pdf/jpg/fif, `:(start/stop) recording, ^=mousePress",

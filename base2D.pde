@@ -1,7 +1,8 @@
-// Template for 2D projects
-// Author: Jarek ROSSIGNAC
-// CS6497: Computational Aesthetics, Fall 2019, Project 3
-// Student: Jack Ross
+// CS6491 Fall 2019, Project 3
+// Authors:
+// Base-code: Jarek ROSSIGNAC
+// Student 1: Harish Krupo KPS
+// Student 2: Pranshu Gupta
 import processing.pdf.*;    // to save screen shots as PDFs, does not always work: accuracy problems, stops drawing or messes up some curves !!!
 import java.awt.Toolkit;
 import java.awt.datatransfer.*;
@@ -82,7 +83,6 @@ void traceOverField(pts control, pt startPoint) {
   vec Cprime = V(C, control.G[5]);
   for (int i = 0; i < 1000; i++) {
     float[] nbc = calculateNBC(A, B, C, currentPoint);
-    // vec Pprime = W(W(nbc[0], Aprime), W(W(nbc[1], Bprime), W(nbc[2], Cprime)));
     vec Pprime = nbcProduct(Aprime, Bprime, Cprime, nbc);
     pt nextPoint = P(currentPoint, 0.01, Pprime);
     noFill(); strokeWeight(2); stroke(green);
@@ -104,8 +104,7 @@ void setup()               // executed once at the begining
   Aring.declare();
   RefinedAring.declare();
   TempAring.declare();
-  //myFace = loadImage("data/pic.jpg");  // load image from file pic.jpg in folder data *** replace that file with your pic of your own face
-  myFace = loadImage("data/myface.jpg");
+  myFace = loadImage("data/photo.jpg");
   textureMode(NORMAL);
   bigFont = createFont("AdobeFanHeitiStd-Bold-32", 20);
   textFont(bigFont);
