@@ -163,4 +163,3 @@ String title ="Field-Aligned Triangle-Mesh",            name ="Harish Krupo KPS,
 
        menu="?:(show/hide) help, ~/!/@:snap pdf/jpg/fif, `:(start/stop) recording, ^=mousePress",
        guide="^:pick&drag, d:delete, a+^+^:add, t:moveAll, m:traceFromMouse, f:filed, M:mesh, r:Turn, z:zoom, S/L:save/load"; // help info
-

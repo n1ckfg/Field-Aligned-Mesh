@@ -241,4 +241,3 @@ void draw()      // executed at each frame
   if(scribeText) {background(255,255,200); displayMenu();}
   change=false; // to avoid capturing movie frames when nothing happens
   }  // end of draw
-
