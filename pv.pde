@@ -793,3 +793,7 @@ pt pointOnArcThrough (pt A, pt B, pt C, float t)
     }
     return R(A, t*c, O);
 }
+
+boolean isInsideTriangle(pt Pm, pt Pa, pt Pb, pt Pc) {
+    return turnAngle(Pa, Pb, Pm) > 0 && turnAngle(Pb, Pc, Pm) > 0  && turnAngle(Pc, Pa, Pm) > 0 ;
+}

@@ -164,6 +164,45 @@ void draw()      // executed at each frame
     }
 
 
+    if (showTraceFromMouse)
+    {        
+        pt Pm = Mouse();
+   
+        pt Pa = M.g(0);
+        pt Pb = M.g(1);
+        pt Pc = M.g(2);
+        vec Va = M.f(0); 
+        vec Vb = M.f(1); 
+        vec Vc = M.f(2);
+        
+        for (int t = 0; t < M.nt; t++) {
+            // Get the three vertices for the triangle
+            pt a = M.g(3*t);
+            pt b = M.g(3*t + 1);
+            pt c = M.g(3*t + 2);
+            if (isInsideTriangle(Pm, a, b, c)) {
+                Pa = a; Pb = b; Pc = c;
+                Va = M.f(3*t); Vb = M.f(3*t + 1); Vc = M.f(3*t + 2);
+                break;
+            }
+        }
+        
+        pen(black, 1); 
+        drawCorrectedTraceFrom(Pm, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2);
+        fill(brown); 
+        pen(brown, 2);
+        if (showArrow)
+        {
+            vec Vm = VecAt(Pm, Pa, Va, Pb, Vb, Pc, Vc); // velocity at current mouse position
+            arrow(Pm, Vm);
+        }
+        pen(brown, 1); 
+        show(Pm, 6);
+        if (showLabels) showId(Pm, "M");
+        noFill();
+    }
+
+
     // ==================== TRACING FIELD OF FIRST TRIANGLE ====================
     if (showFirstField)
     {
@@ -211,24 +250,6 @@ void draw()      // executed at each frame
         if (exitThrough==3) show(Pc, 20);
         if (exitThrough==6) show(Pa, 20);
         if (exitThrough==5) show(Pb, 20);
-
-        if (showTraceFromMouse)
-        {
-            pt Pm = Mouse();
-            pen(black, 1); 
-            drawCorrectedTraceFrom(Pm, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2);
-            fill(brown); 
-            pen(brown, 2);
-            if (showArrow)
-            {
-                vec Vm = VecAt(Pm, Pa, Va, Pb, Vb, Pc, Vc); // velocity at current mouse position
-                arrow(Pm, Vm);
-            }
-            pen(brown, 1); 
-            show(Pm, 6);
-            if (showLabels) showId(Pm, "M");
-            noFill();
-        }
 
         if (showArrow)
         {

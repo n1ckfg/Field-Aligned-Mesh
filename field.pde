@@ -36,7 +36,8 @@ void drawCorrectedTraceFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, i
     {
         vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
         pt Pf=P(P, s, V);
-        // STUDENT:CHANGE THIS CODE
+        strokeWeight(2); 
+        stroke(red);
         P=Pf;
         v(P);
     }
