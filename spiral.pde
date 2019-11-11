@@ -31,56 +31,55 @@
 
 // IMAGE OF POINT Q BY SPIRAL MOTION THAT MORPHS EDGE(A,B) AND EDGE(C,D)
 pt spiral(pt A, pt B, pt C, pt D, float t, pt Q)
-  {
-  float a =spiralAngle(A,B,C,D);
-  float s =spiralScale(A,B,C,D);
-  pt G = SpiralCenter(a, s, A, C);
-  return L(G,R(Q,t*a,G),pow(s,t));
-  }
+{
+    float a =spiralAngle(A, B, C, D);
+    float s =spiralScale(A, B, C, D);
+    pt G = SpiralCenter(a, s, A, C);
+    return L(G, R(Q, t*a, G), pow(s, t));
+}
 
 // IMAGE OF POINT A BY SPIRAL MOTION THAT MORPHS EDGE(A,B) AND EDGE(C,D)
 pt spiralA(pt A, pt B, pt C, pt D, float t)
-  {
-  float a =spiralAngle(A,B,C,D);
-  float s =spiralScale(A,B,C,D);
-  pt G = SpiralCenter(a, s, A, C);
-  return L(G,R(A,t*a,G),pow(s,t));
-  }
+{
+    float a =spiralAngle(A, B, C, D);
+    float s =spiralScale(A, B, C, D);
+    pt G = SpiralCenter(a, s, A, C);
+    return L(G, R(A, t*a, G), pow(s, t));
+}
 
 
 // IMAGE OF POINT B BY SPIRAL MOTION THAT MORPHS EDGE(A,B) AND EDGE(C,D)
 pt spiralB(pt A, pt B, pt C, pt D, float t)
-  {
-  float a =spiralAngle(A,B,C,D);
-  float s =spiralScale(A,B,C,D);
-  pt G = SpiralCenter(a, s, A, C);
-  return L(G,R(B,t*a,G),pow(s,t));
-  }
+{
+    float a =spiralAngle(A, B, C, D);
+    float s =spiralScale(A, B, C, D);
+    pt G = SpiralCenter(a, s, A, C);
+    return L(G, R(B, t*a, G), pow(s, t));
+}
 
 
 // IMAGE OF POINT B BY SPIRAL MOTION THAT MORPHS EDGE(A,B) AND EDGE(B,C): USED FOR SPIRALINE SUBDIVISION
 pt spiral(pt A, pt B, pt C, float t)
-  {
-  float a =spiralAngle(A,B,B,C);
-  float s =spiralScale(A,B,B,C);
-  pt G = SpiralCenter(a, s, A, B);
-  return L(G,R(B,t*a,G),pow(s,t));
-  }
+{
+    float a =spiralAngle(A, B, B, C);
+    float s =spiralScale(A, B, B, C);
+    pt G = SpiralCenter(a, s, A, B);
+    return L(G, R(B, t*a, G), pow(s, t));
+}
 
 // DRAWS SPIRAL SEGMENT THROUGH 3 POINTS
 void showSpiral(pt A, pt B, pt C)
-  {
-  beginShape();
-    for(float t=-1.0; t<=1.05; t+=0.05)
-      v(spiral(A,B,C,t));
-  endShape();
-  }
+{
+    beginShape();
+    for (float t=-1.0; t<=1.05; t+=0.05)
+        v(spiral(A, B, C, t));
+    endShape();
+}
 
 // SPHERICAL INTERPOLATION USED (WRONGLY) FOR VECTORS U AND V THAT MAUY NOT HAVE SAME MAGNITUDE
 vec slerp(vec U, float t, vec V)
-  {
-  float a = angle(U,V);
-  float b=sin((1.-t)*a),c=sin(t*a),d=sin(a);
-  return W(b/d,U,c/d,V);
-  }
-
+{
+    float a = angle(U, V);
+    float b=sin((1.-t)*a), c=sin(t*a), d=sin(a);
+    return W(b/d, U, c/d, V);
+}
