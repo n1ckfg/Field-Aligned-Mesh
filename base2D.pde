@@ -26,6 +26,71 @@ int exitThrough=0;
 MESH M = new MESH();
 int cc=0; // current corner (saved, since we rebuild M at each frame)
 
+void fillGrid(pts ps) {
+  ps.declare();
+  int inc = width * height / ps.maxnv;
+  for (int i = 0; i < width; i += inc) {
+    for (int j = height * 1/5; j < height * 4 / 5; j += inc) {
+      ps.addPt(P(i, j));
+    }
+  }
+}
+
+float[] calculateNBC(pt A, pt B, pt C, pt P) {
+  float[] ret = new float[3];
+  vec AP = V(A, P);
+  vec AB = V(A, B);
+  vec AC = V(A, C);
+  float denominator =  det(AB, AC);
+
+  // ret 0: A, 1: B, 2: C
+  ret[1] = det(AP, AC) / denominator;
+  ret[2] = det(AB, AP) / denominator;
+  ret[0] = 1 - (ret[1] + ret[2]);
+  return ret;
+}
+
+void drawVectorField(pts control, pts grid) {
+  for (int i = 0; i < grid.nv; i++) {
+    pt A = control.G[0];
+    pt B = control.G[2];
+    pt C = control.G[4];
+    pt P = grid.G[i];
+    float[] nbc = calculateNBC(A, B, C, P);
+    vec Aprime = V(A, control.G[1]);
+    vec Bprime = V(B, control.G[3]);
+    vec Cprime = V(C, control.G[5]);
+    vec Pprime = nbcProduct(Aprime, Bprime, Cprime, nbc);
+    Pprime = U(Pprime);
+    noFill(); strokeWeight(2); stroke(green);
+    edge(P, P(P, 10, Pprime));
+  }
+}
+
+vec nbcProduct(vec Aprime, vec Bprime, vec Cprime, float[] nbc) {
+  return V(nbc[0] * Aprime.x + nbc[1] * Bprime.x + nbc[2] * Cprime.x,
+           nbc[0] * Aprime.y + nbc[1] * Bprime.y + nbc[2] * Cprime.y);
+}
+
+void traceOverField(pts control, pt startPoint) {
+  pt currentPoint = P(startPoint);
+  pt A = control.G[0];
+  pt B = control.G[2];
+  pt C = control.G[4];
+  vec Aprime = V(A, control.G[1]);
+  vec Bprime = V(B, control.G[3]);
+  vec Cprime = V(C, control.G[5]);
+  for (int i = 0; i < 1000; i++) {
+    float[] nbc = calculateNBC(A, B, C, currentPoint);
+    // vec Pprime = W(W(nbc[0], Aprime), W(W(nbc[1], Bprime), W(nbc[2], Cprime)));
+    vec Pprime = nbcProduct(Aprime, Bprime, Cprime, nbc);
+    pt nextPoint = P(currentPoint, 0.01, Pprime);
+    noFill(); strokeWeight(2); stroke(green);
+    edge(currentPoint, nextPoint);
+    currentPoint = nextPoint;
+  }
+}
+
 //**************************** initialization ****************************
 void setup()               // executed once at the begining
   {
