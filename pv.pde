@@ -797,3 +797,19 @@ pt pointOnArcThrough (pt A, pt B, pt C, float t)
 boolean isInsideTriangle(pt Pm, pt Pa, pt Pb, pt Pc) {
     return turnAngle(Pa, Pb, Pm) > 0 && turnAngle(Pb, Pc, Pm) > 0  && turnAngle(Pc, Pa, Pm) > 0 ;
 }
+
+
+pt getIntersection(pt p1, pt p2, pt p3, pt p4) 
+{
+    if (turnAngle(p1, p2, p3)*turnAngle(p1, p2, p4) > 0 || turnAngle(p3, p4, p1)*turnAngle(p3, p4, p2) > 0) {
+        return null;
+    }
+    vec t1 = U(p1, p2);
+    vec t2 = U(p3, p4);
+    if (det(t1, t2) != 0) {
+        // these vectors intersect
+        float s = det(V(p1, p3), t2)/det(t1, t2);
+        return P(p1, s, t1);
+    }
+    return null;
+}
