@@ -56,8 +56,29 @@ int drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, 
     while (i<k && inTriangle)
     {
         // STUDENT:CHANGE THIS CODE
-        vec V = V(20, 5);
+        vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
         pt Pn=P(P, s, V);
+        inTriangle = isInsideTriangle(Pn, Pa, Pb, Pc);
+        if (!inTriangle) {
+            // get the intersection of the line segment made by the previous point 
+            pt E1 = getIntersection(P, Pn, Pb, Pc);
+            pt E2 = getIntersection(P, Pn, Pc, Pa);
+            pt E3 = getIntersection(P, Pn, Pa, Pb);
+            if (E1 != null && E2 == null && E3 == null) {
+                r = 1;
+                E = E1;
+            } else if (E2 != null && E3 == null && E1 == null) {
+                r = 2;
+                E = E2;
+            } else if (E3 != null && E1 == null && E2 == null) {
+                r = 3;
+                E = E3;
+            }
+            if (E != null) {
+                v(E);
+            }
+            break;
+        }
         v(Pn);
         P=Pn;
         i++;
