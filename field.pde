@@ -2,7 +2,7 @@
 // vector at P of field interpolating 3 arrows: (Pa,Va), (Pb,Vb), (Pc,Vc)
 vec VecAt(pt P, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc)
 {
-    return Va;
+    return computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
     // STUDENT:CHANGE THIS CODE
 }
 

@@ -163,7 +163,7 @@ void draw()      // executed at each frame
         M.tracePathFromMidEdgeFacingCorner(fbc);
     }
 
-
+    // ==================== TRACING FIELD ====================
     if (showTraceFromMouse)
     {        
         pt Pm = Mouse();
