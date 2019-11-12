@@ -188,7 +188,7 @@ void draw()      // executed at each frame
         }
         
         pen(black, 1); 
-        drawCorrectedTraceFrom(Pm, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2);
+        drawCorrectedTraceInTriangleFrom(Pm, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, P());
         fill(brown); 
         pen(brown, 2);
         if (showArrow)
