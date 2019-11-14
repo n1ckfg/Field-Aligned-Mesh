@@ -19,52 +19,52 @@ class MESH {
 
     MESH() {
         for (int i=0; i<maxnv; i++) {
-            G[i]=P(); 
+            G[i]=P();
             F[i]=V();
         }
     }; // declare all points and vectors
     void reset() {
-        nv=0; 
-        nt=0; 
+        nv=0;
+        nt=0;
         nc=0;
     }                                                  // removes all vertices and triangles
     void loadVertices(pt[] P, int n) {
-        nv=0; 
+        nv=0;
         for (int i=0; i<n; i++) addVertex(P[i]);
     }
     void writeVerticesTo(pts P) {
         for (int i=0; i<nv; i++) P.G[i].setTo(G[i]);
     }
-    void addVertex(pt P) { 
+    void addVertex(pt P) {
         G[nv++].setTo(P);
     }                                             // adds a vertex to vertex table G
     void addTriangle(int i, int j, int k) {
-        V[nc++]=i; 
-        V[nc++]=j; 
-        V[nc++]=k; 
+        V[nc++]=i;
+        V[nc++]=j;
+        V[nc++]=k;
         nt=nc/3;
     }     // adds triangle (i,j,k) to V table
     void addVertexPVfromPP(pt A, pt B) {
-        G[nv].setTo(A); 
+        G[nv].setTo(A);
         F[nv++].setTo(V(A, B));
     }                                             // adds a vertex to vertex table G
     void loadFromPTS(pts P) {
-        int n=P.nv; 
-        nv=0; 
+        int n=P.nv;
+        nv=0;
         for (int i=0; i<n; i+=2) addVertexPVfromPP(P.G[i], P.G[i+1]);
     }
 
     // CORNER OPERATORS
     int t (int c) {
-        int r=int(c/3); 
+        int r=int(c/3);
         return(r);
     }                   // triangle of corner c
     int n (int c) {
-        int r=3*int(c/3)+(c+1)%3; 
+        int r=3*int(c/3)+(c+1)%3;
         return(r);
     }         // next corner
     int p (int c) {
-        int r=3*int(c/3)+(c+2)%3; 
+        int r=3*int(c/3)+(c+2)%3;
         return(r);
     }         // previous corner
     int v (int c) {
@@ -102,28 +102,28 @@ class MESH {
         return(O[c]==c);
     };  // not a border corner
     int firstBorderCorner() {
-        int i=0; 
-        while (nb(i) && i<nc) i++; 
+        int i=0;
+        while (nb(i) && i<nc) i++;
         return i;
     }
     pt firstBorderEdgeMidPoint() {
-        int fbc = M.firstBorderCorner(); 
+        int fbc = M.firstBorderCorner();
         return P(g(p(fbc)), g(n(fbc)));
     }
     void tracePathFromMidEdgeFacingCorner(int sc) // sc = start corner
     {
         pt P = P(g(p(sc)), g(n(sc))); // start at midpoint of edge facing sc
         int c = sc;
-        pen(magenta, 3); 
+        pen(magenta, 3);
         show(cg(c), 8);
         for (int i=0; i<1; i++)
         {
             pt Q = P();
-            pen(brown, 3); 
+            pen(brown, 3);
             noFill();
             int exitCode = drawCorrectedTraceInTriangleFrom(P, g(c), f(c), g(n(c)), f(n(c)), g(p(c)), f(p(c)), 200, 0.1, Q);
             // STUDENT: ADD CODE HERE
-            pen(magenta, 3); 
+            pen(magenta, 3);
             show(cg(c), 8);
             P.setTo(Q);
         }
@@ -156,7 +156,7 @@ class MESH {
     }
 
     // DISPLAY
-    void showCurrentCorner(float r) { 
+    void showCurrentCorner(float r) {
         show(cg(c), r);
     };   // renders corner c
     void showEdge(int c) {
@@ -171,7 +171,7 @@ class MESH {
     void showInteriorVertices(float r) {
         for (int v=0; v<nv; v++) if (isInterior[v]) show(G[v], r);
     }   // shows interior vertices
-    void showTriangles() { 
+    void showTriangles() {
         for (int c=0; c<nc; c+=3) show(g(c), g(c+1), g(c+2));
     }         // draws all triangles (edges, or filled)
     void showEdges() {
@@ -193,7 +193,7 @@ class MESH {
     };         // draws all border edges of mesh
     void showVerticesAndVectors(float r) {
         for (int v=0; v<nv; v++) {
-            show(G[v], r); 
+            show(G[v], r);
             arrow(G[v], F[v]);
         }
     }                          // shows all vertices
@@ -202,7 +202,7 @@ class MESH {
         stroke(blue);
         for (int v=0; v<nv; v++)
         {
-            fill(blue); 
+            fill(blue);
             arrow(G[v], F[v]);
             fill(white);
             show(G[v], 13);
@@ -212,8 +212,8 @@ class MESH {
         }
         noFill();
     }
-    void showCorner(int c, float r) { 
-        if (bord(c)) show(cg(c), 1.5*r); 
+    void showCorner(int c, float r) {
+        if (bord(c)) show(cg(c), 1.5*r);
         else show(cg(c), r);
     };   // renders corner c
     void showCorners(float r)
@@ -221,11 +221,11 @@ class MESH {
         noStroke();
         for (int c=0; c<nc; c+=3)
         {
-            fill(red); 
+            fill(red);
             showCorner(c, r);
-            fill(dgreen); 
+            fill(dgreen);
             showCorner(c+1, r);
-            fill(blue); 
+            fill(blue);
             showCorner(c+2, r);
         }
     }
@@ -242,12 +242,12 @@ class MESH {
         pt X = new pt(0, 0);
         float r=1;
         for (int i=0; i<nv-2; i++) for (int j=i+1; j<nv-1; j++) for (int k=j+1; k<nv; k++) {
-            X=CircumCenter(G[i], G[j], G[k]);  
+            X=CircumCenter(G[i], G[j], G[k]);
             r = d(X, G[i]);
             boolean found=false;
             for (int m=0; m<nv; m++) if ((m!=i)&&(m!=j)&&(m!=k)&&(d(X, G[m])<=r)) found=true;
             if (!found) {
-                if (cw(G[i], G[j], G[k])) addTriangle(i, j, k); 
+                if (cw(G[i], G[j], G[k])) addTriangle(i, j, k);
                 else addTriangle(i, k, j);
             };
         };
@@ -257,10 +257,10 @@ class MESH {
         for (int i=0; i<3*nt; i++) {
             O[i]=i;
         };  // init O table to -1: has no opposite (i.e. is a border corner)
-        for (int i=0; i<3*nt; i++) {  
+        for (int i=0; i<3*nt; i++) {
             for (int j=i+1; j<3*nt; j++) {       // for each corner i, for each other corner j
                 if ( (v(n(i))==v(p(j))) && (v(p(i))==v(n(j))) ) {
-                    O[i]=j; 
+                    O[i]=j;
                     O[j]=i;
                 };
             };
@@ -285,7 +285,7 @@ class MESH {
             if (nIC[v]>maxValence) {
                 maxValence=nIC[v];
             };
-        };  
+        };
         println(" Max valence = "+maxValence+". "); // computes and prints maximum valence
         int IC [][] = new int [maxnv][maxValence];                 // declares 2D table to hold incident corners (htis can be folded into a 1D table !!!!!)
         for (int v=0; v<nv; v++) {
@@ -300,7 +300,7 @@ class MESH {
                 for (int j=0; j<nIC[v(n(c))]; j++) {                   // for each other corner b in the list of incident corners to the previous corner of c
                     int b = IC[v(n(c))][j];
                     if ((b==n(a))&&(c!=n(b))) {
-                        O[c]=n(b); 
+                        O[c]=n(b);
                         O[n(b)]=c;
                     };  // if a and b have matching opposite edges, make them opposite
                 };

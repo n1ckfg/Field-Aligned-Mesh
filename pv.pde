@@ -16,129 +16,129 @@ class pt
     pt () {
     }
     pt (float px, float py) {
-        x = px; 
+        x = px;
         y = py;
     };
 
     // MODIFY
     pt setTo(float px, float py) {
-        x = px; 
-        y = py; 
+        x = px;
+        y = py;
         return this;
     };
     pt setTo(pt P) {
-        x = P.x; 
-        y = P.y; 
+        x = P.x;
+        y = P.y;
         return this;
     };
-    pt setToMouse() { 
-        x = mouseX; 
-        y = mouseY;  
+    pt setToMouse() {
+        x = mouseX;
+        y = mouseY;
         return this;
     };
     pt add(float u, float v) {
-        x += u; 
-        y += v; 
+        x += u;
+        y += v;
         return this;
     }                       // P.add(u,v): P+=<u,v>
     pt add(pt P) {
-        x += P.x; 
-        y += P.y; 
+        x += P.x;
+        y += P.y;
         return this;
     };                              // incorrect notation, but useful for computing weighted averages
     pt add(float s, pt P) {
-        x += s*P.x; 
-        y += s*P.y; 
+        x += s*P.x;
+        y += s*P.y;
         return this;
     };               // adds s*P
     pt add(vec V) {
-        x += V.x; 
-        y += V.y; 
+        x += V.x;
+        y += V.y;
         return this;
     }                              // P.add(V): P+=V
     pt add(float s, vec V) {
-        x += s*V.x; 
-        y += s*V.y; 
+        x += s*V.x;
+        y += s*V.y;
         return this;
     }                 // P.add(s,V): P+=sV
     pt translateTowards(float s, pt P) {
-        x+=s*(P.x-x);  
-        y+=s*(P.y-y);  
+        x+=s*(P.x-x);
+        y+=s*(P.y-y);
         return this;
     };  // transalte by ratio s towards P
     pt scale(float u, float v) {
-        x*=u; 
-        y*=v; 
+        x*=u;
+        y*=v;
         return this;
     };
     pt scale(float s) {
-        x*=s; 
-        y*=s; 
+        x*=s;
+        y*=s;
         return this;
     }                                  // P.scale(s): P*=s
     pt scale(float s, pt C) {
-        x*=C.x+s*(x-C.x); 
-        y*=C.y+s*(y-C.y); 
+        x*=C.x+s*(x-C.x);
+        y*=C.y+s*(y-C.y);
         return this;
     }    // P.scale(s,C): scales wrt C: P=L(C,P,s);
     pt rotate(float a) {
-        float dx=x, dy=y, c=cos(a), s=sin(a); 
-        x=c*dx+s*dy; 
-        y=-s*dx+c*dy; 
+        float dx=x, dy=y, c=cos(a), s=sin(a);
+        x=c*dx+s*dy;
+        y=-s*dx+c*dy;
         return this;
     };     // P.rotate(a): rotate P around origin by angle a in radians
     pt rotate(float a, pt G) {
-        float dx=x-G.x, dy=y-G.y, c=cos(a), s=sin(a); 
-        x=G.x+c*dx+s*dy; 
-        y=G.y-s*dx+c*dy; 
+        float dx=x-G.x, dy=y-G.y, c=cos(a), s=sin(a);
+        x=G.x+c*dx+s*dy;
+        y=G.y-s*dx+c*dy;
         return this;
     };   // P.rotate(a,G): rotate P around G by angle a in radians
     pt rotate(float s, float t, pt G) {
-        float dx=x-G.x, dy=y-G.y; 
-        dx-=dy*t; 
-        dy+=dx*s; 
-        dx-=dy*t; 
-        x=G.x+dx; 
-        y=G.y+dy;  
+        float dx=x-G.x, dy=y-G.y;
+        dx-=dy*t;
+        dy+=dx*s;
+        dx-=dy*t;
+        x=G.x+dx;
+        y=G.y+dy;
         return this;
     };   // fast rotate s=sin(a); t=tan(a/2);
-    pt moveWithMouse() { 
-        x += mouseX-pmouseX; 
-        y += mouseY-pmouseY;  
+    pt moveWithMouse() {
+        x += mouseX-pmouseX;
+        y += mouseY-pmouseY;
         return this;
     };
 
     // DRAW , WRITE
     pt write() {
-        print("("+x+","+y+")"); 
+        print("("+x+","+y+")");
         return this;
     };  // writes point coordinates in text window
     pt v() {
-        vertex(x, y); 
+        vertex(x, y);
         return this;
     };  // used for drawing polygons between beginShape(); and endShape();
     pt show(float r) {
-        ellipse(x, y, 2*r, 2*r); 
+        ellipse(x, y, 2*r, 2*r);
         return this;
     }; // shows point as disk of radius r
     pt show() {
-        show(3); 
+        show(3);
         return this;
     }; // shows point as small dot
     pt label(String s, float u, float v) {
-        fill(black); 
-        text(s, x+u, y+v); 
-        noFill(); 
+        fill(black);
+        text(s, x+u, y+v);
+        noFill();
         return this;
     };
     pt label(String s, vec V) {
-        fill(black); 
-        text(s, x+V.x, y+V.y); 
-        noFill(); 
+        fill(black);
+        text(s, x+V.x, y+V.y);
+        noFill();
         return this;
     };
     pt label(String s) {
-        label(s, 5, 4); 
+        label(s, 5, 4);
         return this;
     };
 } // end of pt class
@@ -155,79 +155,79 @@ class vec
     vec () {
     };
     vec (float px, float py) {
-        x = px; 
+        x = px;
         y = py;
     };
 
     // MODIFY
     vec setTo(float px, float py) {
-        x = px; 
-        y = py; 
+        x = px;
+        y = py;
         return this;
     };
     vec setTo(vec V) {
-        x = V.x; 
-        y = V.y; 
+        x = V.x;
+        y = V.y;
         return this;
     };
     vec zero() {
-        x=0; 
-        y=0; 
+        x=0;
+        y=0;
         return this;
     }
     vec scaleBy(float u, float v) {
-        x*=u; 
-        y*=v; 
+        x*=u;
+        y*=v;
         return this;
     };
     vec scaleBy(float f) {
-        x*=f; 
-        y*=f; 
+        x*=f;
+        y*=f;
         return this;
     };
     vec reverse() {
-        x=-x; 
-        y=-y; 
+        x=-x;
+        y=-y;
         return this;
     };
     vec divideBy(float f) {
-        x/=f; 
-        y/=f; 
+        x/=f;
+        y/=f;
         return this;
     };
     vec normalize() {
-        float n=sqrt(sq(x)+sq(y)); 
+        float n=sqrt(sq(x)+sq(y));
         if (n>0.000001) {
-            x/=n; 
+            x/=n;
             y/=n;
-        }; 
+        };
         return this;
     };
     vec add(float u, float v) {
-        x += u; 
-        y += v; 
+        x += u;
+        y += v;
         return this;
     };
     vec add(vec V) {
-        x += V.x; 
-        y += V.y; 
+        x += V.x;
+        y += V.y;
         return this;
     };
     vec add(float s, vec V) {
-        x += s*V.x; 
-        y += s*V.y; 
+        x += s*V.x;
+        y += s*V.y;
         return this;
     };
     vec rotateBy(float a) {
-        float xx=x, yy=y; 
-        x=xx*cos(a)-yy*sin(a); 
-        y=xx*sin(a)+yy*cos(a); 
+        float xx=x, yy=y;
+        x=xx*cos(a)-yy*sin(a);
+        y=xx*sin(a)+yy*cos(a);
         return this;
     };
     vec left() {
-        float m=x; 
-        x=-y; 
-        y=m; 
+        float m=x;
+        x=-y;
+        y=m;
         return this;
     };
 
@@ -261,10 +261,10 @@ class vec
         pt Q=P(P, this);
         vec U = S(-n, U(this));
         vec W = S(.3, R(U));
-        beginShape(); 
-        Q.add(U).add(W).v(); 
-        Q.v(); 
-        Q.add(U).add(M(W)).v(); 
+        beginShape();
+        Q.add(U).add(W).v();
+        Q.v();
+        Q.add(U).add(M(W)).v();
         endShape(CLOSE);
     }
 
@@ -316,11 +316,11 @@ boolean cw(pt A, pt B, pt C) {
 
 // transform
 pt R(pt Q, float a) {
-    float dx=Q.x, dy=Q.y, c=cos(a), s=sin(a); 
+    float dx=Q.x, dy=Q.y, c=cos(a), s=sin(a);
     return new pt(c*dx+s*dy, -s*dx+c*dy);
 };  // Q rotated by angle a around the origin
 pt R(pt Q, float a, pt C) {
-    float dx=Q.x-C.x, dy=Q.y-C.y, c=cos(a), s=sin(a); 
+    float dx=Q.x-C.x, dy=Q.y-C.y, c=cos(a), s=sin(a);
     return P(C.x+c*dx-s*dy, C.y+s*dx+c*dy);
 };  // Q rotated by angle a around point C
 pt P(pt P, vec V) {
@@ -329,7 +329,7 @@ pt P(pt P, vec V) {
 pt P(pt P, float s, vec V) {
     return P(P, W(s, V));
 }                                                    //  P+sV (P transalted by sV)
-pt MoveByDistanceTowards(pt P, float d, pt Q) { 
+pt MoveByDistanceTowards(pt P, float d, pt Q) {
     return P(P, d, U(V(P, Q)));
 };                          //  P+dU(PQ) (transLAted P by *distance* s towards Q)!!!
 
@@ -400,18 +400,18 @@ void arrow(pt P, pt Q) {
     arrow(P, V(P, Q));
 }                                                            // draws arrow from P to Q
 void show(pt A, pt B, pt C) {
-    beginShape();  
-    A.v(); 
-    B.v(); 
-    C.v(); 
+    beginShape();
+    A.v();
+    B.v();
+    C.v();
     endShape(CLOSE);
 }                   // render triangle A, B, C
 void show(pt A, pt B, pt C, pt D) {
-    beginShape();  
-    A.v(); 
-    B.v(); 
-    C.v(); 
-    D.v(); 
+    beginShape();
+    A.v();
+    B.v();
+    C.v();
+    D.v();
     endShape(CLOSE);
 }      // render quad A, B, C, D
 void showIntLabel(pt P, int v)
@@ -463,11 +463,11 @@ void halfCone(pt A, float rA, pt B, float rB) // displays Isosceles Trapezoid of
     pt LB = P(B, -rB, N);
     pt RA = P(A, rA, N);
     pt RB = P(B, rB, N);
-    beginShape(); 
-    v(P(LB, LA)); 
-    v(P(RB, RA)); 
-    v(RA); 
-    v(LA); 
+    beginShape();
+    v(P(LB, LA));
+    v(P(RB, RA));
+    v(RA);
+    v(LA);
     endShape(CLOSE);
 }
 
@@ -479,11 +479,11 @@ void cone(pt A, float rA, pt B, float rB) // displays Isosceles Trapezoid of axi
     pt LB = P(B, -rB, N);
     pt RA = P(A, rA, N);
     pt RB = P(B, rB, N);
-    beginShape(); 
-    v(LB); 
-    v(RB); 
-    v(RA); 
-    v(LA); 
+    beginShape();
+    v(LB);
+    v(RB);
+    v(RA);
+    v(LA);
     endShape(CLOSE);
 }
 
@@ -509,8 +509,8 @@ vec V(pt P, pt Q) {
     return new vec(Q.x-P.x, Q.y-P.y);
 };                                                 // PQ (make vector Q-P from P to Q
 vec U(vec V) {
-    float n = n(V); 
-    if (n==0) return new vec(0, 0); 
+    float n = n(V);
+    if (n==0) return new vec(0, 0);
     else return new vec(V.x/n, V.y/n);
 };      // V/||V|| (Unit vector : normalized version of V)
 vec U(pt P, pt Q) {
@@ -554,8 +554,8 @@ int toDeg(float a) {
 float toRad(float a) {
     return(a*PI/180);
 }                                                             // convert degrees to radians
-float positive(float a) { 
-    if (a<0) return a+TWO_PI; 
+float positive(float a) {
+    if (a<0) return a+TWO_PI;
     else return a;
 }                                   // adds 2PI to make angle positive
 
@@ -580,16 +580,16 @@ vec W(float u, vec U, float v, vec V, float w, vec W) {
 vec S(float s, vec V) {
     return new vec(s*V.x, s*V.y);
 };                                                  // sV
-vec M(vec V) { 
+vec M(vec V) {
     return V(-V.x, -V.y);
 }                                                                 // -V
 vec R(vec V) {
     return new vec(-V.y, V.x);
 };                                                             // V turned right 90 degrees (as seen on screen)
-vec R(vec V, float a) { 
+vec R(vec V, float a) {
     return W(cos(a), V, sin(a), R(V));
 }                                           // V rotated by angle a in radians
-vec Reflection(vec V, vec N) { 
+vec Reflection(vec V, vec N) {
     return W(V, -2.*dot(V, N), N);
 };                                          // reflection OF V wrt unit normal vector N
 
@@ -621,7 +621,7 @@ void arrow(pt P, float s, vec V) {
     arrow(P, S(s, V));
 }                                                   // show sV as arrow from P
 void arrow(pt P, vec V, String S) {
-    arrow(P, V); 
+    arrow(P, V);
     P(P(P, 0.70, V), 15, R(U(V))).label(S, V(-5, 4));
 }       // show V as arrow from P and print string S on its side
 void arrow(pt P, vec V)
@@ -630,7 +630,7 @@ void arrow(pt P, vec V)
     if (n<0.01) return;  // too short a vector
     // otherwise continue
     float s=max(min(0.2, 20./n), 6./n);       // show V as arrow from P
-    strokeWeight(n*s/6); 
+    strokeWeight(n*s/6);
     show(P, V);
     strokeWeight(1);
     pt Q=P(P, V);
@@ -719,15 +719,15 @@ pt L(pt A, pt B, float t) {
 // create
 pt CircumCenter (pt A, pt B, pt C) // CircumCenter(A,B,C): center of circumscribing circle, where medians meet)
 {
-    vec AB = V(A, B); 
+    vec AB = V(A, B);
     vec AC = R(V(A, C));
     return P(A, 1./2/dot(AB, AC), W(-n2(AC), R(AB), n2(AB), AC));
 }
 
 float circumRadius (pt A, pt B, pt C)     // radiusCircum(A,B,C): radius of circumcenter
 {
-    float a=d(B, C), b=d(C, A), c=d(A, B), 
-        s=(a+b+c)/2, 
+    float a=d(B, C), b=d(C, A), c=d(A, B),
+        s=(a+b+c)/2,
         d=sqrt(s*(s-a)*(s-b)*(s-c));
     return a*b*c/4/d;
 }
@@ -735,13 +735,13 @@ float circumRadius (pt A, pt B, pt C)     // radiusCircum(A,B,C): radius of circ
 // display
 void drawCircle(int n)
 {
-    float x=1, y=0; 
+    float x=1, y=0;
     float a=TWO_PI/n, t=tan(a/2), s=sin(a);
     beginShape();
     for (int i=0; i<n; i++)
     {
-        x-=y*t; 
-        y+=x*s; 
+        x-=y*t;
+        y+=x*s;
         x-=y*t;
         vertex(x, y);
     }
@@ -752,7 +752,7 @@ void drawCircle(int n)
 void showArcThrough (pt A, pt B, pt C)
 {
     if (abs(dot(V(A, B), R(V(A, C))))<0.01*d2(A, C)) {
-        edge(A, C); 
+        edge(A, C);
         return;
     }
     pt O = CircumCenter ( A, B, C);
@@ -771,7 +771,7 @@ void showArcThrough (pt A, pt B, pt C)
 pt pointOnArcThrough (pt A, pt B, pt C, float t)
 {
     if (abs(dot(V(A, B), R(V(A, C))))<0.001*d2(A, C)) {
-        edge(A, C); 
+        edge(A, C);
         return L(A, C, t);
     }
     pt O = CircumCenter ( A, B, C);
@@ -780,12 +780,12 @@ pt pointOnArcThrough (pt A, pt B, pt C, float t)
     float b = angle(OA, OB), c = angle(OA, OC);
     if (0<b && b<c) {
     } else if (0<c && c<b) {
-        b=b-TWO_PI; 
+        b=b-TWO_PI;
         c=c-TWO_PI;
     } else if (b<0 && 0<c) {
         c=c-TWO_PI;
     } else if (b<c && c<0) {
-        b=TWO_PI+b; 
+        b=TWO_PI+b;
         c=TWO_PI+c;
     } else if (c<0 && 0<b) {
         c=TWO_PI+c;
@@ -799,7 +799,7 @@ boolean isInsideTriangle(pt Pm, pt Pa, pt Pb, pt Pc) {
 }
 
 
-pt getIntersection(pt p1, pt p2, pt p3, pt p4) 
+pt getIntersection(pt p1, pt p2, pt p3, pt p4)
 {
     if (turnAngle(p1, p2, p3)*turnAngle(p1, p2, p4) > 0 || turnAngle(p3, p4, p1)*turnAngle(p3, p4, p2) > 0) {
         return null;

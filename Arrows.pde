@@ -6,7 +6,7 @@ class ARROW
     ARROW() {
     }
     ARROW(pt Q, vec U) {
-        P=P(Q); 
+        P=P(Q);
         V=V(U);
     }
     // SHOW
@@ -73,14 +73,14 @@ class ARROWRING
     void declare() {
         for (int i=0; i<maxnA; i++) A[i]=new ARROW();
     }                           // creates all ARROWS, MUST BE DONE AT INITALIZATION
-    void addArrow(pt Q, vec U) { 
-        A[nA].P=P(Q);  
-        A[nA].V=V(U); 
+    void addArrow(pt Q, vec U) {
+        A[nA].P=P(Q);
+        A[nA].V=V(U);
         nA++;
     }                    // appends a point at position P
-    void addArrow(ARROW B) { 
-        A[nA].P=P(B.P);  
-        A[nA].V=V(B.V); 
+    void addArrow(ARROW B) {
+        A[nA].P=P(B.P);
+        A[nA].V=V(B.V);
         nA++;
     }                    // appends a point at position P
     void empty() {

@@ -27,6 +27,7 @@ int exitThrough=0;
 MESH M = new MESH();
 int cc=0; // current corner (saved, since we rebuild M at each frame)
 
+
 void fillGrid(pts ps) {
     ps.declare();
     int inc = width * height / ps.maxnv;
@@ -63,15 +64,15 @@ void drawVectorField(pts control, pts grid) {
         vec Cprime = V(C, control.G[5]);
         vec Pprime = nbcProduct(Aprime, Bprime, Cprime, nbc);
         Pprime = U(Pprime);
-        noFill(); 
-        strokeWeight(2); 
+        noFill();
+        strokeWeight(2);
         stroke(green);
         edge(P, P(P, 10, Pprime));
     }
 }
 
 vec nbcProduct(vec Aprime, vec Bprime, vec Cprime, float[] nbc) {
-    return V(nbc[0] * Aprime.x + nbc[1] * Bprime.x + nbc[2] * Cprime.x, 
+    return V(nbc[0] * Aprime.x + nbc[1] * Bprime.x + nbc[2] * Cprime.x,
         nbc[0] * Aprime.y + nbc[1] * Bprime.y + nbc[2] * Cprime.y);
 }
 
@@ -87,8 +88,8 @@ void traceOverField(pts control, pt startPoint) {
         float[] nbc = calculateNBC(A, B, C, currentPoint);
         vec Pprime = nbcProduct(Aprime, Bprime, Cprime, nbc);
         pt nextPoint = P(currentPoint, 0.01, Pprime);
-        noFill(); 
-        strokeWeight(2); 
+        noFill();
+        strokeWeight(2);
         stroke(green);
         edge(currentPoint, nextPoint);
         currentPoint = nextPoint;
@@ -123,7 +124,7 @@ void draw()      // executed at each frame
 
     // ==================== MAKE ARROWS ====================
     Aring.empty();
-    for (int i=0; i<P.nv; i+=2) {
+    for (int i=-; i<P.nv; i+=-4) {
         Aring.addArrow(P.G[i], V(P.G[i], P.G[i+1]));
     }
 
@@ -144,62 +145,91 @@ void draw()      // executed at each frame
         M.triangulate();
         M.computeO();
         M.classifyVertices();
-        noFill(); 
-        pen(black, 2); 
+        noFill();
+        pen(black, 2);
         M.showTriangles();
-        stroke(red); 
+        stroke(red);
         M.showBorderEdges();
         M.c=cc;
         M.showCorners(3);
-        noFill(); 
-        pen(black, 2); 
+        noFill();
+        pen(black, 2);
         M.showCurrentCorner(7);
-        pt Ps=M.firstBorderEdgeMidPoint();  
-        pen(green, 2); 
-        fill(green); 
+        pt Ps=M.firstBorderEdgeMidPoint();
+        pen(green, 2);
+        fill(green);
         show(Ps, 6);
         int fbc = M.firstBorderCorner();
-        pen(brown, 3); 
+        pen(brown, 3);
         M.tracePathFromMidEdgeFacingCorner(fbc);
     }
 
     // ==================== TRACING FIELD ====================
     if (showTraceFromMouse)
-    {        
+    {
         pt Pm = Mouse();
-   
+
         pt Pa = M.g(0);
         pt Pb = M.g(1);
         pt Pc = M.g(2);
-        vec Va = M.f(0); 
-        vec Vb = M.f(1); 
+        vec Va = M.f(0);
+        vec Vb = M.f(1);
         vec Vc = M.f(2);
-        
+
+        int corner = -1;
         for (int t = 0; t < M.nt; t++) {
             // Get the three vertices for the triangle
             pt a = M.g(3*t);
             pt b = M.g(3*t + 1);
             pt c = M.g(3*t + 2);
             if (isInsideTriangle(Pm, a, b, c)) {
-                Pa = a; Pb = b; Pc = c;
-                Va = M.f(3*t); Vb = M.f(3*t + 1); Vc = M.f(3*t + 2);
+                Pa = a;
+                Pb = b;
+                Pc = c;
+                Va = M.f(3*t);
+                Vb = M.f(3*t + 1);
+                Vc = M.f(3*t + 2);
+                corner = t;
                 break;
             }
         }
-        
-        pen(black, 1); 
-        drawCorrectedTraceInTriangleFrom(Pm, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, P());
-        fill(brown); 
-        pen(brown, 2);
-        if (showArrow)
-        {
-            vec Vm = VecAt(Pm, Pa, Va, Pb, Vb, Pc, Vc); // velocity at current mouse position
-            arrow(Pm, Vm);
+        int covered = 0;
+        if (corner != -1) {
+
+            pt S = Pm, E = P();
+            int e = -1;
+            while (e != 0) {
+                e = drawCorrectedTraceInTriangleFrom(S, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, E);
+                println("exit", e, ++covered);
+                if (e == 1) {//b
+                    int c = 3*corner+1;
+                    corner = M.o(c) - (M.o(c)%3);
+                } else if (e == 2) {//c
+                    int c = 3*corner+2;
+                    corner = M.o(c) - (M.o(c)%3);
+                } else if (e == 3) {//a
+                    int c = 3*corner;
+                    corner = M.o(c) - (M.o(c)%3);
+                } else {
+                    break;
+                }
+                println("corner", corner);
+                Pa = M.g(3*corner);
+                Pb = M.g(3*corner + 1);
+                Pc = M.g(3*corner + 2);
+                Va = M.f(3*corner);
+                Vb = M.f(3*corner + 1);
+                Vc = M.f(3*corner + 2);
+                S = E;
+                if (e!=0) {
+                    fill(red);
+                    show(E, 4);
+                    noFill();
+                }
+            }
+            if (showLabels) showId(Pm, "M");
+            noFill();
         }
-        pen(brown, 1); 
-        show(Pm, 6);
-        if (showLabels) showId(Pm, "M");
-        noFill();
     }
 
 
@@ -207,41 +237,41 @@ void draw()      // executed at each frame
     if (showFirstField)
     {
         ARROW A0 = Aring.A[0], A1 = Aring.A[1], A2 = Aring.A[2]; //First 3 arrows used to test tracing
-        pt Pa = A0.P; 
+        pt Pa = A0.P;
         vec Va = A0.V;
-        pt Pb = A1.P; 
+        pt Pb = A1.P;
         vec Vb = A1.V;
-        pt Pc = A2.P; 
+        pt Pc = A2.P;
         vec Vc = A2.V;
-        pen(grey, 4); 
-        fill(yellow, 100); 
+        pen(grey, 4);
+        fill(yellow, 100);
         show(Pa, Pb, Pc);
         noFill();
 
-        pt Ps=P(Pa, Pb); 
+        pt Ps=P(Pa, Pb);
         show(Ps, 6); // mid-edge point where trace starts
         if (showFine) // FOR ACCURACY COMPARISONS
         {
-            pen(cyan, 2); 
+            pen(cyan, 2);
             drawTraceFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 500, 0.005);
-            pen(green, 2); 
+            pen(green, 2);
             drawTraceFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.05);
         }
 
-        pen(green, 6); 
-        fill(green); 
+        pen(green, 6);
+        fill(green);
         show(Ps, 4); // start of trace
         noFill();
-        pen(orange, 1); 
+        pen(orange, 1);
         drawCorrectedTraceFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 100, 0.1);
-        pt Q = P(); // exit point when exitThrough != 0
-        pen(brown, 3); 
-        noFill(); 
-        exitThrough = drawCorrectedTraceInTriangleFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 100, 0.1, Q);
+        pen(brown, 3);
+        noFill();
+        pt E = P();
+        exitThrough = drawCorrectedTraceInTriangleFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 100, 0.1, E);
         pen(red, 6);
         if (exitThrough!=0) {
-            fill(red); 
-            show(Q, 4); 
+            fill(red);
+            show(E, 4);
             noFill();
         }
         if (exitThrough==1) edge(Pb, Pc);
@@ -253,59 +283,59 @@ void draw()      // executed at each frame
 
         if (showArrow)
         {
-            fill(red); 
-            stroke(red); 
+            fill(red);
+            stroke(red);
             arrow(Pa, Va);
-            fill(dgreen); 
-            stroke(dgreen); 
+            fill(dgreen);
+            stroke(dgreen);
             arrow(Pb, Vb) ;
-            fill(blue); 
-            pen(blue, 1); 
+            fill(blue);
+            pen(blue, 1);
             arrow(Pc, Vc);
         }
 
         noStroke();
-        fill(red); 
+        fill(red);
         show(Pa, 6);
-        fill(dgreen); 
+        fill(dgreen);
         show(Pb, 6);
-        fill(blue); 
+        fill(blue);
         show(Pc, 6);
 
         if (showLabels)
         {
             textAlign(CENTER, CENTER);
-            pen(red, 1); 
+            pen(red, 1);
             showId(Pa, "A");
-            pen(dgreen, 1); 
+            pen(dgreen, 1);
             showId(Pb, "B");
-            pen(blue, 1); 
+            pen(blue, 1);
             showId(Pc, "C");
         }
 
-        textAlign(LEFT, TOP); 
+        textAlign(LEFT, TOP);
         fill(black);
         scribeHeader("exitThrough code = "+exitThrough, 1);
         textAlign(CENTER, CENTER);
     }
 
     // ==================== DRAW ARROWS BETWEEN CONSECUTIVE POINTS OF P ====================
-    fill(black); 
+    fill(black);
     stroke(black);
     if (showKeyArrow) P.drawArrows(); // draws all control arrows
 
     // ==================== SHOW POINTER AT MOUSE ====================
     pt End = P(Mouse(), 1, V(-2, 3)), Start = P(End, 20, V(-2, 3)); // show semi-opaque grey arrow pointing to mouse location (useful for demos and videos)
-    strokeWeight(5);  
-    fill(grey, 70); 
-    stroke(grey, 70); 
-    arrow(Start, End); 
+    strokeWeight(5);
+    fill(grey, 70);
+    stroke(grey, 70);
+    arrow(Start, End);
     noFill();
 
 
     if (recordingPDF) endRecordingPDF();  // end saving a .pdf file with the image of the canvas
 
-    fill(black); 
+    fill(black);
     displayHeader(); // displays header
     if (scribeText && !filming) displayFooter(); // shows title, menu, and my face & name
 
@@ -313,7 +343,7 @@ void draw()      // executed at each frame
     if (snapTIF) snapPictureToTIF();
     if (snapJPG) snapPictureToJPG();
     if (scribeText) {
-        background(255, 255, 200); 
+        background(255, 255, 200);
         displayMenu();
     }
     change=false; // to avoid capturing movie frames when nothing happens

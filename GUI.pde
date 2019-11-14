@@ -70,7 +70,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if (key=='J') ;
     if (key=='K') showKeyArrow=!showKeyArrow;
     if (key=='L') {
-        P.loadPts("data/pts"); 
+        P.loadPts("data/pts");
         newCOTS=true;
     } // load current positions of control points from file
     if (key=='M') showMesh=!showMesh;
@@ -79,9 +79,9 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if (key=='P') showCircumCircles=!showCircumCircles;
     if (key=='Q') ;  // quit application
     if (key=='R') {
-        P.resetOnCircle(P.nv); 
+        P.resetOnCircle(P.nv);
         newCOTS=true;
-    }; 
+    };
     ;
     if (key=='S') P.savePts("data/pts");    // save current positions of control points on file
     if (key=='T') showTextured=!showTextured;
@@ -178,8 +178,8 @@ void mouseWheel(MouseEvent event) { // reads mouse wheel and uses to zoom
 }
 
 //**************************** text for name, title and help  ****************************
-String title ="Field-Aligned Triangle-Mesh", name ="Harish Krupo KPS, Pranshu Gupta", 
-    subtitle = "", 
+String title ="Field-Aligned Triangle-Mesh", name ="Harish Krupo KPS, Pranshu Gupta",
+    subtitle = "",
 
-    menu="?:(show/hide) help, ~/!/@:snap pdf/jpg/fif, `:(start/stop) recording, ^=mousePress", 
+    menu="?:(show/hide) help, ~/!/@:snap pdf/jpg/fif, `:(start/stop) recording, ^=mousePress",
     guide="^:pick&drag, d:delete, a+^+^:add, t:moveAll, m:traceFromMouse, f:filed, M:mesh, r:Turn, z:zoom, S/L:save/load"; // help info

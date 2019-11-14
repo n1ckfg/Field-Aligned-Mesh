@@ -1,25 +1,25 @@
 COTSMap CM;
 int ne=7; // current cell-count in each direction
 boolean
-    newCOTS=false, 
-    showCOTS=false, 
-    showTiles=false, 
-    showIsoCurves=false, 
-    showLabels=true, 
-    resetBranching=false, 
-    showDisks=false, 
-    showBorder=false, 
-    showCrossForPick=false, 
-    showControlCircles=false, 
-    showFixedPoint=false, 
-    showStars=false, 
-    showHubs=false, 
-    showCircumCircle=false, 
-    showCircumCircles=false, 
-    showPointer=false, 
-    showTextured=true, 
-    showCoons=false, 
-    showQuad=false, 
+    newCOTS=false,
+    showCOTS=false,
+    showTiles=false,
+    showIsoCurves=false,
+    showLabels=true,
+    resetBranching=false,
+    showDisks=false,
+    showBorder=false,
+    showCrossForPick=false,
+    showControlCircles=false,
+    showFixedPoint=false,
+    showStars=false,
+    showHubs=false,
+    showCircumCircle=false,
+    showCircumCircles=false,
+    showPointer=false,
+    showTextured=true,
+    showCoons=false,
+    showQuad=false,
     showPM=false;
 
 class COTSMap
@@ -36,9 +36,9 @@ class COTSMap
 
     COTSMap(pt A1, pt B1, pt C1, pt D1)      // creates map and sets its parameters
     {
-        A=P(A1);  
-        B=P(B1);  
-        C=P(C1);  
+        A=P(A1);
+        B=P(B1);
+        C=P(C1);
         D=P(D1);
         au = spiralAngle(A, B, D, C);
         mu = spiralScale(A, B, D, C);
@@ -49,9 +49,9 @@ class COTSMap
 
     COTSMap(pt A1, pt B1, pt C1, pt D1, int np) // creates map and sets its parameters and cell-count
     {
-        A=P(A1);  
-        B=P(B1);  
-        C=P(C1);  
+        A=P(A1);
+        B=P(B1);
+        C=P(C1);
         D=P(D1);
         au = spiralAngle(A, B, D, C);
         mu = spiralScale(A, B, D, C);
@@ -68,9 +68,9 @@ class COTSMap
     void COTSupdateMap(pt A1, pt B1, pt C1, pt D1, int np)     // recomputes COTS parameter, selecting angle branchings that minimize pops
     {
         n=np;
-        A=P(A1);  
-        B=P(B1);  
-        C=P(C1);  
+        A=P(A1);
+        B=P(B1);
+        C=P(C1);
         D=P(D1);
         mu = spiralScale(A, B, D, C);
         mv = spiralScale(A, D, B, C);
@@ -90,11 +90,11 @@ class COTSMap
         if (abs(ave-TWO_PI)<abs(ave)) ave-=TWO_PI;
 
         if (resetBranching) {
-            au=aun; 
-            av=avn; 
+            au=aun;
+            av=avn;
             resetBranching=false;
         } else {
-            au=pau+aue; 
+            au=pau+aue;
             av=pav+ave;
         }
 
@@ -102,24 +102,24 @@ class COTSMap
     }
 
     void showCorners() {
-        noStroke(); 
-        fill(black); 
-        fill(red); 
-        show(A, 6); 
-        fill(dgreen); 
-        show(B, 6); 
-        fill(blue); 
-        show(C, 6); 
-        fill(magenta); 
+        noStroke();
+        fill(black);
+        fill(red);
+        show(A, 6);
+        fill(dgreen);
+        show(B, 6);
+        fill(blue);
+        show(C, 6);
+        fill(magenta);
         show(D, 6);
     }
 
     void showLabels()
     {
-        pen(black, 1); 
-        showId(CM.A, "a"); 
-        showId(CM.B, "b"); 
-        showId(CM.C, "c"); 
+        pen(black, 1);
+        showId(CM.A, "a");
+        showId(CM.B, "b");
+        showId(CM.C, "c");
         showId(CM.D, "d");
         if (showFixedPoint) showId(CM.F, "f");
     }
@@ -129,12 +129,12 @@ class COTSMap
     } // returns relative scaling factor that corresponds to parameter translation by (x,y)
 
     void showCircMappedTo(pt O, pt R, pt M) {
-        pt Mi=Inverse(M); 
-        pt Oi=Inverse(O);  
+        pt Mi=Inverse(M);
+        pt Oi=Inverse(O);
         show(M, d(O, R)*scaling(Mi.x-Oi.x, Mi.y-Oi.y));
     }
     void showCircMappedTo(pt C, float r, pt M) {
-        pt Mi=Inverse(M);  
+        pt Mi=Inverse(M);
         show(M, r*scaling(Mi.x-C.x, Mi.y-C.y));
     }
     pt ImageOf(float u, float v) {
@@ -203,7 +203,7 @@ class COTSMap
             CR = ImageOf((cx+cos(t)*cr)*s, (cy+sin(t)*cr)*s);
             float d = d(CC, CR);
             if (d<r) {
-                r=d; 
+                r=d;
                 CirRadPt=P(CR);
             }
         }
@@ -212,8 +212,8 @@ class COTSMap
 
     void setCircle(pt Cc, pt Cr) // computes cx, cy, cr of circle from its center and sample point
     {
-        pt Ci = Inverse(Cc); 
-        cx=Ci.x*n; 
+        pt Ci = Inverse(Cc);
+        cx=Ci.x*n;
         cy=Ci.y*n;
         float d = d(Cc, Cr);
         float s = 1./n;
@@ -250,7 +250,7 @@ class COTSMap
         {
             float ppa = pa +TWO_PI*i;
             Mi =  MapInv(ppa, pm, F, A, au, mu, av, mv);
-            x = Mi.x; 
+            x = Mi.x;
             y=Mi.y;
             if (amin<ppa && ppa<amax && mmin<pm && 0<=x && x<=1 && 0<=y && y<=1 )
             {
@@ -263,7 +263,7 @@ class COTSMap
     void showUcurve(float u)
     {
         int s=100; // sample count along each isocurve
-        noFill(); 
+        noFill();
         pen(red, 4);
         beginShape();
         for (int j=0; j<s; j++)
@@ -277,7 +277,7 @@ class COTSMap
     void showVcurve(float v)
     {
         int s=100; // sample count along each isocurve
-        noFill(); 
+        noFill();
         pen(blue, 4);
         beginShape();
         for (int i=0; i<s; i++)
@@ -405,7 +405,7 @@ class COTSMap
 
     void showBorder()
     {
-        noFill(); 
+        noFill();
         pen(grey, 4);
         int s=100; // sample count along each isocurve
         for (int i=0; i<n; i+=n-1)
@@ -466,7 +466,7 @@ class COTSMap
 
     void showHubs()
     {
-        noStroke(); 
+        noStroke();
         fill(dgreen);
         float r = 100000;
         float s = 1./n;
@@ -480,13 +480,13 @@ class COTSMap
         for (int i=0; i<n; i++)
             for (int j=0; j<n; j++)
             {
-                stump(ImageOf( (cx+i)/n, (cy+j)/n), r*cr*scaling(((float)i)/n, ((float)j)/n), 
+                stump(ImageOf( (cx+i)/n, (cy+j)/n), r*cr*scaling(((float)i)/n, ((float)j)/n),
                     ImageOf( (cx+i-1)/n, (cy+j)/n), r*cr*scaling(((float)(i-1))/n, ((float)j)/n) );
-                stump(ImageOf( (cx+i)/n, (cy+j)/n), r*cr*scaling(((float)i)/n, ((float)j)/n), 
+                stump(ImageOf( (cx+i)/n, (cy+j)/n), r*cr*scaling(((float)i)/n, ((float)j)/n),
                     ImageOf( (cx+i+1)/n, (cy+j)/n), r*cr*scaling(((float)(i+1))/n, ((float)j)/n) );
-                stump(ImageOf( (cx+i)/n, (cy+j)/n), r*cr*scaling(((float)i)/n, ((float)j)/n), 
+                stump(ImageOf( (cx+i)/n, (cy+j)/n), r*cr*scaling(((float)i)/n, ((float)j)/n),
                     ImageOf( (cx+i)/n, (cy+j-1)/n), r*cr*scaling(((float)(i))/n, ((float)(j-1))/n) );
-                stump(ImageOf( (cx+i)/n, (cy+j)/n), r*cr*scaling(((float)i)/n, ((float)j)/n), 
+                stump(ImageOf( (cx+i)/n, (cy+j)/n), r*cr*scaling(((float)i)/n, ((float)j)/n),
                     ImageOf( (cx+i)/n, (cy+j+1)/n), r*cr*scaling(((float)(i))/n, ((float)(j+1))/n) );
             }
     }
@@ -497,7 +497,7 @@ class COTSMap
         for (int i=0; i<n; i++)
             for (int j=0; j<n; j++)
             {
-                if ( (i+j) % 2 == 0 ) fill(yellow); 
+                if ( (i+j) % 2 == 0 ) fill(yellow);
                 else fill(grey);
                 showCell(i, j);
             }

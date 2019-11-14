@@ -25,20 +25,20 @@ class pts
     }               // creates all points, MUST BE DONE AT INITALIZATION
 
     void empty() {
-        nv=0; 
+        nv=0;
         pv=0;
     }                                                 // empties this object
 
-    void addPt(pt P) { 
-        G[nv].setTo(P); 
-        pv=nv; 
+    void addPt(pt P) {
+        G[nv].setTo(P);
+        pv=nv;
         nv++;
     }                    // appends a point at position P
 
-    void addPt(float x, float y) { 
-        G[nv].x=x; 
-        G[nv].y=y; 
-        pv=nv; 
+    void addPt(float x, float y) {
+        G[nv].x=x;
+        G[nv].y=y;
+        pv=nv;
         nv++;
     }    // appends a point at position (x,y)
 
@@ -112,7 +112,7 @@ class pts
         stroke(blue);
         for (int a=0; a<nv/2; a++)
         {
-            fill(blue); 
+            fill(blue);
             arrow(G[2*a], G[2*a+1]);
             fill(white);
             show(G[2*a], 13);
@@ -206,20 +206,20 @@ class pts
 
     void fitToCanvas()   // translates and scales mesh to fit canvas
     {
-        float sx=100000; 
-        float sy=10000; 
-        float bx=0.0; 
+        float sx=100000;
+        float sy=10000;
+        float bx=0.0;
         float by=0.0;
         for (int i=0; i<nv; i++) {
             if (G[i].x>bx) {
                 bx=G[i].x;
-            }; 
+            };
             if (G[i].x<sx) {
                 sx=G[i].x;
             };
             if (G[i].y>by) {
                 by=G[i].y;
-            }; 
+            };
             if (G[i].y<sy) {
                 sy=G[i].y;
             };
@@ -261,12 +261,12 @@ class pts
 
     pt closestProjectionOf(pt M)
     {
-        int c=0; 
-        pt C = P(G[0]); 
+        int c=0;
+        pt C = P(G[0]);
         float d=d(M, C);
         for (int i=1; i<nv; i++) if (d(M, G[i])<d) {
-            c=i; 
-            C=P(G[i]); 
+            c=i;
+            C=P(G[i]);
             d=d(M, C);
         }
         for (int i=nv-1, j=0; j<nv; i=j++)
@@ -307,8 +307,8 @@ class pts
     float alignentAngle(pt C) { // of the perimeter
         float xx=0, xy=0, yy=0, px=0, py=0, mx=0, my=0;
         for (int i=0; i<nv; i++) {
-            xx+=(G[i].x-C.x)*(G[i].x-C.x); 
-            xy+=(G[i].x-C.x)*(G[i].y-C.y); 
+            xx+=(G[i].x-C.x)*(G[i].x-C.x);
+            xy+=(G[i].x-C.x)*(G[i].y-C.y);
             yy+=(G[i].y-C.y)*(G[i].y-C.y);
         };
         return atan2(2*xy, xx-yy)/2.;
@@ -334,11 +334,11 @@ class pts
         println("loading: "+fn);
         String [] ss = loadStrings(fn);
         String subpts;
-        int s=0;   
-        int comma, comma1, comma2;   
-        float x, y;   
+        int s=0;
+        int comma, comma1, comma2;
+        float x, y;
         int a, b, c;
-        nv = int(ss[s++]); 
+        nv = int(ss[s++]);
         print("nv="+nv);
         for (int k=0; k<nv; k++) {
             int i=k+s;

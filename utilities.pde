@@ -9,13 +9,13 @@ PImage myFace; // picture of author's face, should be: data/pic.jpg in sketch fo
 //   red=#FF0000, green=#00FF01, blue=#0300FF, yellow=#FEFF00, cyan=#00FDFF, magenta=#FF00FB, grey=#5F5F5F;
 //color dgreen=#166C03;
 color black=#000000, white=#FFFFFF, // set more colors using Menu >  Tools > Color Selector
-    red=#FF0000, green=#00FF01, dgreen=#026F0A, blue=#0300FF, yellow=#FEFF00, cyan=#00FDFF, magenta=#FF00FB, orange=#FCA41F, 
+    red=#FF0000, green=#00FF01, dgreen=#026F0A, blue=#0300FF, yellow=#FEFF00, cyan=#00FDFF, magenta=#FF00FB, orange=#FCA41F,
     brown=#AF6E0B, grey=#5F5F5F;
 
 
 // ************************************************************************ GRAPHICS
 void pen(color c, float w) {
-    stroke(c); 
+    stroke(c);
     strokeWeight(w);
 }
 void showDisk(float x, float y, float r) {
@@ -32,19 +32,19 @@ void startRecordingPDF() {
     beginRecord(PDF, "IMAGES/PICTURES_PDF/P"+nf(pictureCounter++, 3)+".pdf");
 }
 void endRecordingPDF() {
-    endRecord(); 
+    endRecord();
     recordingPDF=false;
 }
 
 boolean snapJPG=false;
 void snapPictureToJPG() {
-    saveFrame("IMAGES/PICTURES_JPG/P"+nf(pictureCounter++, 3)+".jpg"); 
+    saveFrame("IMAGES/PICTURES_JPG/P"+nf(pictureCounter++, 3)+".jpg");
     snapJPG=false;
 }
 
 boolean snapTIF=false;
 void snapPictureToTIF() {
-    saveFrame("IMAGES/PICTURES_TIF/P"+nf(pictureCounter++, 3)+".tif"); 
+    saveFrame("IMAGES/PICTURES_TIF/P"+nf(pictureCounter++, 3)+".tif");
     snapTIF=false;
 }
 
@@ -71,7 +71,7 @@ To make a movie :
  Select, but do not open, the FRAMES folder.
  Press Create Movie,
  Select the parameters you want.
- 
+
  May not work for a large canvas!
  MAKE SURE THAT YOU DELETE THE FRAMES_TIF folder in the IMAGES folder of your sketch!
  */
@@ -79,33 +79,33 @@ To make a movie :
 // ************************************************************************ TEXT
 Boolean scribeText=true; // toggle for displaying of help text
 void scribe(String S, float x, float y) {
-    fill(0); 
-    text(S, x, y); 
+    fill(0);
+    text(S, x, y);
     noFill();
 } // writes on screen at (x,y) with current fill color
-void scribeHeader(String S, int i) { 
-    text(S, 10, i*20); 
+void scribeHeader(String S, int i) {
+    text(S, 10, i*20);
     noFill();
 } // writes black at line i
 //void scribeHeaderRight(String S) {fill(0); text(S,width-7.5*S.length(),0); noFill();} // writes black on screen top, right-aligned
 void scribeHeaderRight(String S) {
-    fill(0); 
-    text(S, width-5, 0); 
+    fill(0);
+    text(S, width-5, 0);
     noFill();
 } // writes black on screen top, right-aligned
 void scribeFooter(String S, int i) {
-    fill(0); 
-    text(S, 10, height-10-i*20); 
+    fill(0);
+    text(S, 10, height-10-i*20);
     noFill();
 } // writes black on screen at line i from bottom
 void scribeAtMouse(String S) {
-    fill(0); 
-    text(S, mouseX, mouseY); 
+    fill(0);
+    text(S, mouseX, mouseY);
     noFill();
 } // writes on screen near mouse
 void scribeMouseCoordinates() {
-    fill(black); 
-    text("("+mouseX+","+mouseY+")", mouseX+7, mouseY+25); 
+    fill(black);
+    text("("+mouseX+","+mouseY+")", mouseX+7, mouseY+25);
     noFill();
 }
 void displayHeader()  // Displays title and authors face on screen

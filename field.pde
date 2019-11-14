@@ -36,7 +36,7 @@ void drawCorrectedTraceFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, i
     {
         vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
         pt Pf=P(P, s, V);
-        strokeWeight(2); 
+        strokeWeight(2);
         stroke(red);
         P=Pf;
         v(P);
@@ -60,29 +60,30 @@ int drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, 
         pt Pn=P(P, s, V);
         inTriangle = isInsideTriangle(Pn, Pa, Pb, Pc);
         if (!inTriangle) {
-            // get the intersection of the line segment made by the previous point 
+            // get the intersection of the line segment made by the previous point
             pt E1 = getIntersection(P, Pn, Pb, Pc);
             pt E2 = getIntersection(P, Pn, Pc, Pa);
             pt E3 = getIntersection(P, Pn, Pa, Pb);
+            println("intersection ", E1 == null, E2 == null, E3 == null);
             if (E1 != null && E2 == null && E3 == null) {
                 r = 1;
-                E = E1;
+                E.x = E1.x; E.y = E1.y;
             } else if (E2 != null && E3 == null && E1 == null) {
                 r = 2;
-                E = E2;
+                E.x = E2.x; E.y = E2.y;
             } else if (E3 != null && E1 == null && E2 == null) {
                 r = 3;
-                E = E3;
+                E.x = E3.x; E.y = E3.y;
             }
-            if (E != null) {
-                v(E);
-            }
-            break;
+            Pn = E;
         }
+        strokeWeight(2);
+        stroke(brown);
         v(Pn);
         P=Pn;
         i++;
     }
     endShape(POINTS);
+    println(r, "field");
     return r;
 }
