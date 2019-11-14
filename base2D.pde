@@ -124,7 +124,7 @@ void draw()      // executed at each frame
 
     // ==================== MAKE ARROWS ====================
     Aring.empty();
-    for (int i=-; i<P.nv; i+=-4) {
+    for (int i=0; i<P.nv; i+=2) {
         Aring.addArrow(P.G[i], V(P.G[i], P.G[i+1]));
     }
 
@@ -179,56 +179,58 @@ void draw()      // executed at each frame
         int corner = -1;
         for (int t = 0; t < M.nt; t++) {
             // Get the three vertices for the triangle
-            pt a = M.g(3*t);
-            pt b = M.g(3*t + 1);
-            pt c = M.g(3*t + 2);
-            if (isInsideTriangle(Pm, a, b, c)) {
-                Pa = a;
-                Pb = b;
-                Pc = c;
-                Va = M.f(3*t);
-                Vb = M.f(3*t + 1);
-                Vc = M.f(3*t + 2);
-                corner = t;
-                break;
-            }
+          int cor = 3 * t;
+          pt a = M.g(cor);
+          pt b = M.g(M.n(cor));
+          pt c = M.g(M.n(M.n(cor)));
+          if (isInsideTriangle(Pm, a, b, c)) {
+            Pa = a;
+            Pb = b;
+            Pc = c;
+            corner = t;
+            Va = M.f(cor);
+            Vb = M.f(M.n(cor));
+            Vc = M.f(M.n(M.n(cor)));
+            break;
+          }
         }
+
         int covered = 0;
         if (corner != -1) {
 
-            pt S = Pm, E = P();
-            int e = -1;
-            while (e != 0) {
-                e = drawCorrectedTraceInTriangleFrom(S, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, E);
-                println("exit", e, ++covered);
-                if (e == 1) {//b
-                    int c = 3*corner+1;
-                    corner = M.o(c) - (M.o(c)%3);
-                } else if (e == 2) {//c
-                    int c = 3*corner+2;
-                    corner = M.o(c) - (M.o(c)%3);
-                } else if (e == 3) {//a
-                    int c = 3*corner;
-                    corner = M.o(c) - (M.o(c)%3);
-                } else {
-                    break;
-                }
-                println("corner", corner);
-                Pa = M.g(3*corner);
-                Pb = M.g(3*corner + 1);
-                Pc = M.g(3*corner + 2);
-                Va = M.f(3*corner);
-                Vb = M.f(3*corner + 1);
-                Vc = M.f(3*corner + 2);
-                S = E;
-                if (e!=0) {
-                    fill(red);
-                    show(E, 4);
-                    noFill();
-                }
+          pt S = Pm, E = P();
+          int e = -1;
+          while (e != 0) {
+            e = drawCorrectedTraceInTriangleFrom(S, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, E);
+            println("exit", e, ++covered);
+            int c = corner;
+            if (e == 1) {//b
+              c = M.n(corner);
+            } else if (e == 2) {//c
+              c = M.n(M.n(corner));
+            } else {
+              break;
             }
-            if (showLabels) showId(Pm, "M");
-            noFill();
+
+            corner = M.o(c);
+            println("corner", corner);
+            Pa = M.g(corner);
+            Pb = M.g(M.n(corner));
+            Pc = M.g(M.n(M.n(corner)));
+
+            Va = M.f(corner);
+            Vb = M.f(M.n(corner));
+            Vc = M.f(M.n(M.n(corner)));
+
+            S = E;
+            if (e!=0) {
+              fill(red);
+              show(E, 4);
+              noFill();
+            }
+          }
+          if (showLabels) showId(Pm, "M");
+          noFill();
         }
     }
 

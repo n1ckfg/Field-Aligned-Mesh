@@ -65,13 +65,13 @@ int drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, 
             pt E2 = getIntersection(P, Pn, Pc, Pa);
             pt E3 = getIntersection(P, Pn, Pa, Pb);
             println("intersection ", E1 == null, E2 == null, E3 == null);
-            if (E1 != null && E2 == null && E3 == null) {
+            if (E1 != null) {
                 r = 1;
                 E.x = E1.x; E.y = E1.y;
-            } else if (E2 != null && E3 == null && E1 == null) {
+            } else if (E2 != null) {
                 r = 2;
                 E.x = E2.x; E.y = E2.y;
-            } else if (E3 != null && E1 == null && E2 == null) {
+            } else if (E3 != null) {
                 r = 3;
                 E.x = E3.x; E.y = E3.y;
             }
