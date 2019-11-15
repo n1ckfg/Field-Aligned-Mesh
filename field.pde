@@ -45,7 +45,7 @@ void drawCorrectedTraceFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, i
 }
 
 // returns 0 if trace lies inside triangle, 1 if exited via (B,C), 2 if exited via (C,A), 3 if exited via (A,B),
-int drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s, pt E)
+int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s, pt E)
 {
     pt P=P(Q);
     beginShape();
@@ -83,6 +83,11 @@ int drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, 
         P=Pn;
         i++;
     }
+
+    int[] ret = new int[2];
+    ret[0] = r;
+    ret[1] = i;
+
     endShape(POINTS);
     println(r, "field");
     return r;

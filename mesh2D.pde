@@ -121,7 +121,7 @@ class MESH {
             pt Q = P();
             pen(brown, 3);
             noFill();
-            int exitCode = drawCorrectedTraceInTriangleFrom(P, g(c), f(c), g(n(c)), f(n(c)), g(p(c)), f(p(c)), 200, 0.1, Q);
+            // int exitCode = drawCorrectedTraceInTriangleFrom(P, g(c), f(c), g(n(c)), f(n(c)), g(p(c)), f(p(c)), 200, 0.1, Q);
             // STUDENT: ADD CODE HERE
             pen(magenta, 3);
             show(cg(c), 8);
