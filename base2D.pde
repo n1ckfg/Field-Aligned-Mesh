@@ -178,9 +178,9 @@ void draw()      // executed at each frame
         vec Vc = M.f(2);
 
         int corner = -1;
-        for (int t = 0; t < M.nt; t++) {
+        for (int t = 0; t < M.nc; t++) {
             // Get the three vertices for the triangle
-            int cor = 3 * t;
+            int cor = t;
             pt a = M.g(cor);
             pt b = M.g(M.n(cor));
             pt c = M.g(M.n(M.n(cor)));
@@ -205,7 +205,9 @@ void draw()      // executed at each frame
             int[] e = {-1, -1};
             pt S = null, E = P();
             S = P(M.g(corner), M.g(M.n(corner)));
-
+            fill(green);
+            show(S, 14);
+            noFill();
             while (e[0] != 0) {
                 //visitedT[M.t(corner)] = true;
                 e = drawCorrectedTraceInTriangleFrom(S, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, E);
@@ -229,7 +231,7 @@ void draw()      // executed at each frame
                 //}
 
                 corner = M.u(c); //swing in to the next triangle
-                println("new corner ", corner);
+                //println("new corner ", corner);
 
                 Pa = M.g(corner);
                 Pb = M.g(M.n(corner));

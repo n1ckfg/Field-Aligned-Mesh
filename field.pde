@@ -89,6 +89,6 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
     ret[1] = i;
 
     endShape(POINTS);
-    println(r, "field");
+    //println(r, "field");
     return ret;
 }
