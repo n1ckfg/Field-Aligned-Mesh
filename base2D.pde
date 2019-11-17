@@ -6,6 +6,7 @@
 import processing.pdf.*;    // to save screen shots as PDFs, does not always work: accuracy problems, stops drawing or messes up some curves !!!
 import java.awt.Toolkit;
 import java.awt.datatransfer.*;
+import java.util.Arrays;
 
 //**************************** global variables ****************************
 pts P = new pts(); // class containing array of points, used to manipulate arrows
@@ -72,7 +73,7 @@ void drawVectorField(pts control, pts grid) {
 }
 
 vec nbcProduct(vec Aprime, vec Bprime, vec Cprime, float[] nbc) {
-    return V(nbc[0] * Aprime.x + nbc[1] * Bprime.x + nbc[2] * Cprime.x,
+    return V(nbc[0] * Aprime.x + nbc[1] * Bprime.x + nbc[2] * Cprime.x, 
         nbc[0] * Aprime.y + nbc[1] * Bprime.y + nbc[2] * Cprime.y);
 }
 
@@ -179,73 +180,74 @@ void draw()      // executed at each frame
         int corner = -1;
         for (int t = 0; t < M.nt; t++) {
             // Get the three vertices for the triangle
-          int cor = 3 * t;
-          pt a = M.g(cor);
-          pt b = M.g(M.n(cor));
-          pt c = M.g(M.n(M.n(cor)));
-          if (isInsideTriangle(Pm, a, b, c)) {
-            Pa = a;
-            Pb = b;
-            Pc = c;
-            corner = t;
-            Va = M.f(cor);
-            Vb = M.f(M.n(cor));
-            Vc = M.f(M.n(M.n(cor)));
-            break;
-          }
+            int cor = 3 * t;
+            pt a = M.g(cor);
+            pt b = M.g(M.n(cor));
+            pt c = M.g(M.n(M.n(cor)));
+            if (isInsideTriangle(Pm, a, b, c)) {
+                Pa = a;
+                Pb = b;
+                Pc = c;
+                corner = t;
+                Va = M.f(cor);
+                Vb = M.f(M.n(cor));
+                Vc = M.f(M.n(M.n(cor)));
+                break;
+            }
         }
 
-        boolean visitedT[] = new boolean[M.nt];
-        boolean TrueT[] = new boolean[M.nt];
-        Arrays.fill(visitedT, false);
-        Arrays.fill(TrueT, true);
+        //boolean visitedT[] = new boolean[M.nt];
+        //boolean TrueT[] = new boolean[M.nt];
+        //Arrays.fill(visitedT, false);
+        //Arrays.fill(TrueT, true);
         if (corner != -1) {
 
-          int[] e = null;
-          pt S = null, E = P();
-          S = P(M.g(corner), M.g(M.n(corner)));
+            int[] e = {-1, -1};
+            pt S = null, E = P();
+            S = P(M.g(corner), M.g(M.n(corner)));
 
-          while (!Arrays.equals(visitedT, TrueT)) {
-            visitedT[M.t(corner)] = true;
-            e = drawCorrectedTraceInTriangleFrom(S, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, E);
-            if (e[1] < 2) // we ran for one iteration
-              visitedT[M.t(corner)] = false;
+            while (e[0] != 0) {
+                //visitedT[M.t(corner)] = true;
+                e = drawCorrectedTraceInTriangleFrom(S, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, E);
+                //if (e[1] < 2) // we ran for one iteration
+                //    visitedT[M.t(corner)] = false;
 
-            int c = corner;
-            if (e[0] == 1) {//b
-              c = M.n(corner);
-            } else if (e[0] == 2) {//c
-              c = M.p(corner);
-            } else if (e[0] == 0){
-              boolean found = false;
-              for (int i = 0; i < M.nt; i++) {
-                if (visitedT[i] == false) {
-                  found = true;
-                  break;
+                int c = corner;
+                if (e[0] == 1) {//b
+                    c = M.n(corner);
+                } else if (e[0] == 2) {//c
+                    c = M.p(corner);
+                } 
+                // else if (e[0] == 0) {
+                //    boolean found = false;
+                //    for (int i = 0; i < M.nt; i++) {
+                //        if (visitedT[i] == false) {
+                //            found = true;
+                //            break;
+                //        }
+                //    }
+                //}
+
+                corner = M.u(c); //swing in to the next triangle
+                println("new corner ", corner);
+
+                Pa = M.g(corner);
+                Pb = M.g(M.n(corner));
+                Pc = M.g(M.p(corner));
+
+                Va = M.f(corner);
+                Vb = M.f(M.n(corner));
+                Vc = M.f(M.p(corner));
+
+                S = E;
+                if (e[0] != 0) {
+                    fill(red);
+                    show(E, 4);
+                    noFill();
                 }
-              }
             }
-
-            corner = M.u(c); //swing in to the next triangle
-            println("new corner ", corner);
-
-            Pa = M.g(corner);
-            Pb = M.g(M.n(corner));
-            Pc = M.g(M.p(corner));
-
-            Va = M.f(corner);
-            Vb = M.f(M.n(corner));
-            Vc = M.f(M.p(corner));
-
-            S = E;
-            if (e!=0) {
-              fill(red);
-              show(E, 4);
-              noFill();
-            }
-          }
-          if (showLabels) showId(Pm, "M");
-          noFill();
+            if (showLabels) showId(Pm, "M");
+            noFill();
         }
     }
 
