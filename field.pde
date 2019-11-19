@@ -64,7 +64,6 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
             pt E1 = getIntersection(P, Pn, Pb, Pc);
             pt E2 = getIntersection(P, Pn, Pc, Pa);
             pt E3 = getIntersection(P, Pn, Pa, Pb);
-            println("intersection ", E1 == null, E2 == null, E3 == null);
             if (E1 != null) {
                 r = 1;
                 E.x = E1.x; E.y = E1.y;

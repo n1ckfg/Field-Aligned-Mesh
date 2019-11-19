@@ -117,6 +117,26 @@ void setup()               // executed once at the begining
     textAlign(CENTER, CENTER);
 } // end of setup
 
+pt[] fillPoints(int corner) {
+    pt[] ret = new pt[3];
+    ret[0] = M.g(corner);
+    ret[1] = M.g(M.n(corner));
+    ret[2] = M.g(M.p(corner));
+    return ret;
+}
+
+vec[] fillVectors(int corner) {
+    vec[] ret = new vec[3];
+    ret[0] = M.f(corner);
+    ret[1] = M.f(M.n(corner));
+    ret[2] = M.f(M.p(corner));
+    return ret;
+}
+
+pt midOfNext(int corner) {
+    pt ret = P(M.g(corner), M.g(M.n(corner)));
+    return ret;
+}
 //**************************** display current frame ****************************
 void draw()      // executed at each frame
 {
@@ -168,6 +188,7 @@ void draw()      // executed at each frame
     // ==================== TRACING FIELD ====================
     if (showTraceFromMouse)
     {
+        int iterations = 100;
         pt Pm = Mouse();
 
         pt Pa = M.g(0);
@@ -196,53 +217,74 @@ void draw()      // executed at each frame
             }
         }
 
-        //boolean visitedT[] = new boolean[M.nt];
-        //boolean TrueT[] = new boolean[M.nt];
-        //Arrays.fill(visitedT, false);
-        //Arrays.fill(TrueT, true);
+        println("=====================================");
+        boolean visitedT[] = new boolean[M.nt];
+        boolean TrueT[] = new boolean[M.nt];
+        Arrays.fill(visitedT, false);
+        Arrays.fill(TrueT, true);
         if (corner != -1) {
-
             int[] e = {-1, -1};
             pt S = null, E = P();
-            S = P(M.g(corner), M.g(M.n(corner)));
+            pt[] Ps = fillPoints(corner);
+            vec[] Vs = fillVectors(corner);
+            
+
+            S = midOfNext(corner);
             fill(green);
             show(S, 14);
             noFill();
-            while (e[0] != 0) {
-                //visitedT[M.t(corner)] = true;
-                e = drawCorrectedTraceInTriangleFrom(S, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.2, E);
-                //if (e[1] < 2) // we ran for one iteration
-                //    visitedT[M.t(corner)] = false;
+            for (int tr = 0; tr < M.nt; tr++) {
+                println("picked corner ", corner);
+
+                e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E);
+
+                if (e[1] > 1) {// we ran for more than iteration
+                    visitedT[M.t(corner)] = true;
+                } else {
+                    corner = M.n(corner);
+                    S = midOfNext(corner);
+                    Ps = fillPoints(corner);
+                    Vs = fillVectors(corner);
+                    e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E);
+                    if (e[1] > 1) {// we ran for more than iteration
+                        visitedT[M.t(corner)] = true;
+                    } else {
+
+                        corner = M.n(corner);
+                        S = midOfNext(corner);
+                        Ps = fillPoints(corner);
+                        Vs = fillVectors(corner);
+                        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E);
+
+                        visitedT[M.t(corner)] = true;
+                    }
+                }
+
 
                 int c = corner;
                 if (e[0] == 1) {//b
                     c = M.n(corner);
                 } else if (e[0] == 2) {//c
                     c = M.p(corner);
-                } 
-                // else if (e[0] == 0) {
-                //    boolean found = false;
-                //    for (int i = 0; i < M.nt; i++) {
-                //        if (visitedT[i] == false) {
-                //            found = true;
-                //            break;
-                //        }
-                //    }
-                //}
+                }
 
                 corner = M.u(c); //swing in to the next triangle
                 //println("new corner ", corner);
-                if (M.t(corner) == M.t(c)) {
-                    break;
+                if ((M.t(corner) == M.t(c)) || 
+                    (e[0] == 0) ||
+                    (visitedT[M.t(corner)])) { // check if outside 
+                    for (int i = 0; i < M.nt; i++) {
+                        if (visitedT[i] == false) {
+                            corner = 3 * i;
+                            break;
+                        }
+                    }
+                    
+                    E = midOfNext(corner);;
                 }
 
-                Pa = M.g(corner);
-                Pb = M.g(M.n(corner));
-                Pc = M.g(M.p(corner));
-
-                Va = M.f(corner);
-                Vb = M.f(M.n(corner));
-                Vc = M.f(M.p(corner));
+                Ps = fillPoints(corner);
+                Vs = fillVectors(corner);
 
                 S = E;
                 if (e[0] != 0) {
@@ -251,6 +293,7 @@ void draw()      // executed at each frame
                     noFill();
                 }
             }
+
             if (showLabels) showId(Pm, "M");
             noFill();
         }
