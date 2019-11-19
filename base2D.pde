@@ -232,6 +232,9 @@ void draw()      // executed at each frame
 
                 corner = M.u(c); //swing in to the next triangle
                 //println("new corner ", corner);
+                if (M.t(corner) == M.t(c)) {
+                    break;
+                }
 
                 Pa = M.g(corner);
                 Pb = M.g(M.n(corner));
