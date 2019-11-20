@@ -1,12 +1,23 @@
 // PLANAR TRIANGLE MESH
 // Jarek Rossignac, Nov 6, 2019
 
+float eps = 0.01;
+
+public static int indexOf(int needle, int[] haystack)
+{
+    for (int i=0; i<haystack.length; i++)
+    {
+        if (haystack[i] == needle) return i;
+    }
+    return -1;
+}
+
 class MESH {
     // VERTICES
     int nv=0, maxnv = 1000;
     pt[] G = new pt [maxnv];   // location of vertex
     vec[] F = new vec [maxnv]; // vector at vertex
-
+    vec[] FCopy = new vec [maxnv]; 
     // TRIANGLES
     int nt = 0, maxnt = maxnv*2;
     boolean[] isInterior = new boolean[maxnv];
@@ -48,6 +59,60 @@ class MESH {
         G[nv].setTo(A);
         F[nv++].setTo(V(A, B));
     }                                             // adds a vertex to vertex table G
+
+    ArrayList<Integer> getNeighborVertices(int v) {
+        int c = M.c(v);
+        ArrayList<Integer> ret = new ArrayList<Integer>();
+        ret.add(M.n(c)); // need to check for border cases
+        while (c != M.s(c)) {
+            c = M.s(c);
+            int nextCorner = M.n(c);
+            ret.add(M.v(nextCorner));
+        } 
+        return ret;
+    }
+
+    void tuck () {
+        for (int i = 0; i < nv; i++) { 
+            vec avg = V(0, 0);
+            ArrayList<Integer> neighbors = getNeighborVertices(i);
+            for (int j = 0; j < neighbors.size(); j++) {
+                avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
+            }
+            FCopy[i] = V(avg);
+        }
+    }
+
+    void untuck () {
+        for (int i = 0; i < nv; i++) { 
+            vec avg = V(0, 0);
+            ArrayList<Integer> neighbors = getNeighborVertices(i);
+            for (int j = 0; j < neighbors.size(); j++) {
+                avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
+            }
+            FCopy[i] = W(2, F[i], -1, avg);
+        }        
+    }
+
+    void snap () {
+        for (int i = 0; i < nv; i++) {
+            if (dot(F[i], F[i]) > eps) {
+                FCopy[i] = V(F[i]);
+            }
+        }
+    }
+    
+    void completeVectorField (int max_iter) {
+        for (int iter = 0; iter < max_iter; iter++) {
+            tuck();
+            untuck();
+            snap();
+        }
+        for (int i = 0; i < nv; i++) {
+            F[i] = V(FCopy[i]);
+        }
+    }
+
     void loadFromPTS(pts P) {
         int n=P.nv;
         nv=0;
@@ -67,6 +132,9 @@ class MESH {
         int r=3*int(c/3)+(c+2)%3;
         return(r);
     }         // previous corner
+    int c (int v) {
+        return indexOf(v, V);
+    }
     int v (int c) {
         return V[c];
     }                                // vertex of c
@@ -215,7 +283,7 @@ class MESH {
     void showCorner(int c, float r) {
         // if (bord(c)) show(cg(c), 1.5*r);
         // else show(cg(c), r);
-      label(cg(c), str(c));
+        label(cg(c), str(c));
     };   // renders corner c
     void showCorners(float r)
     {
