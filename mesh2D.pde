@@ -61,10 +61,10 @@ class MESH {
     }                                             // adds a vertex to vertex table G
 
     ArrayList<Integer> getNeighborVertices(int v) {
-        int c = M.c(v);
+        int s = M.c(v), c = M.c(v);
         ArrayList<Integer> ret = new ArrayList<Integer>();
         ret.add(M.n(c)); // need to check for border cases
-        while (c != M.s(c)) {
+        while (s != M.s(c)) {
             c = M.s(c);
             int nextCorner = M.n(c);
             ret.add(M.v(nextCorner));
@@ -72,25 +72,25 @@ class MESH {
         return ret;
     }
 
-    void tuck () {
+    void tuck (float alpha) {
         for (int i = 0; i < nv; i++) { 
             vec avg = V(0, 0);
             ArrayList<Integer> neighbors = getNeighborVertices(i);
             for (int j = 0; j < neighbors.size(); j++) {
                 avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
             }
-            FCopy[i] = V(avg);
+            FCopy[i] = W(FCopy[i], W(alpha, avg));
         }
     }
 
-    void untuck () {
+    void untuck (float alpha) {
         for (int i = 0; i < nv; i++) { 
             vec avg = V(0, 0);
             ArrayList<Integer> neighbors = getNeighborVertices(i);
             for (int j = 0; j < neighbors.size(); j++) {
                 avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
             }
-            FCopy[i] = W(2, F[i], -1, avg);
+            FCopy[i] = W(FCopy[i], W(-1*alpha, avg));
         }        
     }
 
@@ -102,10 +102,10 @@ class MESH {
         }
     }
     
-    void completeVectorField (int max_iter) {
+    void completeVectorField (int max_iter, float alpha) {
         for (int iter = 0; iter < max_iter; iter++) {
-            tuck();
-            untuck();
+            tuck(alpha);
+            untuck(alpha);
             snap();
         }
         for (int i = 0; i < nv; i++) {
