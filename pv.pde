@@ -141,6 +141,9 @@ class pt
         label(s, 5, 4);
         return this;
     };
+    String toString() {
+      return String.format("x: %f, y: %f", x, y);
+    }
 } // end of pt class
 
 
@@ -271,6 +274,9 @@ class vec
     void label(String s, pt P) {
         P(P).add(0.5, this).add(3, R(U(this))).label(s);
     };
+    String toString() {
+      return String.format("x: %f, y: %f", x, y);
+    }
 } // end vec class
 
 

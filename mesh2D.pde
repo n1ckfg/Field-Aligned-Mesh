@@ -2,14 +2,6 @@
 // Jarek Rossignac, Nov 6, 2019
 
 float eps = 0.01;
-public static Random rand = new Random();
-
-public static int randInt(int min, int max) {
-    
-    int randomNum = rand.nextInt((max - min) + 1) + min;
-
-    return randomNum;
-}
 
 public static int indexOf(int needle, int[] haystack)
 {
@@ -25,7 +17,9 @@ class MESH {
     int nv=0, maxnv = 1000;
     pt[] G = new pt [maxnv];   // location of vertex
     vec[] F = new vec [maxnv]; // vector at vertex
-    vec[] FCopy = new vec [maxnv]; 
+    ArrayList<Integer> constrainedIndices = new ArrayList<Integer>();
+    ArrayList<vec> constrainedVectors = new ArrayList<vec>();
+
     // TRIANGLES
     int nt = 0, maxnt = maxnv*2;
     boolean[] isInterior = new boolean[maxnv];
@@ -40,7 +34,6 @@ class MESH {
         for (int i=0; i<maxnv; i++) {
             G[i]=P();
             F[i]=V();
-            FCopy[i]=V();
         }
     }; // declare all points and vectors
     void reset() {
@@ -67,7 +60,6 @@ class MESH {
     void addVertexPVfromPP(pt A, pt B) {
         G[nv].setTo(A);
         F[nv++].setTo(V(A, B));
-        FCopy[nv].setTo(V(A, B));
     }                                             // adds a vertex to vertex table G
 
     ArrayList<Integer> getNeighborVertices(int v) {
@@ -78,64 +70,68 @@ class MESH {
             c = M.s(c);
             int nextCorner = M.n(c);
             ret.add(M.v(nextCorner));
-        } 
+        }
         return ret;
     }
 
-    void tuck (float alpha) {
-        for (int i = 0; i < nv; i++) { 
-            vec avg = V(0, 0);
-            ArrayList<Integer> neighbors = getNeighborVertices(i);
-            for (int j = 0; j < neighbors.size(); j++) {
-                avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
-            }
-            FCopy[i] = W(FCopy[i], W(alpha, avg));
+    void tuck (vec[] FCopy, float alpha) {
+      for (int i = 0; i < nv; i++) {
+        vec avg = V(0, 0);
+        ArrayList<Integer> neighbors = getNeighborVertices(i);
+        for (int j = 0; j < neighbors.size(); j++) {
+          avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
         }
+        FCopy[i] = W(FCopy[i], W(alpha, avg));
+      }
     }
 
-    void untuck (float alpha) {
-        for (int i = 0; i < nv; i++) { 
+    void untuck (vec[] FCopy, float alpha) {
+        for (int i = 0; i < nv; i++) {
             vec avg = V(0, 0);
             ArrayList<Integer> neighbors = getNeighborVertices(i);
             for (int j = 0; j < neighbors.size(); j++) {
                 avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
             }
+
             FCopy[i] = W(FCopy[i], W(-1*alpha, avg));
         }
     }
 
-    void snap (ArrayList<Integer> toSnap, ArrayList<vec> originals) {
-        for (int i = 0; i < toSnap.size(); i++) {
-            FCopy[toSnap.get(i)] = V(originals.get(i));
+    void snap (vec[] FCopy) {
+        for (int i = 0; i < constrainedIndices.size(); i++) {
+            FCopy[constrainedIndices.get(i)] = V(constrainedVectors.get(i));
         }
     }
-    
-    void crippleVectorField (float fraction) {
-        println("crippling vector field");
-        for (int i = 0; i < nv*fraction; i++) {
-            int inx = randInt(0, nv);
-            F[inx] = V(0, 0);
-            println("crippled vector", inx, F[inx].x, F[inx].y);
+
+    void generateConstrainedVectors() {
+      // fix the seed to generate the same set of random numbers
+      java.util.Random rnd = new java.util.Random(10);
+      for (int i = 0; i < nv; i++) {
+        if (rnd.nextDouble() < 0.6) {
+          constrainedIndices.add(i);
+          constrainedVectors.add(V(F[i]));
+        } else {
+          F[i] = V(0, 0);
         }
+      }
     }
 
     void completeVectorField (int max_iter, float alpha) {
         println("completing vector field");
-        ArrayList<Integer> toSnap = new ArrayList<Integer>();
-        ArrayList<vec> originals = new ArrayList<vec>();
-        for (int i = 0; i < nv; i++) {
-            if (dot(F[i], F[i]) > eps) {
-                toSnap.add(i);
-                originals.add(V(F[i]));
-            }
-        }
+        vec[] FCopy = new vec[nv];
         for (int iter = 0; iter < max_iter; iter++) {
-            tuck(alpha);
-            untuck(alpha);
-            snap(toSnap, originals);
-            for (int i = 0; i < nv; i++) {
-                F[i] = V(FCopy[i]);
-            }
+          for (int i = 0; i < nv; i++) {
+            FCopy[i] = V(F[i]);
+          }
+
+          tuck(FCopy, alpha);
+          untuck(FCopy, alpha);
+          snap(FCopy);
+
+          for (int i = 0; i < nv; i++) {
+            F[i] = V(FCopy[i]);
+            println(String.format("updated f %d: %s\n", i, F[i]));
+          }
         }
     }
 

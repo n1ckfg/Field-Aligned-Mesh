@@ -24,7 +24,14 @@ int refineCounter = 6;
 int f=0, df=int(pow(2, refineCounter));
 float ft=0;
 PFont bigFont; // for showing large labels at corner
-boolean showFine=false, showTraceFromMouse=false, showMesh=true, showFirstField=false, showTriangles=true;
+boolean
+  showFine=false,
+  showTraceFromMouse=false,
+  showMesh=true,
+  showFirstField=false,
+  completeVectorField=false,
+  showTriangles=true;
+
 int exitThrough=0;
 MESH M = new MESH();
 int cc=0; // current corner (saved, since we rebuild M at each frame)
@@ -163,7 +170,6 @@ void draw()      // executed at each frame
         cc=M.c;
         M.reset();
         M.loadFromPTS(P); // loads vertices and field vectors from the sequence P of po=oints
-        // pen(blue,2); M.drawArrows();
         M.triangulate();
         M.computeO();
         M.classifyVertices();
@@ -184,6 +190,13 @@ void draw()      // executed at each frame
         int fbc = M.firstBorderCorner();
         pen(brown, 3);
         M.tracePathFromMidEdgeFacingCorner(fbc);
+
+        if (completeVectorField) {
+          M.generateConstrainedVectors();
+          M.completeVectorField(100, 0.1);
+        }
+
+        pen(blue,2); M.drawArrows();
     }
 
     // ==================== TRACING FIELD ====================
@@ -386,11 +399,6 @@ void draw()      // executed at each frame
         scribeHeader("exitThrough code = "+exitThrough, 1);
         textAlign(CENTER, CENTER);
     }
-
-    // ==================== DRAW ARROWS BETWEEN CONSECUTIVE POINTS OF P ====================
-    fill(black);
-    stroke(black);
-    if (showKeyArrow) P.drawArrows(); // draws all control arrows
 
     // ==================== SHOW POINTER AT MOUSE ====================
     pt End = P(Mouse(), 1, V(-2, 3)), Start = P(End, 20, V(-2, 3)); // show semi-opaque grey arrow pointing to mouse location (useful for demos and videos)
