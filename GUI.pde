@@ -34,11 +34,11 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if (key=='a') ;// used to insert one more arrow //{animate=!animate; if(!animate) ft=f;}
     if (key=='b') ;
     if (key=='c') cubic=!cubic;
-    if (key=='d') ;
+    if (key=='d') M.crippleVectorField(0.3);
     if (key=='e') showFine=!showFine;
     if (key=='f') showFirstField=!showFirstField;
     if (key=='g') ;
-    if (key=='h') ;
+    if (key=='h') M.completeVectorField(100, 0.1);
     if (key=='i') ;
     if (key=='j') ;
     if (key=='k') ;

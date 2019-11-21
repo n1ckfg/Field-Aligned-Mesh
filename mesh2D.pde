@@ -2,6 +2,14 @@
 // Jarek Rossignac, Nov 6, 2019
 
 float eps = 0.01;
+public static Random rand = new Random();
+
+public static int randInt(int min, int max) {
+    
+    int randomNum = rand.nextInt((max - min) + 1) + min;
+
+    return randomNum;
+}
 
 public static int indexOf(int needle, int[] haystack)
 {
@@ -32,6 +40,7 @@ class MESH {
         for (int i=0; i<maxnv; i++) {
             G[i]=P();
             F[i]=V();
+            FCopy[i]=V();
         }
     }; // declare all points and vectors
     void reset() {
@@ -58,6 +67,7 @@ class MESH {
     void addVertexPVfromPP(pt A, pt B) {
         G[nv].setTo(A);
         F[nv++].setTo(V(A, B));
+        FCopy[nv].setTo(V(A, B));
     }                                             // adds a vertex to vertex table G
 
     ArrayList<Integer> getNeighborVertices(int v) {
@@ -99,8 +109,18 @@ class MESH {
             FCopy[toSnap.get(i)] = V(originals.get(i));
         }
     }
+    
+    void crippleVectorField (float fraction) {
+        println("crippling vector field");
+        for (int i = 0; i < nv*fraction; i++) {
+            int inx = randInt(0, nv);
+            F[inx] = V(0, 0);
+            println("crippled vector", inx, F[inx].x, F[inx].y);
+        }
+    }
 
     void completeVectorField (int max_iter, float alpha) {
+        println("completing vector field");
         ArrayList<Integer> toSnap = new ArrayList<Integer>();
         ArrayList<vec> originals = new ArrayList<vec>();
         for (int i = 0; i < nv; i++) {

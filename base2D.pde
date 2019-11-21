@@ -7,6 +7,7 @@ import processing.pdf.*;    // to save screen shots as PDFs, does not always wor
 import java.awt.Toolkit;
 import java.awt.datatransfer.*;
 import java.util.Arrays;
+import java.util.Random;
 
 //**************************** global variables ****************************
 pts P = new pts(); // class containing array of points, used to manipulate arrows
