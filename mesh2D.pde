@@ -91,25 +91,31 @@ class MESH {
                 avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
             }
             FCopy[i] = W(FCopy[i], W(-1*alpha, avg));
-        }        
-    }
-
-    void snap () {
-        for (int i = 0; i < nv; i++) {
-            if (dot(F[i], F[i]) > eps) {
-                FCopy[i] = V(F[i]);
-            }
         }
     }
-    
+
+    void snap (ArrayList<Integer> toSnap, ArrayList<vec> originals) {
+        for (int i = 0; i < toSnap.size(); i++) {
+            FCopy[toSnap.get(i)] = V(originals.get(i));
+        }
+    }
+
     void completeVectorField (int max_iter, float alpha) {
+        ArrayList<Integer> toSnap = new ArrayList<Integer>();
+        ArrayList<vec> originals = new ArrayList<vec>();
+        for (int i = 0; i < nv; i++) {
+            if (dot(F[i], F[i]) > eps) {
+                toSnap.add(i);
+                originals.add(V(F[i]));
+            }
+        }
         for (int iter = 0; iter < max_iter; iter++) {
             tuck(alpha);
             untuck(alpha);
-            snap();
-        }
-        for (int i = 0; i < nv; i++) {
-            F[i] = V(FCopy[i]);
+            snap(toSnap, originals);
+            for (int i = 0; i < nv; i++) {
+                F[i] = V(FCopy[i]);
+            }
         }
     }
 
