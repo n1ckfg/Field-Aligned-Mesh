@@ -63,34 +63,52 @@ class MESH {
     }                                             // adds a vertex to vertex table G
 
     ArrayList<Integer> getNeighborVertices(int v) {
-        int s = M.c(v), c = M.c(v);
+        int s = c(v), c = c(v);
         ArrayList<Integer> ret = new ArrayList<Integer>();
-        ret.add(M.n(c)); // need to check for border cases
-        while (s != M.s(c)) {
-            c = M.s(c);
-            int nextCorner = M.n(c);
-            ret.add(M.v(nextCorner));
+        ret.add(n(c)); // need to check for border cases
+        while (s != s(c)) {
+            c = s(c);
+            int nextCorner = n(c);
+            ret.add(v(nextCorner));
         }
         return ret;
     }
 
-    void tuck (vec[] FCopy, float alpha) {
+    ArrayList<Integer>[] getVertexNeighbourMapping() {
+      ArrayList<Integer>[] vnm = (ArrayList<Integer>[]) new ArrayList[nv];
+      for (int i = 0; i < nv; i++) {
+        vnm[i] = new ArrayList<Integer>();
+      }
+
+      for (int i = 0; i < nc; i++) {
+        vnm[v(i)].add(v(n(i)));
+
+        // In border vertices, for the corner is last in the
+        // clockwise order
+        if (v(i) != v(s(i)))
+          vnm[v(i)].add(v(s(i)));
+      }
+
+      return vnm;
+    }
+
+    void tuck (vec[] FCopy, ArrayList<Integer>[] vnm, float alpha) {
       for (int i = 0; i < nv; i++) {
         vec avg = V(0, 0);
-        ArrayList<Integer> neighbors = getNeighborVertices(i);
+        ArrayList<Integer> neighbors = vnm[i];
         for (int j = 0; j < neighbors.size(); j++) {
-          avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
+          avg = W(avg, 1/neighbors.size(), FCopy[neighbors.get(j)]);
         }
         FCopy[i] = W(FCopy[i], W(alpha, avg));
       }
     }
 
-    void untuck (vec[] FCopy, float alpha) {
+    void untuck (vec[] FCopy, ArrayList<Integer>[] vnm, float alpha) {
         for (int i = 0; i < nv; i++) {
             vec avg = V(0, 0);
-            ArrayList<Integer> neighbors = getNeighborVertices(i);
+            ArrayList<Integer> neighbors = vnm[i];
             for (int j = 0; j < neighbors.size(); j++) {
-                avg = W(avg, 1/neighbors.size(), F[neighbors.get(j)]);
+                avg = W(avg, 1/neighbors.size(), FCopy[neighbors.get(j)]);
             }
 
             FCopy[i] = W(FCopy[i], W(-1*alpha, avg));
@@ -107,7 +125,7 @@ class MESH {
       // fix the seed to generate the same set of random numbers
       java.util.Random rnd = new java.util.Random(10);
       for (int i = 0; i < nv; i++) {
-        if (rnd.nextDouble() < 0.6) {
+        if (rnd.nextDouble() < 0.9) {
           constrainedIndices.add(i);
           constrainedVectors.add(V(F[i]));
         } else {
@@ -119,19 +137,21 @@ class MESH {
     void completeVectorField (int max_iter, float alpha) {
         println("completing vector field");
         vec[] FCopy = new vec[nv];
+
+        for (int i = 0; i < nv; i++) {
+          FCopy[i] = V(F[i]);
+        }
+
+        ArrayList<Integer>[] vnm = getVertexNeighbourMapping();
         for (int iter = 0; iter < max_iter; iter++) {
-          for (int i = 0; i < nv; i++) {
-            FCopy[i] = V(F[i]);
-          }
-
-          tuck(FCopy, alpha);
-          untuck(FCopy, alpha);
+          tuck(FCopy, vnm, alpha);
+          untuck(FCopy, vnm, alpha);
           snap(FCopy);
+        }
 
-          for (int i = 0; i < nv; i++) {
-            F[i] = V(FCopy[i]);
-            println(String.format("updated f %d: %s\n", i, F[i]));
-          }
+        for (int i = 0; i < nv; i++) {
+          F[i] = V(FCopy[i]);
+          println(String.format("updated f %d: %s\n", i, F[i]));
         }
     }
 
