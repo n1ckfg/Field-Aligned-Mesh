@@ -57,7 +57,7 @@ void showDenseMesh(pt start, pt end, pt mid, pt a, pt b, pt c) {
 }
 
 // returns 0 if trace lies inside triangle, 1 if exited via (B,C), 2 if exited via (C,A), 3 if exited via (A,B),
-int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s, pt E)
+int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s, pt E, pt MT)
 {
     ArrayList<pt> tracePoints = new ArrayList<pt>();
     pt P=P(Q);
@@ -110,7 +110,12 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
         pt ep = tracePoints.get(tracePoints.size()-1);
         pt mp = tracePoints.get(tracePoints.size()/2);
         
-        showDenseMesh(sp, ep, mp, Pa, Pb, Pc);
+        MT.x = mp.x; 
+        MT.y = mp.y;
+        
+        if (showDenseMeshUI) {
+            showDenseMesh(sp, ep, mp, Pa, Pb, Pc);
+        }
     }
     
     return ret;

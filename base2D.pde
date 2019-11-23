@@ -25,14 +25,15 @@ int f=0, df=int(pow(2, refineCounter));
 float ft=0;
 PFont bigFont; // for showing large labels at corner
 boolean
-  showFine=false,
-  showTraceFromMouse=false,
-  showMesh=true,
-  showFirstField=false,
-  completeVectorField=false,
-  showTriangles=true,
-  showArrows=true,
-  showCorners=true;
+    showFine=false, 
+    showTraceFromMouse=false, 
+    showMesh=true, 
+    showFirstField=false, 
+    completeVectorField=false, 
+    showTriangles=true, 
+    showArrows=true, 
+    showDenseMeshUI=false, 
+    showCorners=true;
 
 int exitThrough=0;
 MESH M = new MESH();
@@ -196,11 +197,12 @@ void draw()      // executed at each frame
         M.tracePathFromMidEdgeFacingCorner(fbc);
 
         if (completeVectorField) {
-          M.generateConstrainedVectors();
-          M.completeVectorField(100, 0.2);
+            M.generateConstrainedVectors();
+            M.completeVectorField(100, 0.2);
         }
         if (showArrows) {
-            pen(blue,2); M.drawArrows();
+            pen(blue, 2); 
+            M.drawArrows();
         }
     }
 
@@ -239,14 +241,15 @@ void draw()      // executed at each frame
         println("=====================================");
         boolean visitedT[] = new boolean[M.nt];
         boolean TrueT[] = new boolean[M.nt];
+        pt traceMidPoints[] = new pt[M.nt];
         Arrays.fill(visitedT, false);
         Arrays.fill(TrueT, true);
         if (corner != -1) {
             int[] e = {-1, -1};
-            pt S = null, E = P();
+            pt S = null, E = P(), MT = P();
             pt[] Ps = fillPoints(corner);
             vec[] Vs = fillVectors(corner);
-            
+
 
             S = midOfNext(corner);
             //fill(green);
@@ -255,7 +258,7 @@ void draw()      // executed at each frame
             for (int tr = 0; tr < M.nt; tr++) {
                 println("picked corner ", corner);
 
-                e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E);
+                e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
 
                 if (e[1] > 1) {// we ran for more than iteration
                     visitedT[M.t(corner)] = true;
@@ -264,7 +267,7 @@ void draw()      // executed at each frame
                     S = midOfNext(corner);
                     Ps = fillPoints(corner);
                     Vs = fillVectors(corner);
-                    e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E);
+                    e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
                     if (e[1] > 1) {// we ran for more than iteration
                         visitedT[M.t(corner)] = true;
                     } else {
@@ -273,12 +276,16 @@ void draw()      // executed at each frame
                         S = midOfNext(corner);
                         Ps = fillPoints(corner);
                         Vs = fillVectors(corner);
-                        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E);
+                        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
 
+                        if (e[1] > 1) {
+                            MT = P(Ps[1], Ps[2], Ps[0]);
+                        }
                         visitedT[M.t(corner)] = true;
                     }
                 }
 
+                traceMidPoints[M.t(corner)] = P(MT);
 
                 int c = corner;
                 if (e[0] == 1) {//b
@@ -298,8 +305,9 @@ void draw()      // executed at each frame
                             break;
                         }
                     }
-                    
-                    E = midOfNext(corner);;
+
+                    E = midOfNext(corner);
+                    ;
                 }
 
                 Ps = fillPoints(corner);
@@ -315,6 +323,28 @@ void draw()      // executed at each frame
 
             if (showLabels) showId(Pm, "M");
             noFill();
+        }
+
+        stroke(red);
+        M.showBorderEdges();
+        for (int t= 0; t < M.nt; t++) {
+            pt[] Ps = fillPoints(3*t);
+            pt mid = traceMidPoints[t];
+            pt[] Ms = new pt[3];
+            Ms[0] = traceMidPoints[M.t(M.s(3*t))];
+            Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
+            Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
+
+            strokeWeight(5);
+            stroke(blue);
+            edge(mid, Ms[0]);
+            edge(mid, Ms[1]);
+            edge(mid, Ms[2]);
+            strokeWeight(2);
+            stroke(blue);
+            edge(mid, Ps[0]);
+            edge(mid, Ps[1]);
+            edge(mid, Ps[2]);
         }
     }
 

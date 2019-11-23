@@ -64,7 +64,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if (key=='D') showDisks=!showDisks;
     if (key=='E') spiralAverage=!spiralAverage;
     if (key=='F') showFixedPoint=!showFixedPoint;
-    if (key=='G') ;
+    if (key=='G') showDenseMeshUI=!showDenseMeshUI;
     if (key=='H') showHubs=!showHubs;
     if (key=='I') showArrows=!showArrows;
     if (key=='J') showCorners=!showCorners;
