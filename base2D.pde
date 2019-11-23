@@ -184,9 +184,9 @@ void draw()      // executed at each frame
         pen(black, 2);
         M.showCurrentCorner(7);
         pt Ps=M.firstBorderEdgeMidPoint();
-        pen(green, 2);
-        fill(green);
-        show(Ps, 6);
+        //pen(green, 2);
+        //fill(green);
+        //show(Ps, 6);
         int fbc = M.firstBorderCorner();
         pen(brown, 3);
         M.tracePathFromMidEdgeFacingCorner(fbc);
@@ -244,9 +244,9 @@ void draw()      // executed at each frame
             
 
             S = midOfNext(corner);
-            fill(green);
-            show(S, 14);
-            noFill();
+            //fill(green);
+            //show(S, 14);
+            //noFill();
             for (int tr = 0; tr < M.nt; tr++) {
                 println("picked corner ", corner);
 
@@ -301,11 +301,11 @@ void draw()      // executed at each frame
                 Vs = fillVectors(corner);
 
                 S = E;
-                if (e[0] != 0) {
-                    fill(red);
-                    show(E, 4);
-                    noFill();
-                }
+                //if (e[0] != 0) {
+                //    fill(red);
+                //    show(E, 4);
+                //    noFill();
+                //}
             }
 
             if (showLabels) showId(Pm, "M");
