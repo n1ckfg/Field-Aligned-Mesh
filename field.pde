@@ -44,12 +44,26 @@ void drawCorrectedTraceFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, i
     endShape(POINTS);
 }
 
+void showDenseMesh(pt start, pt end, pt mid, pt a, pt b, pt c) {
+    strokeWeight(5);
+    stroke(blue);
+    edge(start, mid);
+    edge(mid, end);
+    strokeWeight(2);
+    stroke(blue);
+    edge(mid, a);
+    edge(mid, b);
+    edge(mid, c);
+}
+
 // returns 0 if trace lies inside triangle, 1 if exited via (B,C), 2 if exited via (C,A), 3 if exited via (A,B),
 int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s, pt E)
 {
+    ArrayList<pt> tracePoints = new ArrayList<pt>();
     pt P=P(Q);
     beginShape();
     v(P);
+    tracePoints.add(P);
     int i=0;
     boolean inTriangle=true;
     int r=0;
@@ -79,6 +93,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
         strokeWeight(2);
         stroke(brown);
         v(Pn);
+        tracePoints.add(P);
         P=Pn;
         i++;
     }
@@ -89,5 +104,14 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
 
     endShape(POINTS);
     //println(r, "field");
+    
+    if (ret[1] > 1) {
+        pt sp = tracePoints.get(0);
+        pt ep = tracePoints.get(tracePoints.size()-1);
+        pt mp = tracePoints.get(tracePoints.size()/2);
+        
+        showDenseMesh(sp, ep, mp, Pa, Pb, Pc);
+    }
+    
     return ret;
 }
