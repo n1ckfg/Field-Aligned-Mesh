@@ -30,7 +30,9 @@ boolean
   showMesh=true,
   showFirstField=false,
   completeVectorField=false,
-  showTriangles=true;
+  showTriangles=true,
+  showArrows=true,
+  showCorners=true;
 
 int exitThrough=0;
 MESH M = new MESH();
@@ -179,7 +181,9 @@ void draw()      // executed at each frame
         stroke(red);
         M.showBorderEdges();
         M.c=cc;
-        M.showCorners(3);
+        if (showCorners) {
+            M.showCorners(3);
+        }
         noFill();
         pen(black, 2);
         M.showCurrentCorner(7);
@@ -195,8 +199,9 @@ void draw()      // executed at each frame
           M.generateConstrainedVectors();
           M.completeVectorField(100, 0.2);
         }
-
-        pen(blue,2); M.drawArrows();
+        if (showArrows) {
+            pen(blue,2); M.drawArrows();
+        }
     }
 
     // ==================== TRACING FIELD ====================

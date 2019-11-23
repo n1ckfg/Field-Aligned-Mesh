@@ -66,8 +66,8 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if (key=='F') showFixedPoint=!showFixedPoint;
     if (key=='G') ;
     if (key=='H') showHubs=!showHubs;
-    if (key=='I') ;
-    if (key=='J') ;
+    if (key=='I') showArrows=!showArrows;
+    if (key=='J') showCorners=!showCorners;
     if (key=='K') showKeyArrow=!showKeyArrow;
     if (key=='L') {
         P.loadPts("data/pts");
