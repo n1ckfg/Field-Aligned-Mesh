@@ -573,7 +573,7 @@ vec W(vec U, vec V) {
     return V(U.x+V.x, U.y+V.y);
 }                                                   // U+V
 vec W(vec U, float s, vec V) {
-    return W(U, S(s, V));
+    return W(U, W(s, V));
 }                                                   // U+sV
 vec W(float u, vec U, float v, vec V) {
     return W(S(u, U), S(v, V));
