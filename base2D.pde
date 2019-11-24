@@ -34,6 +34,8 @@ boolean
     showArrows=true, 
     showDenseMeshUI=false, 
     showCorners=true;
+    
+pts GRID = new pts();
 
 int exitThrough=0;
 MESH M = new MESH();
@@ -166,6 +168,9 @@ void draw()      // executed at each frame
     else f=(floor(ft)+tm)%(tm);
     float tt = float(f)/tm;
     t=(1.-cos(tt*TWO_PI))/2;
+    
+    fillGrid(GRID);
+    drawVectorField(P, GRID);
 
     // ==================== TRIANGLE MESH ====================
     if (showMesh)
