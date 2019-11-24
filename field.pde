@@ -11,10 +11,13 @@ vec getVector(pt P, int t) {
     return VecAt(P, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2]);
 }
 
-int getStrokeWeight(vec v1, vec v2, vec v3) {
+int getStrokeWeight(vec v1, vec v2, vec v3, int type) {
     float s = dot(U(v1), U(v3));
     float e = dot(U(v2), U(v3));
-    if (s > 0.8 || e > 0.8) {
+    if (type == 0 && (s > 0.8 || e > 0.8)) {
+        return 5;
+    } 
+    if (type == 1 && s > 0.9 && e > 0.9) {
         return 5;
     }
     return 2;

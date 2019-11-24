@@ -255,24 +255,24 @@ void draw()      // executed at each frame
                     if (mid != null) {
                         if (Ms[0] != null) {
                             //print(midvec, Mv[0], V(mid, Ms[0]));
-                            pen(blue, getStrokeWeight(midvec, Mv[0], V(mid, Ms[0])));
+                            pen(blue, getStrokeWeight(midvec, Mv[0], V(mid, Ms[0]), 0));
                             edge(mid, Ms[0]);
                         }
                         if (Ms[1] != null) {
                             //print(midvec, Mv[1], V(mid, Ms[1]));
-                            pen(blue, getStrokeWeight(midvec, Mv[1], V(mid, Ms[1])));
+                            pen(blue, getStrokeWeight(midvec, Mv[1], V(mid, Ms[1]), 0));
                             edge(mid, Ms[1]);
                         }
                         if (Ms[2] != null) {
                             //print(midvec, Mv[2], V(mid, Ms[2]));
-                            pen(blue, getStrokeWeight(midvec, Mv[2], V(mid, Ms[2])));
+                            pen(blue, getStrokeWeight(midvec, Mv[2], V(mid, Ms[2]),0));
                             edge(mid, Ms[2]);
                         }
-                        pen(blue, 2);
+                        pen(blue, getStrokeWeight(midvec, Vs[0], V(mid, Ps[0]), 1));
                         edge(mid, Ps[0]);
-                        pen(blue, 2);
+                        pen(blue, getStrokeWeight(midvec, Vs[1], V(mid, Ps[1]), 1));
                         edge(mid, Ps[1]);
-                        pen(blue, 2);
+                        pen(blue, getStrokeWeight(midvec, Vs[2], V(mid, Ps[2]), 1));
                         edge(mid, Ps[2]);
                     }
                 }
