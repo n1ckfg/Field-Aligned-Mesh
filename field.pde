@@ -120,3 +120,99 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
     
     return ret;
 }
+
+pt[] fillPoints(int corner) {
+  pt[] ret = new pt[3];
+  ret[0] = M.g(corner);
+  ret[1] = M.g(M.n(corner));
+  ret[2] = M.g(M.p(corner));
+  return ret;
+}
+
+vec[] fillVectors(int corner) {
+  vec[] ret = new vec[3];
+  ret[0] = M.f(corner);
+  ret[1] = M.f(M.n(corner));
+  ret[2] = M.f(M.p(corner));
+  return ret;
+}
+
+pt midOfNext(int corner) {
+  pt ret = P(M.g(corner), M.g(M.n(corner)));
+  return ret;
+}
+
+pt[] TraceMeshStartingFrom(int corner) {
+  boolean visitedT[] = new boolean[M.nt];
+  boolean TrueT[] = new boolean[M.nt];
+  pt traceMidPoints[] = new pt[M.nt];
+  int iterations = 100;
+  Arrays.fill(visitedT, false);
+  Arrays.fill(TrueT, true);
+
+  int[] e = {-1, -1};
+  pt S = null, E = P(), MT = P();
+  pt[] Ps = fillPoints(corner);
+  vec[] Vs = fillVectors(corner);
+
+  S = midOfNext(corner);
+  for (int tr = 0; tr < M.nt; tr++) {
+    MT = P();
+
+    e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
+    if (e[1] > 1) {// we ran for more than iteration
+      visitedT[M.t(corner)] = true;
+    } else {
+      corner = M.n(corner);
+      S = midOfNext(corner);
+      Ps = fillPoints(corner);
+      Vs = fillVectors(corner);
+      e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
+      if (e[1] > 1) {// we ran for more than iteration
+        visitedT[M.t(corner)] = true;
+      } else {
+
+        corner = M.n(corner);
+        S = midOfNext(corner);
+        Ps = fillPoints(corner);
+        Vs = fillVectors(corner);
+        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
+
+        if (e[1] < 2) {
+          MT = null;
+        }
+        visitedT[M.t(corner)] = true;
+      }
+    }
+
+    traceMidPoints[M.t(corner)] = MT;
+
+    int c = corner;
+    if (e[0] == 1) {//b
+      c = M.n(corner);
+    } else if (e[0] == 2) {//c
+      c = M.p(corner);
+    }
+
+    corner = M.u(c); //unswing into the next triangle
+    if ((M.t(corner) == M.t(c)) ||
+        (e[0] == 0) ||
+        (visitedT[M.t(corner)])) { // check if outside
+      for (int i = 0; i < M.nt; i++) {
+        if (visitedT[i] == false) {
+          corner = 3 * i;
+          break;
+        }
+      }
+
+      E = midOfNext(corner);
+    }
+
+    Ps = fillPoints(corner);
+    Vs = fillVectors(corner);
+
+    S = E;
+  }
+
+  return traceMidPoints;
+}

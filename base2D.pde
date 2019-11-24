@@ -152,26 +152,6 @@ void setup()               // executed once at the begining
     fillGrid(GRID);
 } // end of setup
 
-pt[] fillPoints(int corner) {
-    pt[] ret = new pt[3];
-    ret[0] = M.g(corner);
-    ret[1] = M.g(M.n(corner));
-    ret[2] = M.g(M.p(corner));
-    return ret;
-}
-
-vec[] fillVectors(int corner) {
-    vec[] ret = new vec[3];
-    ret[0] = M.f(corner);
-    ret[1] = M.f(M.n(corner));
-    ret[2] = M.f(M.p(corner));
-    return ret;
-}
-
-pt midOfNext(int corner) {
-    pt ret = P(M.g(corner), M.g(M.n(corner)));
-    return ret;
-}
 //**************************** display current frame ****************************
 void draw()      // executed at each frame
 {
@@ -233,156 +213,53 @@ void draw()      // executed at each frame
     drawVectorField(GRID);
 
     // ==================== TRACING FIELD ====================
-    if (showTraceFromMouse)
-    {
-        int iterations = 100;
-        pt Pm = Mouse();
+    if (showTraceFromMouse) {
 
-        pt Pa = M.g(0);
-        pt Pb = M.g(1);
-        pt Pc = M.g(2);
-        vec Va = M.f(0);
-        vec Vb = M.f(1);
-        vec Vc = M.f(2);
+        pt Pm = Mouse();
+        pt[] Ps = null;
 
         int corner = -1;
         for (int t = 0; t < M.nc; t++) {
             // Get the three vertices for the triangle
-            int cor = t;
-            pt a = M.g(cor);
-            pt b = M.g(M.n(cor));
-            pt c = M.g(M.n(M.n(cor)));
+            pt a = M.g(t);
+            pt b = M.g(M.n(t));
+            pt c = M.g(M.n(M.n(t)));
             if (isInsideTriangle(Pm, a, b, c)) {
-                Pa = a;
-                Pb = b;
-                Pc = c;
                 corner = t;
-                Va = M.f(cor);
-                Vb = M.f(M.n(cor));
-                Vc = M.f(M.n(M.n(cor)));
                 break;
             }
         }
-
-        boolean visitedT[] = new boolean[M.nt];
-        boolean TrueT[] = new boolean[M.nt];
-        pt traceMidPoints[] = new pt[M.nt];
-        Arrays.fill(visitedT, false);
-        Arrays.fill(TrueT, true);
+        pt traceMidPoints[] = null;
         if (corner != -1) {
-            int[] e = {-1, -1};
-            pt S = null, E = P(), MT = P();
-            pt[] Ps = fillPoints(corner);
-            vec[] Vs = fillVectors(corner);
+          traceMidPoints = TraceMeshStartingFrom(corner);
 
+          if (showLabels) showId(Pm, "M");
+          noFill();
 
-            S = midOfNext(corner);
-            //fill(green);
-            //show(S, 14);
-            //noFill();
-            for (int tr = 0; tr < M.nt; tr++) {
-                //println("picked corner ", corner);
-                MT = P();
+          stroke(red);
+          M.showBorderEdges();
+          for (int t= 0; t < M.nt; t++) {
+            Ps = fillPoints(3*t);
+            pt mid = traceMidPoints[t];
+            pt[] Ms = new pt[3];
+            Ms[0] = traceMidPoints[M.t(M.s(3*t))];
+            Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
+            Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
 
-                e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
-
-                if (e[1] > 1) {// we ran for more than iteration
-                    visitedT[M.t(corner)] = true;
-                } else {
-                    corner = M.n(corner);
-                    S = midOfNext(corner);
-                    Ps = fillPoints(corner);
-                    Vs = fillVectors(corner);
-                    e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
-                    if (e[1] > 1) {// we ran for more than iteration
-                        visitedT[M.t(corner)] = true;
-                    } else {
-
-                        corner = M.n(corner);
-                        S = midOfNext(corner);
-                        Ps = fillPoints(corner);
-                        Vs = fillVectors(corner);
-                        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
-
-                        if (e[1] < 2) {
-                            MT = null;
-                        }
-                        visitedT[M.t(corner)] = true;
-                    }
-                }
-
-                traceMidPoints[M.t(corner)] = MT;
-
-                int c = corner;
-                if (e[0] == 1) {//b
-                    c = M.n(corner);
-                } else if (e[0] == 2) {//c
-                    c = M.p(corner);
-                }
-
-                corner = M.u(c); //swing in to the next triangle
-                //println("new corner ", corner);
-                if ((M.t(corner) == M.t(c)) || 
-                    (e[0] == 0) ||
-                    (visitedT[M.t(corner)])) { // check if outside 
-                    for (int i = 0; i < M.nt; i++) {
-                        if (visitedT[i] == false) {
-                            corner = 3 * i;
-                            break;
-                        }
-                    }
-
-                    E = midOfNext(corner);
-                }
-
-                Ps = fillPoints(corner);
-                Vs = fillVectors(corner);
-
-                S = E;
-                //if (e[0] != 0) {
-                //    fill(red);
-                //    show(E, 4);
-                //    noFill();
-                //}
+            if (mid != null) {
+              pen(blue, 5);
+              if (Ms[0] != null)
+                edge(mid, Ms[0]);
+              if (Ms[1] != null)
+                edge(mid, Ms[1]);
+              if (Ms[2] != null)
+                edge(mid, Ms[2]);
+              pen(blue, 2);
+              edge(mid, Ps[0]);
+              edge(mid, Ps[1]);
+              edge(mid, Ps[2]);
             }
-
-            if (showLabels) showId(Pm, "M");
-            noFill();
-
-            stroke(red);
-            if (showFAM) {
-                M.showBorderEdges();
-                for (int t= 0; t < M.nt; t++) {
-                    Ps = fillPoints(3*t);
-                    Vs = fillVectors(3*t);
-                    pt mid = traceMidPoints[t];
-                    pt[] Ms = new pt[3];
-                    vec[] Mv = new vec[3];
-                    Ms[0] = traceMidPoints[M.t(M.s(3*t))];
-                    Mv[0] = 
-                    Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
-                    Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
-
-                    if (mid != null) {
-                        if (Ms[0] != null) {
-                            pen(blue, 5);
-                            edge(mid, Ms[0]);
-                        }
-                        if (Ms[1] != null) {
-                            pen(blue, 5);
-                            edge(mid, Ms[1]);
-                        }
-                        if (Ms[2] != null) {
-                            pen(blue, 5);
-                            edge(mid, Ms[2]);
-                        }
-                        pen(blue, 2);
-                        edge(mid, Ps[0]);
-                        edge(mid, Ps[1]);
-                        edge(mid, Ps[2]);
-                    }
-                }
-            }
+          }
         }
     }
 
