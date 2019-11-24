@@ -231,35 +231,37 @@ void draw()      // executed at each frame
         }
         pt traceMidPoints[] = null;
         if (corner != -1) {
-          traceMidPoints = TraceMeshStartingFrom(corner);
+            traceMidPoints = TraceMeshStartingFrom(corner);
 
-          if (showLabels) showId(Pm, "M");
-          noFill();
+            if (showLabels) showId(Pm, "M");
+            noFill();
 
-          stroke(red);
-          M.showBorderEdges();
-          for (int t= 0; t < M.nt; t++) {
-            Ps = fillPoints(3*t);
-            pt mid = traceMidPoints[t];
-            pt[] Ms = new pt[3];
-            Ms[0] = traceMidPoints[M.t(M.s(3*t))];
-            Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
-            Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
+            stroke(red);
+            M.showBorderEdges();
+            if (showFAM) {
+                for (int t= 0; t < M.nt; t++) {
+                    Ps = fillPoints(3*t);
+                    pt mid = traceMidPoints[t];
+                    pt[] Ms = new pt[3];
+                    Ms[0] = traceMidPoints[M.t(M.s(3*t))];
+                    Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
+                    Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
 
-            if (mid != null) {
-              pen(blue, 5);
-              if (Ms[0] != null)
-                edge(mid, Ms[0]);
-              if (Ms[1] != null)
-                edge(mid, Ms[1]);
-              if (Ms[2] != null)
-                edge(mid, Ms[2]);
-              pen(blue, 2);
-              edge(mid, Ps[0]);
-              edge(mid, Ps[1]);
-              edge(mid, Ps[2]);
+                    if (mid != null) {
+                        pen(blue, 5);
+                        if (Ms[0] != null)
+                            edge(mid, Ms[0]);
+                        if (Ms[1] != null)
+                            edge(mid, Ms[1]);
+                        if (Ms[2] != null)
+                            edge(mid, Ms[2]);
+                        pen(blue, 2);
+                        edge(mid, Ps[0]);
+                        edge(mid, Ps[1]);
+                        edge(mid, Ps[2]);
+                    }
+                }
             }
-          }
         }
     }
 
