@@ -44,9 +44,10 @@ int cc=0; // current corner (saved, since we rebuild M at each frame)
 
 void fillGrid(pts ps) {
     ps.declare();
-    int inc = width * height / ps.maxnv;
+    int inc = (int) Math.floor((width * height) / (2.0 * ps.maxnv));
+    println("inc is " + inc);
     for (int i = 0; i < width; i += inc) {
-        for (int j = height * 1/5; j < height * 4 / 5; j += inc) {
+        for (int j = height * 1/10; j < height; j += inc) {
             ps.addPt(P(i, j));
         }
     }
@@ -66,23 +67,42 @@ float[] calculateNBC(pt A, pt B, pt C, pt P) {
     return ret;
 }
 
-void drawVectorField(pts control, pts grid) {
-    for (int i = 0; i < grid.nv; i++) {
-        pt A = control.G[0];
-        pt B = control.G[2];
-        pt C = control.G[4];
-        pt P = grid.G[i];
-        float[] nbc = calculateNBC(A, B, C, P);
-        vec Aprime = V(A, control.G[1]);
-        vec Bprime = V(B, control.G[3]);
-        vec Cprime = V(C, control.G[5]);
-        vec Pprime = nbcProduct(Aprime, Bprime, Cprime, nbc);
-        Pprime = U(Pprime);
-        noFill();
-        strokeWeight(2);
-        stroke(green);
-        edge(P, P(P, 10, Pprime));
+void drawVectorField(pts grid) {
+  for (int i = 0; i < grid.nv; i++) {
+
+    pt Pa = null, Pb = null, Pc = null;
+    vec Va = null, Vb = null, Vc = null;
+    boolean found = false;
+
+    pt P = grid.G[i];
+    for (int t = 0; t < M.nc; t++) {
+      // Get the three vertices for the triangle
+      int cor = t;
+      pt a = M.g(cor);
+      pt b = M.g(M.n(cor));
+      pt c = M.g(M.n(M.n(cor)));
+      if (isInsideTriangle(P, a, b, c)) {
+        Pa = a;
+        Pb = b;
+        Pc = c;
+        Va = M.f(cor);
+        Vb = M.f(M.n(cor));
+        Vc = M.f(M.n(M.n(cor)));
+        found = true;
+        break;
+      }
     }
+
+    if (found) {
+      float[] nbc = calculateNBC(Pa, Pb, Pc, P);
+      vec Pprime = nbcProduct(Va, Vb, Vc, nbc);
+      Pprime = U(Pprime);
+      noFill();
+      strokeWeight(2);
+      stroke(green);
+      edge(P, P(P, 10, Pprime));
+    }
+  }
 }
 
 vec nbcProduct(vec Aprime, vec Bprime, vec Cprime, float[] nbc) {
@@ -128,6 +148,7 @@ void setup()               // executed once at the begining
     bigFont = createFont("AdobeFanHeitiStd-Bold-32", 20);
     textFont(bigFont);
     textAlign(CENTER, CENTER);
+    fillGrid(GRID);
 } // end of setup
 
 pt[] fillPoints(int corner) {
@@ -168,9 +189,6 @@ void draw()      // executed at each frame
     else f=(floor(ft)+tm)%(tm);
     float tt = float(f)/tm;
     t=(1.-cos(tt*TWO_PI))/2;
-    
-    fillGrid(GRID);
-    drawVectorField(P, GRID);
 
     // ==================== TRIANGLE MESH ====================
     if (showMesh)
@@ -206,10 +224,12 @@ void draw()      // executed at each frame
             M.completeVectorField(100, 0.2);
         }
         if (showArrows) {
-            pen(blue, 2); 
+            pen(blue, 2);
             M.drawArrows();
         }
     }
+
+    drawVectorField(GRID);
 
     // ==================== TRACING FIELD ====================
     if (showTraceFromMouse)
