@@ -216,7 +216,6 @@ void draw()      // executed at each frame
     if (showTraceFromMouse) {
 
         pt Pm = Mouse();
-        pt[] Ps = null;
 
         int corner = -1;
         for (int t = 0; t < M.nc; t++) {
@@ -240,24 +239,40 @@ void draw()      // executed at each frame
             M.showBorderEdges();
             if (showFAM) {
                 for (int t= 0; t < M.nt; t++) {
-                    Ps = fillPoints(3*t);
+                    pt[] Ps = fillPoints(3*t);
+                    vec[] Vs = fillVectors(3*t);
                     pt mid = traceMidPoints[t];
+                    vec midvec = getVector(mid, t);
                     pt[] Ms = new pt[3];
+                    vec[] Mv = new vec[3];
                     Ms[0] = traceMidPoints[M.t(M.s(3*t))];
+                    Mv[0] = getVector(Ms[0], M.t(M.s(3*t)));
                     Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
+                    Mv[1] = getVector(Ms[1], M.t(M.s(M.n(3*t))));
                     Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
+                    Mv[2] = getVector(Ms[2], M.t(M.s(M.p(3*t))));
 
                     if (mid != null) {
-                        pen(blue, 5);
-                        if (Ms[0] != null)
+                        if (Ms[0] != null) {
+                            //print(midvec, Mv[0], V(mid, Ms[0]));
+                            pen(blue, getStrokeWeight(midvec, Mv[0], V(mid, Ms[0])));
                             edge(mid, Ms[0]);
-                        if (Ms[1] != null)
+                        }
+                        if (Ms[1] != null) {
+                            //print(midvec, Mv[1], V(mid, Ms[1]));
+                            pen(blue, getStrokeWeight(midvec, Mv[1], V(mid, Ms[1])));
                             edge(mid, Ms[1]);
-                        if (Ms[2] != null)
+                        }
+                        if (Ms[2] != null) {
+                            //print(midvec, Mv[2], V(mid, Ms[2]));
+                            pen(blue, getStrokeWeight(midvec, Mv[2], V(mid, Ms[2])));
                             edge(mid, Ms[2]);
+                        }
                         pen(blue, 2);
                         edge(mid, Ps[0]);
+                        pen(blue, 2);
                         edge(mid, Ps[1]);
+                        pen(blue, 2);
                         edge(mid, Ps[2]);
                     }
                 }
