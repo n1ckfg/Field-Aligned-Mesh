@@ -33,8 +33,9 @@ boolean
     showTriangles=true, 
     showArrows=true, 
     showDenseMeshUI=false, 
+    showFAM=false, 
     showCorners=true;
-    
+
 pts GRID = new pts();
 
 int exitThrough=0;
@@ -68,41 +69,41 @@ float[] calculateNBC(pt A, pt B, pt C, pt P) {
 }
 
 void drawVectorField(pts grid) {
-  for (int i = 0; i < grid.nv; i++) {
+    for (int i = 0; i < grid.nv; i++) {
 
-    pt Pa = null, Pb = null, Pc = null;
-    vec Va = null, Vb = null, Vc = null;
-    boolean found = false;
+        pt Pa = null, Pb = null, Pc = null;
+        vec Va = null, Vb = null, Vc = null;
+        boolean found = false;
 
-    pt P = grid.G[i];
-    for (int t = 0; t < M.nc; t++) {
-      // Get the three vertices for the triangle
-      int cor = t;
-      pt a = M.g(cor);
-      pt b = M.g(M.n(cor));
-      pt c = M.g(M.n(M.n(cor)));
-      if (isInsideTriangle(P, a, b, c)) {
-        Pa = a;
-        Pb = b;
-        Pc = c;
-        Va = M.f(cor);
-        Vb = M.f(M.n(cor));
-        Vc = M.f(M.n(M.n(cor)));
-        found = true;
-        break;
-      }
+        pt P = grid.G[i];
+        for (int t = 0; t < M.nc; t++) {
+            // Get the three vertices for the triangle
+            int cor = t;
+            pt a = M.g(cor);
+            pt b = M.g(M.n(cor));
+            pt c = M.g(M.n(M.n(cor)));
+            if (isInsideTriangle(P, a, b, c)) {
+                Pa = a;
+                Pb = b;
+                Pc = c;
+                Va = M.f(cor);
+                Vb = M.f(M.n(cor));
+                Vc = M.f(M.n(M.n(cor)));
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            float[] nbc = calculateNBC(Pa, Pb, Pc, P);
+            vec Pprime = nbcProduct(Va, Vb, Vc, nbc);
+            Pprime = U(Pprime);
+            noFill();
+            strokeWeight(2);
+            stroke(green);
+            edge(P, P(P, 10, Pprime));
+        }
     }
-
-    if (found) {
-      float[] nbc = calculateNBC(Pa, Pb, Pc, P);
-      vec Pprime = nbcProduct(Va, Vb, Vc, nbc);
-      Pprime = U(Pprime);
-      noFill();
-      strokeWeight(2);
-      stroke(green);
-      edge(P, P(P, 10, Pprime));
-    }
-  }
 }
 
 vec nbcProduct(vec Aprime, vec Bprime, vec Cprime, float[] nbc) {
@@ -349,27 +350,37 @@ void draw()      // executed at each frame
             noFill();
 
             stroke(red);
-            M.showBorderEdges();
-            for (int t= 0; t < M.nt; t++) {
-                Ps = fillPoints(3*t);
-                pt mid = traceMidPoints[t];
-                pt[] Ms = new pt[3];
-                Ms[0] = traceMidPoints[M.t(M.s(3*t))];
-                Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
-                Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
+            if (showFAM) {
+                M.showBorderEdges();
+                for (int t= 0; t < M.nt; t++) {
+                    Ps = fillPoints(3*t);
+                    Vs = fillVectors(3*t);
+                    pt mid = traceMidPoints[t];
+                    pt[] Ms = new pt[3];
+                    vec[] Mv = new vec[3];
+                    Ms[0] = traceMidPoints[M.t(M.s(3*t))];
+                    Mv[0] = 
+                    Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
+                    Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
 
-                if (mid != null) {
-                    pen(blue, 5);
-                    if (Ms[0] != null)
-                        edge(mid, Ms[0]);
-                    if (Ms[1] != null)
-                        edge(mid, Ms[1]);
-                    if (Ms[2] != null)
-                        edge(mid, Ms[2]);
-                    pen(blue, 2);
-                    edge(mid, Ps[0]);
-                    edge(mid, Ps[1]);
-                    edge(mid, Ps[2]);
+                    if (mid != null) {
+                        if (Ms[0] != null) {
+                            pen(blue, 5);
+                            edge(mid, Ms[0]);
+                        }
+                        if (Ms[1] != null) {
+                            pen(blue, 5);
+                            edge(mid, Ms[1]);
+                        }
+                        if (Ms[2] != null) {
+                            pen(blue, 5);
+                            edge(mid, Ms[2]);
+                        }
+                        pen(blue, 2);
+                        edge(mid, Ps[0]);
+                        edge(mid, Ps[1]);
+                        edge(mid, Ps[2]);
+                    }
                 }
             }
         }

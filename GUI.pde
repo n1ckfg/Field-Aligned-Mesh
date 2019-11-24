@@ -74,7 +74,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
         newCOTS=true;
     } // load current positions of control points from file
     if (key=='M') showMesh=!showMesh;
-    if (key=='N') ;
+    if (key=='N') showFAM=!showFAM;
     if (key=='O') showCircumCircle=!showCircumCircle;
     if (key=='P') showCircumCircles=!showCircumCircles;
     if (key=='Q') ;  // quit application
