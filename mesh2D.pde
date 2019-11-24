@@ -97,13 +97,10 @@ class MESH {
             vec avg = V(0, 0);
             ArrayList<Integer> neighbors = vnm[i];
             for (int j = 0; j < neighbors.size(); j++) {
-                avg = W(avg, FCopy[neighbors.get(j)]);
-                println(i, neighbors.get(j), avg);
+                avg = W(avg, W(FCopy[i], -1, FCopy[neighbors.get(j)]));
             }
             avg.x = avg.x / neighbors.size();
             avg.y = avg.y / neighbors.size();
-            println(1.0/neighbors.size());
-            println(i, avg);
             FCopy[i] = W(FCopy[i], alpha, avg);
             println(String.format("tucked f %d: %s\n", i, FCopy[i]));
         }
