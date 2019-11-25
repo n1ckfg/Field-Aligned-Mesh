@@ -92,18 +92,19 @@ class MESH {
         return vnm;
     }
 
-    void tuck (vec[] FCopy, ArrayList<Integer>[] vnm, float alpha) {
+    vec[] tuck (vec[] Fin, ArrayList<Integer>[] vnm, float alpha) {
+        vec[] Fout = new vec[nv];
         for (int i = 0; i < nv; i++) {
             vec avg = V(0, 0);
             ArrayList<Integer> neighbors = vnm[i];
             for (int j = 0; j < neighbors.size(); j++) {
-                avg = W(avg, W(FCopy[i], -1, FCopy[neighbors.get(j)]));
+                avg = W(avg, W(Fin[i], -1, Fin[neighbors.get(j)]));
             }
             avg.x = avg.x / neighbors.size();
             avg.y = avg.y / neighbors.size();
-            FCopy[i] = W(FCopy[i], alpha, avg);
-            println(String.format("tucked f %d: %s\n", i, FCopy[i]));
+            Fout[i] = W(Fin[i], alpha, avg);
         }
+        return Fout;
     }
 
     //void untuck (vec[] FCopy, ArrayList<Integer>[] vnm, float alpha) {
@@ -129,7 +130,7 @@ class MESH {
         // fix the seed to generate the same set of random numbers
         java.util.Random rnd = new java.util.Random(10);
         for (int i = 0; i < nv; i++) {
-            if (rnd.nextDouble() < 0.7) {
+            if (rnd.nextDouble() < 0.6) {
                 constrainedIndices.add(i);
                 constrainedVectors.add(V(F[i]));
             } else {
@@ -139,23 +140,21 @@ class MESH {
     }
 
     void completeVectorField (int max_iter, float alpha) {
-        println("completing vector field");
+        ArrayList<Integer>[] vnm = getVertexNeighbourMapping();
         vec[] FCopy = new vec[nv];
 
         for (int i = 0; i < nv; i++) {
-            FCopy[i] = V(F[i]);
+          FCopy[i] = V(F[i]);
         }
 
-        ArrayList<Integer>[] vnm = getVertexNeighbourMapping();
         for (int iter = 0; iter < max_iter; iter++) {
-            tuck(FCopy, vnm, alpha);
-            tuck(FCopy, vnm, -alpha);
+            FCopy = tuck(FCopy, vnm, alpha);
+            FCopy = tuck(FCopy, vnm, -alpha);
             snap(FCopy);
         }
 
         for (int i = 0; i < nv; i++) {
-            F[i] = V(FCopy[i]);
-            println(String.format("updated f %d: %s\n", i, F[i]));
+          F[i] = V(FCopy[i]);
         }
     }
 
