@@ -37,7 +37,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if (key=='d') ;
     if (key=='e') showFine=!showFine;
     if (key=='f') showFirstField=!showFirstField;
-    if (key=='g') ;
+    if (key=='g') showGrid=!showGrid;
     if (key=='h') completeVectorField=!completeVectorField;
     if (key=='i') ;
     if (key=='j') ;

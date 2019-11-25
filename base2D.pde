@@ -34,6 +34,7 @@ boolean
     showArrows=true, 
     showDenseMeshUI=false, 
     showFAM=false, 
+    showGrid=false,
     showCorners=true;
 
 pts GRID = new pts();
@@ -97,11 +98,11 @@ void drawVectorField(pts grid) {
         if (found) {
             float[] nbc = calculateNBC(Pa, Pb, Pc, P);
             vec Pprime = nbcProduct(Va, Vb, Vc, nbc);
-            Pprime = U(Pprime);
+            Pprime = S(min(2, n(Pprime)), U(Pprime));
             noFill();
             strokeWeight(2);
             stroke(green);
-            edge(P, P(P, 10, Pprime));
+            arrow(P, P(P, 10, Pprime));
         }
     }
 }
@@ -140,7 +141,7 @@ void setup()               // executed once at the begining
     smooth();                  // turn on antialiasing
     P.declare(); // declares all points in P. MUST BE DONE BEFORE ADDING POINTS
     // P.resetOnCircle(4); // sets P to have 4 points and places them in a circle on the canvas
-    P.loadPts("data/pts");  // loads points form file saved with this program
+    P.loadPts("data/pts0");  // loads points form file saved with this program
     Aring.declare();
     RefinedAring.declare();
     TempAring.declare();
@@ -172,6 +173,9 @@ void draw()      // executed at each frame
     t=(1.-cos(tt*TWO_PI))/2;
 
     // ==================== TRIANGLE MESH ====================
+    if (showGrid) {
+        drawVectorField(GRID);
+    }
     if (showMesh)
     {
         cc=M.c;
@@ -209,8 +213,6 @@ void draw()      // executed at each frame
             M.drawArrows();
         }
     }
-
-    drawVectorField(GRID);
 
     // ==================== TRACING FIELD ====================
     if (showTraceFromMouse) {
