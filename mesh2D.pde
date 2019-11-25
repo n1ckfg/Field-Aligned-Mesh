@@ -315,7 +315,10 @@ class MESH {
         stroke(blue);
         for (int v=0; v<nv; v++)
         {
-            fill(blue);
+            if (completeVectorField && !constrainedIndices.contains(v))
+                fill(green);
+            else
+                fill(blue);
             arrow(G[v], F[v]);
             fill(white);
             show(G[v], 13);
