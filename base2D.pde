@@ -202,7 +202,7 @@ void draw()      // executed at each frame
 
         if (completeVectorField) {
             M.generateConstrainedVectors();
-            M.completeVectorField(100, 0.2);
+            M.completeVectorField(100, 0.3);
         }
         if (showArrows) {
             pen(blue, 2);

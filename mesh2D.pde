@@ -129,7 +129,7 @@ class MESH {
         // fix the seed to generate the same set of random numbers
         java.util.Random rnd = new java.util.Random(10);
         for (int i = 0; i < nv; i++) {
-            if (rnd.nextDouble() < 0.9) {
+            if (rnd.nextDouble() < 0.7) {
                 constrainedIndices.add(i);
                 constrainedVectors.add(V(F[i]));
             } else {

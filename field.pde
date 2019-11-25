@@ -17,9 +17,9 @@ int getStrokeWeight(vec v1, vec v2, vec v3, int type) {
     if (type == 0 && (s > 0.8 || e > 0.8)) {
         return 5;
     } 
-    if (type == 1 && s > 0.9 && e > 0.9) {
-        return 5;
-    }
+    //if (type == 1 && s > 0.9 && e > 0.9) {
+    //    return 5;
+    //}
     return 2;
 }
 
