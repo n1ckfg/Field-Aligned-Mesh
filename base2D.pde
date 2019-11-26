@@ -46,8 +46,7 @@ int cc=0; // current corner (saved, since we rebuild M at each frame)
 
 void fillGrid(pts ps) {
     ps.declare();
-    int inc = (int) Math.floor((width * height) / (4*ps.maxnv));
-    println("inc is " + inc);
+    int inc = (int) Math.floor((width * height) / (2.0 * ps.maxnv));
     for (int i = 0; i < width; i += inc) {
         for (int j = 0; j < height; j += inc) {
             ps.addPt(P(i, j));
@@ -229,7 +228,6 @@ void draw()      // executed at each frame
             pt c = M.g(M.n(M.n(t)));
             if (isInsideTriangle(Pm, a, b, c)) {
                 corner = t;
-                println(M.t(t));
                 break;
             }
         }
@@ -383,6 +381,24 @@ void draw()      // executed at each frame
     stroke(grey, 70);
     arrow(Start, End);
     noFill();
+
+    // used for demos to show red circle when mouse/key is pressed and what key.
+    if (mousePressed) {
+      stroke(cyan);
+      strokeWeight(3);
+      noFill();
+      ellipse(mouseX, mouseY, 20, 20);
+      strokeWeight(1);
+    }
+
+    if (keyPressed) {
+      stroke(red);
+      // fill(white);
+      // ellipse(mouseX+14, mouseY+20, 25, 25);
+      fill(red);
+      text(key, mouseX-5+14, mouseY+4+20);
+      strokeWeight(1);
+    }
 
 
     if (recordingPDF) endRecordingPDF();  // end saving a .pdf file with the image of the canvas

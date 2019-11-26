@@ -132,7 +132,7 @@ void displayMenu()
     float dx=10, dy=30;
     int k=1;
     scribe("Field-aligned triangle mesh", dx, dy*k++);
-    scribe("Jarek Rossignac, Georgia Tech, 2019", dx, dy*k++);
+    scribe("Harish Krupo KPS, Pranshu Gupta, Georgia Tech, 2019", dx, dy*k++);
     scribe(" ------------------------------", dx, dy*k++);
     scribe("MENU       Press SPACE to hide/show this menu", dx, dy*k++);
     scribe("Notation   *:mouseClick, _:mouseDrag", dx, dy*k++);
@@ -142,6 +142,9 @@ void displayMenu()
     scribe("TILES      #:checkerboard, >/<:more/fewer, ):isoCurves, B:border, O:oval", dx, dy*k++);
     scribe("PATTERN    T:texture, X:stars, D:dsks, H:hubs, o:circles", dx, dy*k++);
     scribe("IMAGES     ~/!/@:pdf/jpg/tif, `:(start/stop) filming", dx, dy*k++);
+    scribe("Mesh       M:Show Delaunay  N:Show FAT  G:Show Dense Trace", dx, dy*k++);
+    scribe("FIELD      m:Show Trace  g:Show Vector field", dx, dy*k++);
+    scribe("MODIFICATION  U:Remove triangle under mouse", dx, dy*k++);
     scribe("", dx, dy*k++);
     textAlign(CENTER, CENTER);
 }
