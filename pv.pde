@@ -142,7 +142,7 @@ class pt
         return this;
     };
     String toString() {
-      return String.format("x: %f, y: %f", x, y);
+        return String.format("x: %f, y: %f", x, y);
     }
 } // end of pt class
 
@@ -275,7 +275,7 @@ class vec
         P(P).add(0.5, this).add(3, R(U(this))).label(s);
     };
     String toString() {
-      return String.format("x: %f, y: %f", x, y);
+        return String.format("x: %f, y: %f", x, y);
     }
 } // end vec class
 
@@ -512,7 +512,15 @@ vec V(float x, float y) {
     return new vec(x, y);
 };                                                      // make vector (x,y)
 vec V(pt P, pt Q) {
-    return new vec(Q.x-P.x, Q.y-P.y);
+    vec r = V();
+    try {
+        r = new vec(Q.x-P.x, Q.y-P.y);
+    } 
+    catch (Exception e) {
+        e.printStackTrace(); 
+        System.out.println(e);
+    }
+    return r;
 };                                                 // PQ (make vector Q-P from P to Q
 vec U(vec V) {
     float n = n(V);
@@ -732,8 +740,8 @@ pt CircumCenter (pt A, pt B, pt C) // CircumCenter(A,B,C): center of circumscrib
 
 float circumRadius (pt A, pt B, pt C)     // radiusCircum(A,B,C): radius of circumcenter
 {
-    float a=d(B, C), b=d(C, A), c=d(A, B),
-        s=(a+b+c)/2,
+    float a=d(B, C), b=d(C, A), c=d(A, B), 
+        s=(a+b+c)/2, 
         d=sqrt(s*(s-a)*(s-b)*(s-c));
     return a*b*c/4/d;
 }

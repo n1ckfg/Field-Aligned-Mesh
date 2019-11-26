@@ -244,29 +244,33 @@ void draw()      // executed at each frame
                     pt[] Ps = fillPoints(3*t);
                     vec[] Vs = fillVectors(3*t);
                     pt mid = traceMidPoints[t];
-                    vec midvec = getVector(mid, t);
+                    
                     pt[] Ms = new pt[3];
                     vec[] Mv = new vec[3];
                     Ms[0] = traceMidPoints[M.t(M.s(3*t))];
-                    Mv[0] = getVector(Ms[0], M.t(M.s(3*t)));
+                    
                     Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
-                    Mv[1] = getVector(Ms[1], M.t(M.s(M.n(3*t))));
+                    
                     Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
-                    Mv[2] = getVector(Ms[2], M.t(M.s(M.p(3*t))));
+                    
 
                     if (mid != null) {
+                        vec midvec = getVector(mid, t);
                         if (Ms[0] != null) {
                             //print(midvec, Mv[0], V(mid, Ms[0]));
+                            Mv[0] = getVector(Ms[0], M.t(M.s(3*t)));
                             pen(blue, getStrokeWeight(midvec, Mv[0], V(mid, Ms[0]), 0));
                             edge(mid, Ms[0]);
                         }
                         if (Ms[1] != null) {
                             //print(midvec, Mv[1], V(mid, Ms[1]));
+                            Mv[1] = getVector(Ms[1], M.t(M.s(M.n(3*t))));
                             pen(blue, getStrokeWeight(midvec, Mv[1], V(mid, Ms[1]), 0));
                             edge(mid, Ms[1]);
                         }
                         if (Ms[2] != null) {
                             //print(midvec, Mv[2], V(mid, Ms[2]));
+                            Mv[2] = getVector(Ms[2], M.t(M.s(M.p(3*t))));
                             pen(blue, getStrokeWeight(midvec, Mv[2], V(mid, Ms[2]),0));
                             edge(mid, Ms[2]);
                         }

@@ -62,17 +62,17 @@ class MESH {
         F[nv++].setTo(V(A, B));
     }                                             // adds a vertex to vertex table G
 
-    ArrayList<Integer> getNeighborVertices(int v) {
-        int s = c(v), c = c(v);
-        ArrayList<Integer> ret = new ArrayList<Integer>();
-        ret.add(n(c)); // need to check for border cases
-        while (s != s(c)) {
-            c = s(c);
-            int nextCorner = n(c);
-            ret.add(v(nextCorner));
-        }
-        return ret;
-    }
+    //ArrayList<Integer> getNeighborVertices(int v) {
+    //    int s = c(v), c = c(v);
+    //    ArrayList<Integer> ret = new ArrayList<Integer>();
+    //    ret.add(n(c)); // need to check for border cases
+    //    while (s != s(c)) {
+    //        c = s(c);
+    //        int nextCorner = n(c);
+    //        ret.add(v(nextCorner));
+    //    }
+    //    return ret;
+    //}
 
     ArrayList<Integer>[] getVertexNeighbourMapping() {
         ArrayList<Integer>[] vnm = (ArrayList<Integer>[]) new ArrayList[nv];
