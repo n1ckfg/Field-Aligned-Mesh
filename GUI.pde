@@ -85,7 +85,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     ;
     if (key=='S') P.savePts("data/pts");    // save current positions of control points on file
     if (key=='T') showTextured=!showTextured;
-    if (key=='U') ;
+    if (key=='U') M.markExterior();
     if (key=='V') ;
     if (key=='W') ;
     if (key=='X') showStars=!showStars;

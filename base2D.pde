@@ -34,7 +34,7 @@ boolean
     showArrows=true, 
     showDenseMeshUI=false, 
     showFAM=false, 
-    showGrid=false,
+    showGrid=false, 
     showCorners=true;
 
 pts GRID = new pts();
@@ -90,7 +90,9 @@ void drawVectorField(pts grid) {
                 Va = M.f(cor);
                 Vb = M.f(M.n(cor));
                 Vc = M.f(M.n(M.n(cor)));
-                found = true;
+                if (!M.exterior[M.t(cor)]) {
+                    found = true;
+                }
                 break;
             }
         }
@@ -141,7 +143,7 @@ void setup()               // executed once at the begining
     smooth();                  // turn on antialiasing
     P.declare(); // declares all points in P. MUST BE DONE BEFORE ADDING POINTS
     // P.resetOnCircle(4); // sets P to have 4 points and places them in a circle on the canvas
-    P.loadPts("data/pts");  // loads points form file saved with this program
+    P.loadPts("data/pts0");  // loads points form file saved with this program
     Aring.declare();
     RefinedAring.declare();
     TempAring.declare();
@@ -227,6 +229,7 @@ void draw()      // executed at each frame
             pt c = M.g(M.n(M.n(t)));
             if (isInsideTriangle(Pm, a, b, c)) {
                 corner = t;
+                println(M.t(t));
                 break;
             }
         }
@@ -238,21 +241,21 @@ void draw()      // executed at each frame
             noFill();
 
             stroke(red);
-            M.showBorderEdges();
+            M.showFATBorderEdges();
             if (showFAM) {
                 for (int t= 0; t < M.nt; t++) {
                     pt[] Ps = fillPoints(3*t);
                     vec[] Vs = fillVectors(3*t);
                     pt mid = traceMidPoints[t];
-                    
+
                     pt[] Ms = new pt[3];
                     vec[] Mv = new vec[3];
                     Ms[0] = traceMidPoints[M.t(M.s(3*t))];
-                    
+
                     Ms[1] = traceMidPoints[M.t(M.s(M.n(3*t)))];
-                    
+
                     Ms[2] = traceMidPoints[M.t(M.s(M.p(3*t)))];
-                    
+
 
                     if (mid != null) {
                         vec midvec = getVector(mid, t);
@@ -271,7 +274,7 @@ void draw()      // executed at each frame
                         if (Ms[2] != null) {
                             //print(midvec, Mv[2], V(mid, Ms[2]));
                             Mv[2] = getVector(Ms[2], M.t(M.s(M.p(3*t))));
-                            pen(blue, getStrokeWeight(midvec, Mv[2], V(mid, Ms[2]),0));
+                            pen(blue, getStrokeWeight(midvec, Mv[2], V(mid, Ms[2]), 0));
                             edge(mid, Ms[2]);
                         }
                         pen(blue, getStrokeWeight(midvec, Vs[0], V(mid, Ps[0]), 1));

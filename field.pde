@@ -169,6 +169,10 @@ pt[] TraceMeshStartingFrom(int corner) {
     int iterations = 100;
     Arrays.fill(visitedT, false);
     Arrays.fill(TrueT, true);
+    
+    if (M.exterior[M.t(corner)]) {
+        return traceMidPoints;
+    }
 
     int[] e = {-1, -1};
     pt S = null, E = P(), MT = P();
@@ -215,19 +219,23 @@ pt[] TraceMeshStartingFrom(int corner) {
         }
 
         corner = M.u(c); //unswing into the next triangle
+        boolean found = false;
         if ((M.t(corner) == M.t(c)) ||
             (e[0] == 0) ||
+            (M.exterior[M.t(corner)]) || 
             (visitedT[M.t(corner)])) { // check if outside
             for (int i = 0; i < M.nt; i++) {
-                if (visitedT[i] == false) {
+                if (visitedT[i] == false && M.exterior[i] == false) {
                     corner = 3 * i;
+                    found = true;
                     break;
                 }
             }
-
+            if (!found) {
+                break;
+            }   
             E = midOfNext(corner);
         }
-
         Ps = fillPoints(corner);
         Vs = fillVectors(corner);
 

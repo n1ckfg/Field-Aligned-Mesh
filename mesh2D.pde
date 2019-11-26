@@ -23,6 +23,7 @@ class MESH {
     // TRIANGLES
     int nt = 0, maxnt = maxnv*2;
     boolean[] isInterior = new boolean[maxnv];
+    boolean[] exterior = new boolean[maxnv];
 
     // CORNERS
     int c=0;    // current corner
@@ -40,7 +41,7 @@ class MESH {
         nv=0;
         nt=0;
         nc=0;
-    }                                                  // removes all vertices and triangles
+    }                // removes all vertices and triangles
     void loadVertices(pt[] P, int n) {
         nv=0;
         for (int i=0; i<n; i++) addVertex(P[i]);
@@ -61,6 +62,25 @@ class MESH {
         G[nv].setTo(A);
         F[nv++].setTo(V(A, B));
     }                                             // adds a vertex to vertex table G
+
+    void markExterior () {
+        pt Pm = Mouse();
+        int corner = -1;
+        for (int t = 0; t < M.nc; t++) {
+            // Get the three vertices for the triangle
+            pt a = M.g(t);
+            pt b = M.g(M.n(t));
+            pt c = M.g(M.n(M.n(t)));
+            if (isInsideTriangle(Pm, a, b, c)) {
+                corner = t;
+                println(M.t(t));
+                break;
+            }
+        }
+        if (corner != -1) {
+            M.exterior[M.t(corner)] = true;
+        }
+    }
 
     //ArrayList<Integer> getNeighborVertices(int v) {
     //    int s = c(v), c = c(v);
@@ -144,7 +164,7 @@ class MESH {
         vec[] FCopy = new vec[nv];
 
         for (int i = 0; i < nv; i++) {
-          FCopy[i] = V(F[i]);
+            FCopy[i] = V(F[i]);
         }
 
         for (int iter = 0; iter < max_iter; iter++) {
@@ -154,7 +174,7 @@ class MESH {
         }
 
         for (int i = 0; i < nv; i++) {
-          F[i] = V(FCopy[i]);
+            F[i] = V(FCopy[i]);
         }
     }
 
@@ -290,6 +310,7 @@ class MESH {
     void showEdges() {
         for (int i=0; i<nc; i++) showEdge(i);
     };         // draws all edges of mesh twice
+
     void showBorderEdges() {
         for (int i=0; i<nc; i++) {
             if (bord(i)) {
@@ -297,6 +318,27 @@ class MESH {
             };
         };
     };         // draws all border edges of mesh
+
+    void showFATBorderEdges() {
+        for (int i = 0; i < nc; i++) {
+            if (bord(i)) {
+                if (!exterior[t(i)])
+                    showEdge(i);
+            } else {
+                if (!exterior[t(i)] && exterior[t(o(i))]) {
+                    showEdge(i);
+                }
+            }
+            //} else {
+            //    println(i, " was non bord");
+            //    int ext = M.s(M.n(i));
+            //    if (exterior[M.t(ext)]) {
+            //        edge(g(i), g(n(i)));
+            //    }
+            //}
+        }
+    }
+
     void showNonBorderEdges() {
         for (int i=0; i<nc; i++) {
             if (!bord(i)) {
@@ -329,8 +371,8 @@ class MESH {
         noFill();
     }
     void showCorner(int c, float r) {
-         if (bord(c)) show(cg(c), 1.5*r);
-         else show(cg(c), r);
+        if (bord(c)) show(cg(c), 1.5*r);
+        else show(cg(c), r);
         //label(cg(c), str(c));
     };   // renders corner c
     void showCorners(float r)
