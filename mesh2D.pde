@@ -14,14 +14,14 @@ public static int indexOf(int needle, int[] haystack)
 
 class MESH {
     // VERTICES
-    int nv=0, maxnv = 1000;
+    int nv=0, maxnv = 3000;
     pt[] G = new pt [maxnv];   // location of vertex
     vec[] F = new vec [maxnv]; // vector at vertex
     ArrayList<Integer> constrainedIndices = new ArrayList<Integer>();
     ArrayList<vec> constrainedVectors = new ArrayList<vec>();
 
     // TRIANGLES
-    int nt = 0, maxnt = maxnv*2;
+    int nt = 0, maxnt = maxnv*4;
     boolean[] isInterior = new boolean[maxnv];
     boolean[] exterior = new boolean[maxnv];
 
@@ -148,9 +148,9 @@ class MESH {
 
     void generateConstrainedVectors() {
         // fix the seed to generate the same set of random numbers
-        java.util.Random rnd = new java.util.Random(10);
+        //java.util.Random rnd = new java.util.Random(10);
         for (int i = 0; i < nv; i++) {
-            if (rnd.nextDouble() < 0.6) {
+            if (F[i].norm() > 2) {
                 constrainedIndices.add(i);
                 constrainedVectors.add(V(F[i]));
             } else {
@@ -358,7 +358,7 @@ class MESH {
         for (int v=0; v<nv; v++)
         {
             if (completeVectorField && !constrainedIndices.contains(v))
-                fill(green);
+                fill(red);
             else
                 fill(blue);
             arrow(G[v], F[v]);

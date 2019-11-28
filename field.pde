@@ -111,7 +111,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
             Pn = E;
         }
         strokeWeight(2);
-        stroke(brown);
+        stroke(#8a0808);
         v(Pn);
         tracePoints.add(P);
         P=Pn;

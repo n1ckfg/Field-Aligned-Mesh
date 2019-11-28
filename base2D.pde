@@ -46,10 +46,10 @@ int cc=0; // current corner (saved, since we rebuild M at each frame)
 
 void fillGrid(pts ps) {
     ps.declare();
-    int inc = (int) Math.floor((width * height) / (2.0 * ps.maxnv));
+    int inc = (int) Math.floor((width * height) / (4*ps.maxnv));
     println("inc is " + inc);
     for (int i = 0; i < width; i += inc) {
-        for (int j = height * 1/10; j < height; j += inc) {
+        for (int j = 0; j < height; j += inc) {
             ps.addPt(P(i, j));
         }
     }
@@ -137,13 +137,13 @@ void traceOverField(pts control, pt startPoint) {
 //**************************** initialization ****************************
 void setup()               // executed once at the begining
 {
-    size(800, 800, P2D);            // window size
-    //size(1200, 1200);            // window size
-    //frameRate(30);             // render 30 frames per second
+    //size(1000, 1000, P2D);            // window size
+    size(1200, 1200);            // window size
+    frameRate(10);             // render 30 frames per second
     smooth();                  // turn on antialiasing
     P.declare(); // declares all points in P. MUST BE DONE BEFORE ADDING POINTS
     // P.resetOnCircle(4); // sets P to have 4 points and places them in a circle on the canvas
-    P.loadPts("data/pts0");  // loads points form file saved with this program
+    P.loadPts("data/pts");  // loads points form file saved with this program
     Aring.declare();
     RefinedAring.declare();
     TempAring.declare();
@@ -199,16 +199,16 @@ void draw()      // executed at each frame
         pen(black, 2);
         M.showCurrentCorner(7);
         pt Ps=M.firstBorderEdgeMidPoint();
-        //pen(green, 2);
-        //fill(green);
-        //show(Ps, 6);
+        pen(green, 2);
+        fill(green);
+        show(Ps, 6);
         int fbc = M.firstBorderCorner();
         pen(brown, 3);
         M.tracePathFromMidEdgeFacingCorner(fbc);
 
         if (completeVectorField) {
             M.generateConstrainedVectors();
-            M.completeVectorField(100, 0.3);
+            M.completeVectorField(1000, 0.5);
         }
         if (showArrows) {
             pen(blue, 2);

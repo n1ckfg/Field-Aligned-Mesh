@@ -152,6 +152,7 @@ void mousePressed()   // executed when the mouse is pressed
     P.pickClosest(Mouse()); // pick vertex closest to mouse: sets pv ("picked vertex") in pts
     if (keyPressed)
     {
+        println("dddd");
         if (key=='a')  P.addPt(Mouse()); // appends vertex after the last one
         if (key=='i')  P.insertClosestProjection(Mouse()); // inserts vertex at closest projection of mouse
         if (key=='d')  P.deletePickedPt(); // deletes vertex closeset to mouse
