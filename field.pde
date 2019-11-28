@@ -74,7 +74,9 @@ void showDenseMesh(pt start, pt end, pt mid, pt a, pt b, pt c) {
 }
 
 // returns 0 if trace lies inside triangle, 1 if exited via (B,C), 2 if exited via (C,A), 3 if exited via (A,B),
-int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s, pt E, pt MT)
+int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va,
+                                       pt Pb, vec Vb, pt Pc, vec Vc,
+                                       int k, float s, pt E, pt MT, color c)
 {
     ArrayList<pt> tracePoints = new ArrayList<pt>();
     pt P=P(Q);
@@ -111,7 +113,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
             Pn = E;
         }
         strokeWeight(2);
-        stroke(#8a0808);
+        stroke(c);
         v(Pn);
         tracePoints.add(P);
         P=Pn;
@@ -162,11 +164,85 @@ pt midOfNext(int corner) {
     return ret;
 }
 
+int TraceInDirection(int cor, pt[] traceMidPoints,
+                     boolean[] visitedT, boolean positive) {
+  int[] e = {-1, -1};
+  pt E = P(), MT = P();
+  pt S = midOfNext(cor);
+  println(String.format("corner: %d pass %s start %s",
+                        cor, new Boolean(positive), S));
+  int corner = cor;
+  int orig_corner = cor;
+  pt[] Ps = fillPoints(corner);
+  vec[] Vs = fillVectors(corner);
+  float step = 0.2;
+  int iterations = 100;
+  if (!positive)
+    step = -step;
+
+  color col = #8b0000;
+  if (!positive)
+    col = #9400d3;
+
+  while(true) {
+    MT = P();
+    e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col);
+    if (positive) {
+      if (e[1] > 1) {// we ran for more than iteration
+        visitedT[M.t(corner)] = true;
+      } else {
+        corner = M.n(corner);
+        orig_corner = corner;
+        S = midOfNext(corner);
+        Ps = fillPoints(corner);
+        Vs = fillVectors(corner);
+        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col);
+        if (e[1] > 1) {// we ran for more than iteration
+          visitedT[M.t(corner)] = true;
+        } else {
+          corner = M.n(corner);
+          orig_corner = corner;
+          S = midOfNext(corner);
+          Ps = fillPoints(corner);
+          Vs = fillVectors(corner);
+          e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col);
+
+          if (e[1] < 2) {
+            MT = null;
+          }
+          visitedT[M.t(corner)] = true;
+        }
+      }
+    }
+
+    if (!MT.equals(P()))
+      traceMidPoints[M.t(corner)] = MT;
+
+    int c = corner;
+    if (e[0] == 1) {//b
+      c = M.n(corner);
+    } else if (e[0] == 2) {//c
+      c = M.p(corner);
+    }
+
+    corner = M.u(c); //unswing into the next triangle
+    if ((M.t(corner) == M.t(c)) || //Border case
+        (e[0] == 0) || // Looping inside the triangle
+        (M.exterior[M.t(corner)]) || // Dont consider this triangle
+        (visitedT[M.t(corner)])) { // Check if we have already been in this triangle
+      return orig_corner;
+    }
+    Ps = fillPoints(corner);
+    Vs = fillVectors(corner);
+
+    S = E;
+  }
+}
+
 pt[] TraceMeshStartingFrom(int corner) {
     boolean visitedT[] = new boolean[M.nt];
     boolean TrueT[] = new boolean[M.nt];
     pt traceMidPoints[] = new pt[M.nt];
-    int iterations = 100;
     Arrays.fill(visitedT, false);
     Arrays.fill(TrueT, true);
     
@@ -174,72 +250,23 @@ pt[] TraceMeshStartingFrom(int corner) {
         return traceMidPoints;
     }
 
-    int[] e = {-1, -1};
-    pt S = null, E = P(), MT = P();
-    pt[] Ps = fillPoints(corner);
-    vec[] Vs = fillVectors(corner);
+    while(true) {
+      corner = TraceInDirection(corner, traceMidPoints, visitedT, true); // Forward pass
+      TraceInDirection(corner, traceMidPoints, visitedT, false); // Backward pass
+      println("=============================================");
 
-    S = midOfNext(corner);
-    for (int tr = 0; tr < M.nt; tr++) {
-        MT = P();
-
-        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
-        if (e[1] > 1) {// we ran for more than iteration
-            visitedT[M.t(corner)] = true;
-        } else {
-            corner = M.n(corner);
-            S = midOfNext(corner);
-            Ps = fillPoints(corner);
-            Vs = fillVectors(corner);
-            e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
-            if (e[1] > 1) {// we ran for more than iteration
-                visitedT[M.t(corner)] = true;
-            } else {
-
-                corner = M.n(corner);
-                S = midOfNext(corner);
-                Ps = fillPoints(corner);
-                Vs = fillVectors(corner);
-                e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, 0.2, E, MT);
-
-                if (e[1] < 2) {
-                    MT = null;
-                }
-                visitedT[M.t(corner)] = true;
-            }
+      boolean found = false;
+      for (int i = 0; i < M.nt; i++) {
+        if (visitedT[i] == false && M.exterior[i] == false) {
+          corner = 3 * i;
+          found = true;
+          break;
         }
+      }
 
-        traceMidPoints[M.t(corner)] = MT;
-
-        int c = corner;
-        if (e[0] == 1) {//b
-            c = M.n(corner);
-        } else if (e[0] == 2) {//c
-            c = M.p(corner);
-        }
-
-        corner = M.u(c); //unswing into the next triangle
-        boolean found = false;
-        if ((M.t(corner) == M.t(c)) ||
-            (e[0] == 0) ||
-            (M.exterior[M.t(corner)]) || 
-            (visitedT[M.t(corner)])) { // check if outside
-            for (int i = 0; i < M.nt; i++) {
-                if (visitedT[i] == false && M.exterior[i] == false) {
-                    corner = 3 * i;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                break;
-            }   
-            E = midOfNext(corner);
-        }
-        Ps = fillPoints(corner);
-        Vs = fillVectors(corner);
-
-        S = E;
+      if (!found) {
+        break;
+      }   
     }
 
     return traceMidPoints;

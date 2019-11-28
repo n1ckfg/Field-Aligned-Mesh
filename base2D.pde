@@ -138,7 +138,7 @@ void setup()               // executed once at the begining
 {
     //size(1000, 1000, P2D);            // window size
     size(1200, 1200);            // window size
-    frameRate(10);             // render 30 frames per second
+    //frameRate(30);             // render 30 frames per second
     smooth();                  // turn on antialiasing
     P.declare(); // declares all points in P. MUST BE DONE BEFORE ADDING POINTS
     // P.resetOnCircle(4); // sets P to have 4 points and places them in a circle on the canvas

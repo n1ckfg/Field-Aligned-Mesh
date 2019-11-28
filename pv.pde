@@ -144,6 +144,10 @@ class pt
     String toString() {
         return String.format("x: %f, y: %f", x, y);
     }
+    boolean equals(Object o) {
+      pt other = (pt) o;
+      return ((other.x == this.x) && (other.y == this.y));
+    }
 } // end of pt class
 
 
