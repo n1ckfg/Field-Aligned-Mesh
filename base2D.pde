@@ -46,7 +46,7 @@ int cc=0; // current corner (saved, since we rebuild M at each frame)
 
 void fillGrid(pts ps) {
     ps.declare();
-    int inc = (int) Math.floor((width * height) / (2.0 * ps.maxnv));
+    int inc = (int) Math.floor((width * height) / (4.0 * ps.maxnv));
     for (int i = 0; i < width; i += inc) {
         for (int j = 0; j < height; j += inc) {
             ps.addPt(P(i, j));

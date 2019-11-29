@@ -115,7 +115,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va,
         strokeWeight(2);
         stroke(c);
         v(Pn);
-        tracePoints.add(P);
+        tracePoints.add(Pn);
         P=Pn;
         i++;
     }
@@ -160,7 +160,7 @@ vec[] fillVectors(int corner) {
 }
 
 pt midOfNext(int corner) {
-    pt ret = P(M.g(corner), M.g(M.n(corner)));
+    pt ret = P(M.g(corner), M.g(M.n(corner)), M.g(M.n(M.n(corner))));
     return ret;
 }
 
@@ -187,36 +187,16 @@ int TraceInDirection(int cor, pt[] traceMidPoints,
   while(true) {
     MT = P();
     e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col);
-    if (positive) {
-      if (e[1] > 1) {// we ran for more than iteration
-        visitedT[M.t(corner)] = true;
-      } else {
-        corner = M.n(corner);
-        orig_corner = corner;
-        S = midOfNext(corner);
-        Ps = fillPoints(corner);
-        Vs = fillVectors(corner);
-        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col);
-        if (e[1] > 1) {// we ran for more than iteration
-          visitedT[M.t(corner)] = true;
-        } else {
-          corner = M.n(corner);
-          orig_corner = corner;
-          S = midOfNext(corner);
-          Ps = fillPoints(corner);
-          Vs = fillVectors(corner);
-          e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col);
+    visitedT[M.t(corner)] = true;
 
-          if (e[1] < 2) {
-            MT = null;
-          }
-          visitedT[M.t(corner)] = true;
-        }
-      }
+    if (e[1] > 1 && !MT.equals(P())) {
+      traceMidPoints[M.t(corner)] = P(MT);
+    } else {
+        traceMidPoints[M.t(corner)] = P(S);
     }
-
-    if (!MT.equals(P()))
-      traceMidPoints[M.t(corner)] = MT;
+    if (corner == orig_corner) {
+        traceMidPoints[M.t(corner)] = P(S);
+    }
 
     int c = corner;
     if (e[0] == 1) {//b
@@ -251,7 +231,7 @@ pt[] TraceMeshStartingFrom(int corner) {
     }
 
     while(true) {
-      corner = TraceInDirection(corner, traceMidPoints, visitedT, true); // Forward pass
+      TraceInDirection(corner, traceMidPoints, visitedT, true); // Forward pass
       TraceInDirection(corner, traceMidPoints, visitedT, false); // Backward pass
       println("=============================================");
 
