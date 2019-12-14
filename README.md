@@ -48,6 +48,7 @@ In the sparse mesh, the neighbor connecting edges are the generally the ones whi
 |  G | show Dense mesh |
 |  I | show hide arrows |
 |  J | show hide corners|
+| 1-9 | load different point sets |
 
 
 
