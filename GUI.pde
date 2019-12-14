@@ -18,15 +18,15 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if (key=='+') refineCounter++;
 
     if (key=='`') filming=!filming;  // filming on/off capture frames into folder IMAGES/MOVIE_FRAMES_TIF/
-    if (key=='1') ;               // toggles what should be displayed at each fram
-    if (key=='2') ;
-    if (key=='3') ;
-    if (key=='4') ;
-    if (key=='5') ;
-    if (key=='6') ;
-    if (key=='7') ;
-    if (key=='8') ;
-    if (key=='9') ;
+    if (key=='1') {pointsFile = "data/pts1"; P.loadPts(pointsFile);}             // toggles what should be displayed at each fram
+    if (key=='2') {pointsFile = "data/pts2"; P.loadPts(pointsFile);}
+    if (key=='3') {pointsFile = "data/pts3"; P.loadPts(pointsFile);}
+    if (key=='4') {pointsFile = "data/pts4"; P.loadPts(pointsFile);}
+    if (key=='5') {pointsFile = "data/pts5"; P.loadPts(pointsFile);}
+    if (key=='6') {pointsFile = "data/pts6"; P.loadPts(pointsFile);}
+    if (key=='7') {pointsFile = "data/pts7"; P.loadPts(pointsFile);}
+    if (key=='8') {pointsFile = "data/pts8"; P.loadPts(pointsFile);}
+    if (key=='9') {pointsFile = "data/pts9"; P.loadPts(pointsFile);}
     if (key=='0') resetBranching=true;
     if (key=='-') refineCounter=max(0, refineCounter-1);
     if (key=='=') ;

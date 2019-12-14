@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 //**************************** global variables ****************************
+String pointsFile = "data/pts0";
 pts P = new pts(); // class containing array of points, used to manipulate arrows
 float t=0.5;
 boolean animate=false, fill=false, timing=false;
@@ -142,7 +143,7 @@ void setup()               // executed once at the begining
     smooth();                  // turn on antialiasing
     P.declare(); // declares all points in P. MUST BE DONE BEFORE ADDING POINTS
     // P.resetOnCircle(4); // sets P to have 4 points and places them in a circle on the canvas
-    P.loadPts("data/pts");  // loads points form file saved with this program
+    P.loadPts(pointsFile);  // loads points form file saved with this program
     Aring.declare();
     RefinedAring.declare();
     TempAring.declare();
