@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 //**************************** global variables ****************************
-String pointsFile = "data/pts0";
+String pointsFile = "data/pts";
 pts P = new pts(); // class containing array of points, used to manipulate arrows
 float t=0.5;
 boolean animate=false, fill=false, timing=false;
@@ -53,20 +53,6 @@ void fillGrid(pts ps) {
     }
 }
 
-float[] calculateNBC(pt A, pt B, pt C, pt P) {
-    float[] ret = new float[3];
-    vec AP = V(A, P);
-    vec AB = V(A, B);
-    vec AC = V(A, C);
-    float denominator =  det(AB, AC);
-
-    // ret 0: A, 1: B, 2: C
-    ret[1] = det(AP, AC) / denominator;
-    ret[2] = det(AB, AP) / denominator;
-    ret[0] = 1 - (ret[1] + ret[2]);
-    return ret;
-}
-
 void drawVectorField(pts grid) {
     for (int i = 0; i < grid.nv; i++) {
 
@@ -105,11 +91,6 @@ void drawVectorField(pts grid) {
             arrow(P, P(P, 10, Pprime));
         }
     }
-}
-
-vec nbcProduct(vec Aprime, vec Bprime, vec Cprime, float[] nbc) {
-    return V(nbc[0] * Aprime.x + nbc[1] * Bprime.x + nbc[2] * Cprime.x, 
-        nbc[0] * Aprime.y + nbc[1] * Bprime.y + nbc[2] * Cprime.y);
 }
 
 void traceOverField(pts control, pt startPoint) {
