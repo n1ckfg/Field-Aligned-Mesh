@@ -132,7 +132,7 @@ void displayMenu()
     float dx=10, dy=30;
     int k=1;
     scribe("Field-aligned triangle mesh", dx, dy*k++);
-    scribe("Harish Krupo KPS, Pranshu Gupta, Georgia Tech, 2019", dx, dy*k++);
+    scribe("Pranshu Gupta, Georgia Tech, 2019", dx, dy*k++);
     scribe(" ------------------------------", dx, dy*k++);
     scribe("MENU       Press SPACE to hide/show this menu", dx, dy*k++);
     scribe("Notation   *:mouseClick, _:mouseDrag", dx, dy*k++);

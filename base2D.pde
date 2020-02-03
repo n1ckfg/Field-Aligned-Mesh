@@ -1,8 +1,7 @@
 // CS6491 Fall 2019, Project 3
 // Authors:
 // Base-code: Jarek ROSSIGNAC
-// Student 1: Harish Krupo KPS
-// Student 2: Pranshu Gupta
+// Student: Pranshu Gupta
 import processing.pdf.*;    // to save screen shots as PDFs, does not always work: accuracy problems, stops drawing or messes up some curves !!!
 import java.awt.Toolkit;
 import java.awt.datatransfer.*;
