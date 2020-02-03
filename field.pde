@@ -169,8 +169,7 @@ int TraceInDirection(int cor, pt[] traceMidPoints,
   int[] e = {-1, -1};
   pt E = P(), MT = P();
   pt S = midOfNext(cor);
-  println(String.format("corner: %d pass %s start %s",
-                        cor, new Boolean(positive), S));
+//   println(String.format("corner: %d pass %s start %s", cor, new Boolean(positive), S));
   int corner = cor;
   int orig_corner = cor;
   pt[] Ps = fillPoints(corner);
@@ -233,7 +232,6 @@ pt[] TraceMeshStartingFrom(int corner) {
     while(true) {
       TraceInDirection(corner, traceMidPoints, visitedT, true); // Forward pass
       TraceInDirection(corner, traceMidPoints, visitedT, false); // Backward pass
-      println("=============================================");
 
       boolean found = false;
       for (int i = 0; i < M.nt; i++) {
