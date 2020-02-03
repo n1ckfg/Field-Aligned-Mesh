@@ -1,7 +1,6 @@
 // Primitives for VECTOR FIELD tracing
 // vector at P of field interpolating 3 arrows: (Pa,Va), (Pb,Vb), (Pc,Vc)
-vec VecAt(pt P, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc)
-{
+vec VecAt(pt P, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc) {
     return computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
 }
 
@@ -17,48 +16,31 @@ int getStrokeWeight(vec v1, vec v2, vec v3, int type) {
     if (type == 0 && (s > 0.8 || e > 0.8)) {
         return 5;
     } 
-    //if (type == 1 && s > 0.9 && e > 0.9) {
-    //    return 5;
-    //}
     return 2;
 }
 
-// draw trace in field from Q, using k points with parameter spacing s
-void drawTraceFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s)
-{
-    pt P=P(Q);
-    beginShape();
-    v(P);
-    for (int i=0; i<k; i++)
-    {
-        vec V = V(50, 20);
-        P=P(P, s, V);
-        // STUDENT:CHANGE THIS CODE
-        v(P);
-    }
-    endShape(POINTS);
+float[] calculateNBC(pt A, pt B, pt C, pt P) {
+    float[] ret = new float[3];
+    vec AP = V(A, P);
+    vec AB = V(A, B);
+    vec AC = V(A, C);
+    float denominator =  det(AB, AC);
+
+    // ret 0: A, 1: B, 2: C
+    ret[1] = det(AP, AC) / denominator;
+    ret[2] = det(AB, AP) / denominator;
+    ret[0] = 1 - (ret[1] + ret[2]);
+    return ret;
+}
+
+vec nbcProduct(vec Aprime, vec Bprime, vec Cprime, float[] nbc) {
+    return V(nbc[0] * Aprime.x + nbc[1] * Bprime.x + nbc[2] * Cprime.x, 
+        nbc[0] * Aprime.y + nbc[1] * Bprime.y + nbc[2] * Cprime.y);
 }
 
 vec computeVectorField(pt P, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc) {
     float[] nbc = calculateNBC(Pa, Pb, Pc, P);
     return nbcProduct(Va, Vb, Vc, nbc);
-}
-
-void drawCorrectedTraceFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s)
-{
-    pt P=P(Q);
-    beginShape();
-    v(P);
-    for (int i=0; i<k; i++)
-    {
-        vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
-        pt Pf=P(P, s, V);
-        strokeWeight(2);
-        stroke(red);
-        P=Pf;
-        v(P);
-    }
-    endShape(POINTS);
 }
 
 void showDenseMesh(pt start, pt end, pt mid, pt a, pt b, pt c) {
@@ -79,7 +61,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va,
                                        int k, float s, pt E, pt MT, color c)
 {
     ArrayList<pt> tracePoints = new ArrayList<pt>();
-    pt P=P(Q);
+    pt P=P(Q); 
     beginShape();
     v(P);
     tracePoints.add(P);
@@ -88,7 +70,6 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va,
     int r=0;
     while (i<k && inTriangle)
     {
-        // STUDENT:CHANGE THIS CODE
         vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
         pt Pn=P(P, s, V);
         inTriangle = isInsideTriangle(Pn, Pa, Pb, Pc);
@@ -164,58 +145,62 @@ pt midOfNext(int corner) {
     return ret;
 }
 
-int TraceInDirection(int cor, pt[] traceMidPoints,
-                     boolean[] visitedT, boolean positive) {
-  int[] e = {-1, -1};
-  pt E = P(), MT = P();
-  pt S = midOfNext(cor);
-//   println(String.format("corner: %d pass %s start %s", cor, new Boolean(positive), S));
-  int corner = cor;
-  int orig_corner = cor;
-  pt[] Ps = fillPoints(corner);
-  vec[] Vs = fillVectors(corner);
-  float step = 0.2;
-  int iterations = 100;
-  if (!positive)
+int TraceInDirection(int cor, pt[] traceMidPoints, boolean[] visitedT, boolean positive, int traceCount) {
+    int[] e = {-1, -1};
+    pt E = P(), MT = P();
+    pt S = midOfNext(cor);
+
+    label(S, str(traceCount));
+    ellipse(S.x, S.y, 20, 20);
+    strokeWeight(1);
+
+    int corner = cor;
+    int orig_corner = cor;
+    pt[] Ps = fillPoints(corner);
+    vec[] Vs = fillVectors(corner);
+    float step = 0.2;
+    int iterations = 100;
+    if (!positive)
     step = -step;
 
-  color col = #8b0000;
-  if (!positive)
-    col = #9400d3;
+    color col = #4dac26;
+    if (!positive)
+    col = #d01c8b;
 
-  while(true) {
-    MT = P();
-    e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col);
-    visitedT[M.t(corner)] = true;
+    while(true) {
+        MT = P();
 
-    if (e[1] > 1 && !MT.equals(P())) {
-      traceMidPoints[M.t(corner)] = P(MT);
-    } else {
-        traceMidPoints[M.t(corner)] = P(S);
+        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col);
+        visitedT[M.t(corner)] = true;
+        
+        if (e[1] > 1 && !MT.equals(P())) {
+            traceMidPoints[M.t(corner)] = P(MT);
+        } else {
+            traceMidPoints[M.t(corner)] = P(S);
+        }
+        if (corner == orig_corner) {
+            traceMidPoints[M.t(corner)] = P(S);
+        }
+
+        int c = corner;
+        if (e[0] == 1) {//b
+            c = M.n(corner);
+        } else if (e[0] == 2) {//c
+            c = M.p(corner);
+        }
+
+        corner = M.u(c); //unswing into the next triangle
+        if ((M.t(corner) == M.t(c)) || //Border case
+            (e[0] == 0) || // Looping inside the triangle
+            (M.exterior[M.t(corner)]) || // Dont consider this triangle
+            (visitedT[M.t(corner)])) { // Check if we have already been in this triangle
+            return orig_corner;
+        }
+        Ps = fillPoints(corner);
+        Vs = fillVectors(corner);
+
+        S = E;
     }
-    if (corner == orig_corner) {
-        traceMidPoints[M.t(corner)] = P(S);
-    }
-
-    int c = corner;
-    if (e[0] == 1) {//b
-      c = M.n(corner);
-    } else if (e[0] == 2) {//c
-      c = M.p(corner);
-    }
-
-    corner = M.u(c); //unswing into the next triangle
-    if ((M.t(corner) == M.t(c)) || //Border case
-        (e[0] == 0) || // Looping inside the triangle
-        (M.exterior[M.t(corner)]) || // Dont consider this triangle
-        (visitedT[M.t(corner)])) { // Check if we have already been in this triangle
-      return orig_corner;
-    }
-    Ps = fillPoints(corner);
-    Vs = fillVectors(corner);
-
-    S = E;
-  }
 }
 
 pt[] TraceMeshStartingFrom(int corner) {
@@ -229,9 +214,12 @@ pt[] TraceMeshStartingFrom(int corner) {
         return traceMidPoints;
     }
 
+    int traceCount = 0;
     while(true) {
-      TraceInDirection(corner, traceMidPoints, visitedT, true); // Forward pass
-      TraceInDirection(corner, traceMidPoints, visitedT, false); // Backward pass
+        traceCount += 1;
+    
+      TraceInDirection(corner, traceMidPoints, visitedT, true, traceCount); // Forward pass
+      TraceInDirection(corner, traceMidPoints, visitedT, false, traceCount); // Backward pass
 
       boolean found = false;
       for (int i = 0; i < M.nt; i++) {
