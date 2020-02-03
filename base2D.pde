@@ -28,7 +28,6 @@ boolean
     showFine=false, 
     showTraceFromMouse=false, 
     showMesh=true, 
-    showFirstField=false, 
     completeVectorField=false, 
     showTriangles=true, 
     showArrows=true, 
@@ -285,93 +284,6 @@ void draw()      // executed at each frame
                 }
             }
         }
-    }
-
-
-    // ==================== TRACING FIELD OF FIRST TRIANGLE ====================
-    if (showFirstField)
-    {
-        ARROW A0 = Aring.A[0], A1 = Aring.A[1], A2 = Aring.A[2]; //First 3 arrows used to test tracing
-        pt Pa = A0.P;
-        vec Va = A0.V;
-        pt Pb = A1.P;
-        vec Vb = A1.V;
-        pt Pc = A2.P;
-        vec Vc = A2.V;
-        pen(grey, 4);
-        fill(yellow, 100);
-        show(Pa, Pb, Pc);
-        noFill();
-
-        pt Ps=P(Pa, Pb);
-        show(Ps, 6); // mid-edge point where trace starts
-        if (showFine) // FOR ACCURACY COMPARISONS
-        {
-            pen(cyan, 2);
-            drawTraceFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 500, 0.005);
-            pen(green, 2);
-            drawTraceFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 50, 0.05);
-        }
-
-        pen(green, 6);
-        fill(green);
-        show(Ps, 4); // start of trace
-        noFill();
-        pen(orange, 1);
-        drawCorrectedTraceFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 100, 0.1);
-        pen(brown, 3);
-        noFill();
-        pt E = P();
-        // exitThrough = drawCorrectedTraceInTriangleFrom(Ps, Pa, Va, Pb, Vb, Pc, Vc, 100, 0.1, E);
-        pen(red, 6);
-        if (exitThrough!=0) {
-            fill(red);
-            show(E, 4);
-            noFill();
-        }
-        if (exitThrough==1) edge(Pb, Pc);
-        if (exitThrough==2) edge(Pc, Pa);
-        if (exitThrough==4) edge(Pa, Pb);
-        if (exitThrough==3) show(Pc, 20);
-        if (exitThrough==6) show(Pa, 20);
-        if (exitThrough==5) show(Pb, 20);
-
-        if (showArrow)
-        {
-            fill(red);
-            stroke(red);
-            arrow(Pa, Va);
-            fill(dgreen);
-            stroke(dgreen);
-            arrow(Pb, Vb) ;
-            fill(blue);
-            pen(blue, 1);
-            arrow(Pc, Vc);
-        }
-
-        noStroke();
-        fill(red);
-        show(Pa, 6);
-        fill(dgreen);
-        show(Pb, 6);
-        fill(blue);
-        show(Pc, 6);
-
-        if (showLabels)
-        {
-            textAlign(CENTER, CENTER);
-            pen(red, 1);
-            showId(Pa, "A");
-            pen(dgreen, 1);
-            showId(Pb, "B");
-            pen(blue, 1);
-            showId(Pc, "C");
-        }
-
-        textAlign(LEFT, TOP);
-        fill(black);
-        scribeHeader("exitThrough code = "+exitThrough, 1);
-        textAlign(CENTER, CENTER);
     }
 
     // ==================== SHOW POINTER AT MOUSE ====================
