@@ -55,11 +55,24 @@ void showDenseMesh(pt start, pt end, pt mid, pt a, pt b, pt c) {
     edge(mid, c);
 }
 
+void showSubdivision() {
+    for (int i = 0; i < M.nt; i++) {
+        pt c1 = M.g(3*i);
+        pt c2 = M.g(M.n(3*i));
+        pt c3 = M.g(M.n(M.n(3*i)));
+        pt m1 = P(c1, c2);
+        pt m2 = P(c2, c3);
+        pt m3 = P(c3, c1);
+        strokeWeight(2);
+        stroke(blue);
+        edge(m1, m2);
+        edge(m2, m3);
+        edge(m3, m1);        
+    }
+}
+
 // returns 0 if trace lies inside triangle, 1 if exited via (B,C), 2 if exited via (C,A), 3 if exited via (A,B),
-int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va,
-                                       pt Pb, vec Vb, pt Pc, vec Vc,
-                                       int k, float s, pt E, pt MT, color c)
-{
+int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s, pt E, pt MT, color c) {
     ArrayList<pt> tracePoints = new ArrayList<pt>();
     pt P=P(Q); 
     beginShape();

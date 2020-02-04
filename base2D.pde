@@ -34,6 +34,7 @@ boolean
     showDenseMeshUI=false, 
     showFAM=false, 
     showGrid=false, 
+    showSubDivision=false,
     showCorners=true;
 
 pts GRID = new pts();
@@ -192,6 +193,10 @@ void draw()      // executed at each frame
         if (showArrows) {
             pen(blue, 2);
             M.drawArrows();
+        }
+
+        if (showSubDivision) {
+            showSubdivision();
         }
     }
 

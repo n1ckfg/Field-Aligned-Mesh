@@ -7,7 +7,7 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
     if (key=='!') snapJPG=true; // make a .PDF picture of the canvas, compact, poor quality
     if (key=='@') snapTIF=true; // make a .TIF picture of the canvas, better quality, but large file
     if (key=='#') showTiles=!showTiles;
-    if (key=='$') ;
+    if (key=='$') showSubDivision=!showSubDivision;
     if (key=='%') ;
     if (key=='^') ;
     if (key=='&') ;
