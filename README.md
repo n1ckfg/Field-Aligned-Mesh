@@ -40,6 +40,7 @@ In the sparse mesh, the neighbor connecting edges are the generally the ones whi
 | Key | Binding |
 | --- | ------- |
 |  M | Show the delaunay triangulation |
+|  $ | Show subdivision of triangulation |
 |  m | Show the trace from the triangle under mouse |
 |  N | show the field aligned triangle mesh |
 |  g | show the field |
@@ -49,6 +50,10 @@ In the sparse mesh, the neighbor connecting edges are the generally the ones whi
 |  I | show hide arrows |
 |  J | show hide corners|
 | 1-9 | load different point sets |
+
+## Contributors
+- Pranshu Gupta
+- Harish Krupo KPS
 
 
 
