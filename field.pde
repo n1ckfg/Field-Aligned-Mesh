@@ -165,10 +165,49 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
             }
             Pn = E;
         } else {
-            // println(Pa); println(Pb); println(Pc);
-            int subtIndex = isInsideSubTriangle(t, Pn);
-            // println(subtIndex);
-            visitedT[t][subtIndex] = true;
+            int subtIndex1 = isInsideSubTriangle(t, P);
+            visitedT[t][subtIndex1] = true;
+            int subtIndex2 = isInsideSubTriangle(t, Pn);
+            if ((subtIndex2 != subtIndex1) && visitedT[t][subtIndex2]) {
+                inTriangle = false;
+                // get the intersection of the line segment made by the previous point
+                pt[] subPoints = getSubDivision(t);
+                pt sa, sb, sc;
+                if (subtIndex2 == 0) {
+                    sa = subPoints[0];
+                    sb = subPoints[1];
+                    sc = subPoints[2];
+                } else if (subtIndex2 == 1) {
+                    sa = Pa;
+                    sb = subPoints[0];
+                    sc = subPoints[2];
+                } else if (subtIndex2 == 2) {
+                    sa = subPoints[1];
+                    sb = Pb;
+                    sc = subPoints[0];
+                } else {
+                    sa = subPoints[1];
+                    sb = subPoints[2];
+                    sc = Pc;
+                }
+                pt E1 = getIntersection(P, Pn, sb, sc);
+                pt E2 = getIntersection(P, Pn, sc, sa);
+                pt E3 = getIntersection(P, Pn, sa, sb);
+                if (E1 != null) {
+                    r = 1;
+                    E.x = E1.x; 
+                    E.y = E1.y;
+                } else if (E2 != null) {
+                    r = 2;
+                    E.x = E2.x; 
+                    E.y = E2.y;
+                } else if (E3 != null) {
+                    r = 3;
+                    E.x = E3.x; 
+                    E.y = E3.y;
+                }
+                Pn = E;
+            }
         }
         strokeWeight(2);
         stroke(c);
@@ -219,8 +258,8 @@ int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visited
     int orig_corner = cor;
     pt[] Ps = fillPoints(corner);
     vec[] Vs = fillVectors(corner);
-    float step = 0.2;
-    int iterations = 100;
+    float step = 0.1;
+    int iterations = 200;
     if (!positive)
         step = -step;
 
