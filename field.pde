@@ -144,7 +144,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
     {
         vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
         pt Pn = P(P, s, V);
-        inTriangle = isInsideTriangle(Pn, Pa, Pb, Pc);
+        inTriangle = isOnTriangleFace(Pn, Pa, Pb, Pc);
         if (!inTriangle) {
             // get the intersection of the line segment made by the previous point
             pt E1 = getIntersection(P, Pn, Pb, Pc);
@@ -259,7 +259,7 @@ int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visited
     pt[] Ps = fillPoints(corner);
     vec[] Vs = fillVectors(corner);
     float step = 0.1;
-    int iterations = 200;
+    int iterations = 5000;
     if (!positive)
         step = -step;
 
@@ -294,15 +294,37 @@ int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visited
         corner = M.u(c); //unswing into the next triangle
 
         int subtIndex = isInsideSubTriangle(M.t(corner), E);
+        // pt xa = M.g(corner);
+        // pt xb = M.g(M.n(corner));
+        // pt xc = M.g(M.n(M.n(corner)));
+        // println("distance:", d(xa, E) + d(E, xc), d(xa, xc));
+        // println(turnAngle(xa, xb, E), turnAngle(xb, xc, E), turnAngle(xc, xa, E));
+        // println(E);
+        show(E, 5);
 
-
-        if ((M.t(corner) == M.t(c)) || //Border case
-            (e[0] == 0) || // Looping inside the triangle
-            (M.exterior[M.t(corner)]) || // Dont consider this triangle
-            (subtIndex < 0) ||
-            (visitedT[M.t(corner)][subtIndex])) { // Check if we have already been in this triangle
+        if (M.t(corner) == M.t(c)) { 
+            // the triangle lies on the boundary
+            // println(traceCount, "the triangle lies on the boundary");
             return orig_corner;
         }
+        if (e[0] == 0) {
+            // looping inside the triangle
+            // println(traceCount, "looping inside the triangle");
+            return orig_corner;
+        } 
+        if (M.exterior[M.t(corner)]) {
+            // this triangle is marked as exterior
+            // println(traceCount, "this triangle is marked as exterior");
+            return orig_corner;
+        }
+        if (subtIndex < 0 || visitedT[M.t(corner)][subtIndex]) {
+            // Check if we have already been in this triangle
+            // println(subtIndex, corner, "we have already been in this triangle");
+            return orig_corner;
+        }
+
+        
+        // println(corner, E);
 
         // initiate the next traingle start point and vectors
         Ps = fillPoints(corner);
