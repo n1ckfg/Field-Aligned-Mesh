@@ -812,8 +812,19 @@ pt pointOnArcThrough (pt A, pt B, pt C, float t)
     return R(A, t*c, O);
 }
 
+boolean isOnTriangleBoundary(pt Pm, pt Pa, pt Pb, pt Pc) {
+    return abs(d(Pa, Pm) + d(Pm, Pb) - d(Pa, Pb)) < 0.0001 || 
+    abs(d(Pb, Pm) + d(Pm, Pc) - d(Pc, Pb)) < 0.0001 ||
+    abs(d(Pa, Pm) + d(Pm, Pc) - d(Pa, Pc)) < 0.0001;
+}
+
+boolean isOnTriangleFace(pt Pm, pt Pa, pt Pb, pt Pc) {
+    return 
+    (turnAngle(Pa, Pb, Pm) > 0 && turnAngle(Pb, Pc, Pm) > 0  && turnAngle(Pc, Pa, Pm) > 0);
+}
+
 boolean isInsideTriangle(pt Pm, pt Pa, pt Pb, pt Pc) {
-    return turnAngle(Pa, Pb, Pm) > 0 && turnAngle(Pb, Pc, Pm) > 0  && turnAngle(Pc, Pa, Pm) > 0 ;
+    return isOnTriangleFace(Pm, Pa, Pb, Pc) || isOnTriangleBoundary(Pm, Pa, Pb, Pc);
 }
 
 
