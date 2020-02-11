@@ -1,3 +1,13 @@
+class TracePoint {
+    public pt point;
+    public int traceId;
+
+    TracePoint(pt point, int traceId) {
+        this.point = point;
+        this.traceId = traceId;
+    }
+}
+
 // Primitives for VECTOR FIELD tracing
 // vector at P of field interpolating 3 arrows: (Pa,Va), (Pb,Vb), (Pc,Vc)
 float[] calculateNBC(pt A, pt B, pt C, pt P) {
@@ -127,23 +137,25 @@ pt getStartingPoint(int corner, int face) {
 }
 
 // returns 0 if trace lies inside triangle, 1 if exited via (B,C), 2 if exited via (C,A), 3 if exited via (A,B),
-int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, int k, float s, pt E, pt MT, color c, boolean[][] visitedT, int t) {
-    // Initialie the points array for the trace
-    ArrayList<pt> tracePoints = new ArrayList<pt>();
-
+int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, pt E, color c, boolean[][] visitedT, int t, int traceId, ArrayList<TracePoint>[][] tracePoints) {
+    
     // Begin the shape marker for tracing
-    pt P = P(Q); 
+    pt P = P(Q);
+
+    int subtIndex = isInsideSubTriangle(t, P);
+    TracePoint x = new TracePoint(P, traceId);
+    tracePoints[t][subtIndex].add(x);
+
     beginShape();
     v(P);
-    tracePoints.add(P);
 
     int i = 0;
     boolean inTriangle = true; // flag that the trace point is inside the triangle
     int r = 0;
-    while (i < k && inTriangle)
+    while (i < iterations && inTriangle)
     {
         vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
-        pt Pn = P(P, s, V);
+        pt Pn = P(P, step, V);
         inTriangle = isOnTriangleFace(Pn, Pa, Pb, Pc);
         if (!inTriangle) {
             // get the intersection of the line segment made by the previous point
@@ -166,8 +178,8 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
             Pn = E;
         } else {
             int subtIndex1 = isInsideSubTriangle(t, P);
-            visitedT[t][subtIndex1] = true;
             int subtIndex2 = isInsideSubTriangle(t, Pn);
+            visitedT[t][subtIndex1] = true;
             if (subtIndex2 != subtIndex1) {
                 pt[] subPoints = getSubDivision(t);
                 pt sa, sb, sc;
@@ -193,11 +205,17 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
                 pt E2 = getIntersection(P, Pn, sc, sa);
                 pt E3 = getIntersection(P, Pn, sa, sb);
                 if (E1 != null) {
-                        show(E1, 5);
-                    } else if (E2 != null) {
-                        show(E2, 5);
-                    } else if (E3 != null) {
-                        show(E3, 5);
+                    // show(E1, 5);
+                    tracePoints[t][subtIndex1].add(new TracePoint(E1, traceId));
+                    tracePoints[t][subtIndex2].add(new TracePoint(E1, traceId));
+                } else if (E2 != null) {
+                    // show(E2, 5);
+                    tracePoints[t][subtIndex1].add(new TracePoint(E2, traceId));
+                    tracePoints[t][subtIndex2].add(new TracePoint(E2, traceId));
+                } else if (E3 != null) {
+                    // show(E3, 5);
+                    tracePoints[t][subtIndex1].add(new TracePoint(E3, traceId));
+                    tracePoints[t][subtIndex2].add(new TracePoint(E3, traceId));
                 }
                 if (visitedT[t][subtIndex2]) {
                     inTriangle = false;
@@ -221,7 +239,6 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
         strokeWeight(2);
         stroke(c);
         v(Pn);
-        tracePoints.add(Pn);
         P = Pn;
         i++;
     }
@@ -231,25 +248,11 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
     ret[1] = i;
 
     endShape(POINTS);
-    //println(r, "field");
-
-    if (ret[1] > 1) {
-        pt sp = tracePoints.get(0);
-        pt ep = tracePoints.get(tracePoints.size()-1);
-        pt mp = tracePoints.get(tracePoints.size()/2);
-
-        MT.x = mp.x; 
-        MT.y = mp.y;
-
-        if (showDenseMeshUI) {
-            showDenseMesh(sp, ep, mp, Pa, Pb, Pc);
-        }
-    }
 
     return ret;
 }
 
-int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visitedT, boolean positive, int traceCount) {
+int TraceInDirection(int cor, int face, ArrayList<TracePoint>[][] tracePoints, boolean[][] visitedT, boolean positive, int traceCount) {
     // Initialize exit and step counts
     int[] e = {-1, -1};
 
@@ -262,13 +265,11 @@ int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visited
     ellipse(S.x, S.y, 20, 20);
     strokeWeight(1);
 
-
     int corner = cor;
     int orig_corner = cor;
     pt[] Ps = fillPoints(corner);
     vec[] Vs = fillVectors(corner);
-    float step = 0.1;
-    int iterations = 5000;
+
     if (!positive)
         step = -step;
 
@@ -277,20 +278,9 @@ int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visited
         col = #d01c8b;
 
     while(true) {
-        MT = P();
 
         // trace in this triangle
-        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], iterations, step, E, MT, col, visitedT, M.t(corner));
-
-        // storing the midpoint of the trace for this triangle
-        if (e[1] > 1 && !MT.equals(P())) {
-            traceMidPoints[M.t(corner)] = P(MT);
-        } else {
-            traceMidPoints[M.t(corner)] = P(S);
-        }
-        if (corner == orig_corner) {
-            traceMidPoints[M.t(corner)] = P(S);
-        }
+        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], E, col, visitedT, M.t(corner), traceCount, tracePoints);
 
         // get to the exit corner
         int c = corner;
@@ -302,14 +292,7 @@ int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visited
 
         corner = M.u(c); //unswing into the next triangle
 
-        int subtIndex = isInsideSubTriangle(M.t(corner), E);
-        // pt xa = M.g(corner);
-        // pt xb = M.g(M.n(corner));
-        // pt xc = M.g(M.n(M.n(corner)));
-        // println("distance:", d(xa, E) + d(E, xc), d(xa, xc));
-        // println(turnAngle(xa, xb, E), turnAngle(xb, xc, E), turnAngle(xc, xa, E));
-        // println(E);
-        show(E, 5);
+        // show(E, 5);
 
         if (M.t(corner) == M.t(c)) { 
             // the triangle lies on the boundary
@@ -326,14 +309,12 @@ int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visited
             // println(traceCount, "this triangle is marked as exterior");
             return orig_corner;
         }
+        int subtIndex = isInsideSubTriangle(M.t(corner), E);
         if (subtIndex < 0 || visitedT[M.t(corner)][subtIndex]) {
             // Check if we have already been in this triangle
             // println(subtIndex, corner, "we have already been in this triangle");
             return orig_corner;
         }
-
-        
-        // println(corner, E);
 
         // initiate the next traingle start point and vectors
         Ps = fillPoints(corner);
@@ -342,7 +323,7 @@ int TraceInDirection(int cor, int face, pt[] traceMidPoints, boolean[][] visited
     }
 }
 
-pt[] TraceMeshStartingFrom(int corner) {
+ArrayList<TracePoint>[][] TraceMeshStartingFrom(int corner) {
     int face = 0;
     // Initialize all triangles and their subdivisions as unvisited
     boolean visitedT[][] = new boolean[M.nt][4];
@@ -350,12 +331,17 @@ pt[] TraceMeshStartingFrom(int corner) {
         Arrays.fill(visitedT[i], false);
     }
 
-    // Create an array to store the trace midpoints
-    pt traceMidPoints[] = new pt[M.nt];
+    // ArrayList of points to store the tracepoints for each subtriangle
+    ArrayList<TracePoint> tracePoints[][] = (ArrayList<TracePoint>[][])new ArrayList[M.nt][4];
+    for (int i = 0; i < M.nt; i++) {
+        for (int j = 0; j < 4; j++) {
+            tracePoints[i][j] = new ArrayList<TracePoint>();
+        }
+    }
     
     // If this triangle is marked as exterior, return
     if (M.exterior[M.t(corner)]) {
-        return traceMidPoints;
+        return tracePoints;
     }
 
     // Begin tracing
@@ -363,8 +349,8 @@ pt[] TraceMeshStartingFrom(int corner) {
     while(traceCount < maxTraceCount) {
         traceCount += 1;
     
-        TraceInDirection(corner, face, traceMidPoints, visitedT, true, traceCount); // Forward pass
-        TraceInDirection(corner, face, traceMidPoints, visitedT, false, traceCount); // Backward pass
+        TraceInDirection(corner, face, tracePoints, visitedT, true, traceCount); // Forward pass
+        TraceInDirection(corner, face, tracePoints, visitedT, false, traceCount); // Backward pass
 
         // find the next unvisited triangle
         boolean found = false;
@@ -399,5 +385,16 @@ pt[] TraceMeshStartingFrom(int corner) {
         }   
     }
 
-    return traceMidPoints;
+    return tracePoints;
+}
+
+void ShowFieldAlignedMesh (ArrayList<TracePoint>[][] tracePoints) {
+    for (int i = 0; i < M.nt; i++) {
+        for (int j = 0; j < 4; j++) {
+            for (int k = 0; k < tracePoints[i][j].size(); k++) {
+                stroke(red);
+                show(tracePoints[i][j].get(k).point, 10);
+            }
+        }
+    }
 }
