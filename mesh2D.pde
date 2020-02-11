@@ -218,24 +218,6 @@ class MESH {
         int fbc = M.firstBorderCorner();
         return P(g(p(fbc)), g(n(fbc)));
     }
-    void tracePathFromMidEdgeFacingCorner(int sc) // sc = start corner
-    {
-        pt P = P(g(p(sc)), g(n(sc))); // start at midpoint of edge facing sc
-        int c = sc;
-        //pen(magenta, 3);
-        //show(cg(c), 8);
-        for (int i=0; i<1; i++)
-        {
-            pt Q = P();
-            pen(brown, 3);
-            noFill();
-            // int exitCode = drawCorrectedTraceInTriangleFrom(P, g(c), f(c), g(n(c)), f(n(c)), g(p(c)), f(p(c)), 200, 0.1, Q);
-            // STUDENT: ADD CODE HERE
-            //pen(magenta, 3);
-            //show(cg(c), 8);
-            P.setTo(Q);
-        }
-    }
 
     // CURRENT CORNER OPERATORS
     void next() {
