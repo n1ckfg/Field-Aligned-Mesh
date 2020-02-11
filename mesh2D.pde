@@ -82,18 +82,6 @@ class MESH {
         }
     }
 
-    //ArrayList<Integer> getNeighborVertices(int v) {
-    //    int s = c(v), c = c(v);
-    //    ArrayList<Integer> ret = new ArrayList<Integer>();
-    //    ret.add(n(c)); // need to check for border cases
-    //    while (s != s(c)) {
-    //        c = s(c);
-    //        int nextCorner = n(c);
-    //        ret.add(v(nextCorner));
-    //    }
-    //    return ret;
-    //}
-
     ArrayList<Integer>[] getVertexNeighbourMapping() {
         ArrayList<Integer>[] vnm = (ArrayList<Integer>[]) new ArrayList[nv];
         for (int i = 0; i < nv; i++) {
@@ -126,19 +114,6 @@ class MESH {
         }
         return Fout;
     }
-
-    //void untuck (vec[] FCopy, ArrayList<Integer>[] vnm, float alpha) {
-    //    for (int i = 0; i < nv; i++) {
-    //        vec avg = V(0, 0);
-    //        ArrayList<Integer> neighbors = vnm[i];
-    //        for (int j = 0; j < neighbors.size(); j++) {
-    //            avg = W(avg, FCopy[neighbors.get(j)]);
-    //        }
-    //        avg.x = avg.x / neighbors.size();
-    //        avg.y = avg.y / neighbors.size();
-    //        FCopy[i] = W(FCopy[i], W(-alpha, avg));
-    //    }
-    //}
 
     void snap (vec[] FCopy) {
         for (int i = 0; i < constrainedIndices.size(); i++) {
