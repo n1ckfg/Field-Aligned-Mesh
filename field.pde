@@ -66,7 +66,7 @@ void showSubdivision() {
     for (int i = 0; i < M.nt; i++) {
         pt[] subPoints = getSubDivision(i);
         strokeWeight(2);
-        stroke(blue);
+        stroke(#0571b0);
         edge(subPoints[0], subPoints[1]);
         edge(subPoints[1], subPoints[2]);
         edge(subPoints[2], subPoints[0]);        
@@ -168,9 +168,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
             int subtIndex1 = isInsideSubTriangle(t, P);
             visitedT[t][subtIndex1] = true;
             int subtIndex2 = isInsideSubTriangle(t, Pn);
-            if ((subtIndex2 != subtIndex1) && visitedT[t][subtIndex2]) {
-                inTriangle = false;
-                // get the intersection of the line segment made by the previous point
+            if (subtIndex2 != subtIndex1) {
                 pt[] subPoints = getSubDivision(t);
                 pt sa, sb, sc;
                 if (subtIndex2 == 0) {
@@ -190,23 +188,34 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
                     sb = subPoints[2];
                     sc = Pc;
                 }
+                // get the intersection of the line segment made by the previous point
                 pt E1 = getIntersection(P, Pn, sb, sc);
                 pt E2 = getIntersection(P, Pn, sc, sa);
                 pt E3 = getIntersection(P, Pn, sa, sb);
                 if (E1 != null) {
-                    r = 1;
-                    E.x = E1.x; 
-                    E.y = E1.y;
-                } else if (E2 != null) {
-                    r = 2;
-                    E.x = E2.x; 
-                    E.y = E2.y;
-                } else if (E3 != null) {
-                    r = 3;
-                    E.x = E3.x; 
-                    E.y = E3.y;
+                        show(E1, 5);
+                    } else if (E2 != null) {
+                        show(E2, 5);
+                    } else if (E3 != null) {
+                        show(E3, 5);
                 }
-                Pn = E;
+                if (visitedT[t][subtIndex2]) {
+                    inTriangle = false;
+                    if (E1 != null) {
+                        r = 1;
+                        E.x = E1.x; 
+                        E.y = E1.y;
+                    } else if (E2 != null) {
+                        r = 2;
+                        E.x = E2.x; 
+                        E.y = E2.y;
+                    } else if (E3 != null) {
+                        r = 3;
+                        E.x = E3.x; 
+                        E.y = E3.y;
+                    }
+                    Pn = E;
+                }
             }
         }
         strokeWeight(2);
