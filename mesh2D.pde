@@ -371,10 +371,12 @@ class MESH {
         noFill();
     }
     void showCorner(int c, float r) {
-         if (bord(c)) show(cg(c), 1.5*r);
-         else show(cg(c), r);
-        //label(cg(c), str(c));
-    };   // renders corner c
+        if (bord(c)) show(cg(c), 1.5*r);
+        else show(cg(c), r);
+        // label(cg(c), str(c));
+    }
+    
+    // renders corner c
     void showCorners(float r)
     {
         noStroke();

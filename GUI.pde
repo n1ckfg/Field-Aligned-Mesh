@@ -127,9 +127,11 @@ void keyPressed()  // executed each time a key is pressed: sets the Boolean "key
         };
         if (keyCode == LEFT) {
             pressed="LEFT";
+            maxTraceCount = max(maxTraceCount-1, 0);
         };
         if (keyCode == RIGHT) {
             pressed="RIGHT";
+            maxTraceCount += 1;
         };
         if (keyCode == ALT) {
             pressed="ALT";

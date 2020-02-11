@@ -351,7 +351,7 @@ pt[] TraceMeshStartingFrom(int corner) {
 
     // Begin tracing
     int traceCount = 0;
-    while(true) {
+    while(traceCount < maxTraceCount) {
         traceCount += 1;
     
         TraceInDirection(corner, face, traceMidPoints, visitedT, true, traceCount); // Forward pass

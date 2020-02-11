@@ -21,6 +21,7 @@ ARROWRING Aring = new ARROWRING();
 ARROWRING RefinedAring = new ARROWRING();
 ARROWRING TempAring = new ARROWRING();
 int refineCounter = 6;
+int maxTraceCount = 1;
 int f=0, df=int(pow(2, refineCounter));
 float ft=0;
 PFont bigFont; // for showing large labels at corner
