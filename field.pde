@@ -175,6 +175,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
                 E.x = E3.x; 
                 E.y = E3.y;
             }
+            tracePoints[t][subtIndex].add(new TracePoint(P(E), traceId));
             Pn = E;
         } else {
             int subtIndex1 = isInsideSubTriangle(t, P);
