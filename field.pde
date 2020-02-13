@@ -137,14 +137,15 @@ pt getStartingPoint(int corner, int face) {
 }
 
 // returns 0 if trace lies inside triangle, 1 if exited via (B,C), 2 if exited via (C,A), 3 if exited via (A,B),
-int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, pt E, color c, boolean[][] visitedT, int t, int traceId, ArrayList<TracePoint>[][] tracePoints) {
+int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, pt E, color c, boolean[][] visitedT, int t, int traceId, ArrayList<TracePoint>[][] tracePoints, boolean first) {
     
     // Begin the shape marker for tracing
     pt P = P(Q);
 
     int subtIndex = isInsideSubTriangle(t, P);
-    TracePoint x = new TracePoint(P, traceId);
-    tracePoints[t][subtIndex].add(x);
+    if (!first) {
+        tracePoints[t][subtIndex].add(new TracePoint(P, traceId));
+    }
 
     beginShape();
     v(P);
@@ -278,10 +279,12 @@ int TraceInDirection(int cor, int face, ArrayList<TracePoint>[][] tracePoints, b
     if (!positive)
         col = #d01c8b;
 
+    boolean first = true;
     while(true) {
 
         // trace in this triangle
-        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], E, col, visitedT, M.t(corner), traceCount, tracePoints);
+        e = drawCorrectedTraceInTriangleFrom(S, Ps[0], Vs[0], Ps[1], Vs[1], Ps[2], Vs[2], E, col, visitedT, M.t(corner), traceCount, tracePoints, first);
+        first = false;
 
         // get to the exit corner
         int c = corner;
@@ -394,7 +397,8 @@ void ShowFieldAlignedMesh (ArrayList<TracePoint>[][] tracePoints) {
         for (int j = 0; j < 4; j++) {
             for (int k = 0; k < tracePoints[i][j].size(); k++) {
                 stroke(red);
-                show(tracePoints[i][j].get(k).point, 10);
+                fill(red);
+                show(tracePoints[i][j].get(k).point, 5);
             }
         }
     }
