@@ -155,6 +155,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
     int r = 0;
     while (i < iterations && inTriangle)
     {
+        int subtIndex1 = isInsideSubTriangle(t, P);
         vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
         pt Pn = P(P, step, V);
         inTriangle = isOnTriangleFace(Pn, Pa, Pb, Pc);
@@ -176,10 +177,9 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
                 E.x = E3.x; 
                 E.y = E3.y;
             }
-            tracePoints[t][subtIndex].add(new TracePoint(P(E), traceId));
+            tracePoints[t][subtIndex1].add(new TracePoint(P(E), traceId));
             Pn = E;
         } else {
-            int subtIndex1 = isInsideSubTriangle(t, P);
             int subtIndex2 = isInsideSubTriangle(t, Pn);
             visitedT[t][subtIndex1] = true;
             if (subtIndex2 != subtIndex1) {
@@ -208,16 +208,16 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
                 pt E3 = getIntersection(P, Pn, sa, sb);
                 if (E1 != null) {
                     // show(E1, 5);
-                    tracePoints[t][subtIndex1].add(new TracePoint(E1, traceId));
-                    tracePoints[t][subtIndex2].add(new TracePoint(E1, traceId));
+                    tracePoints[t][subtIndex1].add(new TracePoint(P(E1), traceId));
+                    tracePoints[t][subtIndex2].add(new TracePoint(P(E1), traceId));
                 } else if (E2 != null) {
                     // show(E2, 5);
-                    tracePoints[t][subtIndex1].add(new TracePoint(E2, traceId));
-                    tracePoints[t][subtIndex2].add(new TracePoint(E2, traceId));
+                    tracePoints[t][subtIndex1].add(new TracePoint(P(E2), traceId));
+                    tracePoints[t][subtIndex2].add(new TracePoint(P(E2), traceId));
                 } else if (E3 != null) {
                     // show(E3, 5);
-                    tracePoints[t][subtIndex1].add(new TracePoint(E3, traceId));
-                    tracePoints[t][subtIndex2].add(new TracePoint(E3, traceId));
+                    tracePoints[t][subtIndex1].add(new TracePoint(P(E3), traceId));
+                    tracePoints[t][subtIndex2].add(new TracePoint(P(E3), traceId));
                 }
                 if (visitedT[t][subtIndex2]) {
                     inTriangle = false;
@@ -396,9 +396,17 @@ void ShowFieldAlignedMesh (ArrayList<TracePoint>[][] tracePoints) {
     for (int i = 0; i < M.nt; i++) {
         for (int j = 0; j < 4; j++) {
             for (int k = 0; k < tracePoints[i][j].size(); k++) {
+                for (int l = k+1; l < tracePoints[i][j].size(); l++) {
+                    if (tracePoints[i][j].get(k).traceId == tracePoints[i][j].get(l).traceId) {
+                        strokeWeight(5);
+                        stroke(blue);
+                        edge(tracePoints[i][j].get(k).point, tracePoints[i][j].get(l).point);
+                    }
+                }
                 stroke(red);
                 fill(red);
-                show(tracePoints[i][j].get(k).point, 5);
+                show(tracePoints[i][j].get(k).point, 2);
+                noFill();
             }
         }
     }
