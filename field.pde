@@ -395,19 +395,23 @@ ArrayList<TracePoint>[][] TraceMeshStartingFrom(int corner) {
 void ShowFieldAlignedMesh (ArrayList<TracePoint>[][] tracePoints) {
     for (int i = 0; i < M.nt; i++) {
         for (int j = 0; j < 4; j++) {
-            for (int k = 0; k < tracePoints[i][j].size(); k++) {
-                for (int l = k+1; l < tracePoints[i][j].size(); l++) {
-                    if (tracePoints[i][j].get(k).traceId == tracePoints[i][j].get(l).traceId) {
-                        strokeWeight(5);
-                        stroke(blue);
-                        edge(tracePoints[i][j].get(k).point, tracePoints[i][j].get(l).point);
-                    }
-                }
-                stroke(red);
-                fill(red);
-                show(tracePoints[i][j].get(k).point, 2);
-                noFill();
+            drawMeshInSubdivision(tracePoints[i][j]);
+        }
+    }
+}
+
+void drawMeshInSubdivision(ArrayList<TracePoint> tracePoints) {
+    for (int k = 0; k < tracePoints.size(); k++) {
+        for (int l = k+1; l < tracePoints.size(); l++) {
+            if (tracePoints.get(k).traceId == tracePoints.get(l).traceId) {
+                strokeWeight(5);
+                stroke(blue);
+                edge(tracePoints.get(k).point, tracePoints.get(l).point);
             }
         }
+        stroke(red);
+        fill(red);
+        show(tracePoints.get(k).point, 2);
+        noFill();
     }
 }
