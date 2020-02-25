@@ -41,6 +41,8 @@ boolean
     showSubDivision=false,
     showCorners=true;
 
+boolean shown = false;
+
 pts GRID = new pts();
 
 int exitThrough=0;
@@ -123,7 +125,7 @@ void setup()               // executed once at the begining
 {
     //size(1000, 1000, P2D);            // window size
     size(1200, 1200);            // window size
-    //frameRate(30);             // render 30 frames per second
+    frameRate(30);             // render 30 frames per second
     smooth();                  // turn on antialiasing
     P.declare(); // declares all points in P. MUST BE DONE BEFORE ADDING POINTS
     // P.resetOnCircle(4); // sets P to have 4 points and places them in a circle on the canvas
@@ -142,6 +144,7 @@ void setup()               // executed once at the begining
 //**************************** display current frame ****************************
 void draw()      // executed at each frame
 {
+    shown = false;
     if (recordingPDF) startRecordingPDF(); // starts recording graphics to make a PDF
     background(white); // clear screen and paints white background
 

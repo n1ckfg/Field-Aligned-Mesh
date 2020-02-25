@@ -72,6 +72,31 @@ pt[] getSubDivision(int i) {
     return subPoints;
 }
 
+pt[] getSubDivisionK(int i, int k) {
+    pt[] subPoints = new pt[3];
+    pt c1 = M.g(3*i);
+    pt c2 = M.g(M.n(3*i));
+    pt c3 = M.g(M.n(M.n(3*i)));
+    if (k == 1) {
+        subPoints[0] = P(c1, c2);
+        subPoints[1] = P(c1);
+        subPoints[2] = P(c3, c1); 
+    } else if (k == 2) {
+        subPoints[0] = P(c1, c2);
+        subPoints[1] = P(c2, c3);
+        subPoints[2] = P(c2); 
+    } else if (k == 3){
+        subPoints[0] = P(c3);
+        subPoints[1] = P(c2, c3);
+        subPoints[2] = P(c3, c1); 
+    } else {
+        subPoints[0] = P(c1, c2);
+        subPoints[1] = P(c2, c3);
+        subPoints[2] = P(c3, c1); 
+    }
+    return subPoints;  
+}
+
 void showSubdivision() {
     for (int i = 0; i < M.nt; i++) {
         pt[] subPoints = getSubDivision(i);
@@ -272,12 +297,14 @@ int TraceInDirection(int cor, int face, ArrayList<TracePoint>[][] tracePoints, b
     pt[] Ps = fillPoints(corner);
     vec[] Vs = fillVectors(corner);
 
-    if (!positive)
-        step = -step;
-
     color col = #4dac26;
-    if (!positive)
+    if (!positive) {
+        step = -abs(step);
         col = #d01c8b;
+    } else {
+        step = abs(step);
+        col = #4dac26; 
+    }
 
     boolean first = true;
     while(true) {
@@ -395,18 +422,76 @@ ArrayList<TracePoint>[][] TraceMeshStartingFrom(int corner) {
 void ShowFieldAlignedMesh (ArrayList<TracePoint>[][] tracePoints) {
     for (int i = 0; i < M.nt; i++) {
         for (int j = 0; j < 4; j++) {
-            drawMeshInSubdivision(tracePoints[i][j]);
+            pt[] vertices = getSubDivisionK(i, j);
+            drawMeshInSubdivision(tracePoints[i][j], vertices, i, j);
         }
     }
 }
 
-void drawMeshInSubdivision(ArrayList<TracePoint> tracePoints) {
+
+void drawMeshInSubdivision(ArrayList<TracePoint> tracePoints, pt[] vertices, int t, int s) {
     for (int k = 0; k < tracePoints.size(); k++) {
         for (int l = k+1; l < tracePoints.size(); l++) {
             if (tracePoints.get(k).traceId == tracePoints.get(l).traceId) {
                 strokeWeight(5);
                 stroke(blue);
                 edge(tracePoints.get(k).point, tracePoints.get(l).point);
+
+                // we have a trace edge here 
+                ArrayList<pt> left = new ArrayList<pt>();
+                ArrayList<Float> leftAngles = new ArrayList<Float>();
+                ArrayList<pt> right = new ArrayList<pt>();
+                ArrayList<Float> rightAngles = new ArrayList<Float>();
+
+                for (int i = 0; i < vertices.length; i++) {
+                    float vAngle = turnAngle(tracePoints.get(k).point, tracePoints.get(l).point, vertices[i]);
+                    if (vAngle > 0) {
+                        right.add(vertices[i]);
+                        rightAngles.add(vAngle);
+                        if (t == 0 && s == 0) {
+                            fill(magenta);
+                            show(vertices[i], 10);
+                            noFill();                           
+                        }
+                    } else {
+                        left.add(vertices[i]);
+                        leftAngles.add(vAngle);
+                        if (t == 0 && s == 0) {
+                            fill(black);
+                            show(vertices[i], 10);
+                            noFill();                     
+                        }
+                    }
+                }
+stroke(red);
+                    fill(yellow);
+                    show(tracePoints.get(k).point, 5);
+                    noFill();
+                    stroke(red);
+                    fill(yellow);
+                    show(tracePoints.get(l).point, 5);
+                    noFill();
+                    if (left.size() == 2) {
+                        if (leftAngles.get(0) > leftAngles.get(1)) {
+                            strokeWeight(2);
+                            stroke(blue);
+                            edge(tracePoints.get(l).point, left.get(0));                        
+                        } else if (leftAngles.get(0) < leftAngles.get(1)) {
+                            strokeWeight(2);
+                            stroke(blue);
+                            edge(tracePoints.get(k).point, left.get(1)); 
+                        }
+                    } else if (right.size() == 2) {
+                        if (rightAngles.get(0) < rightAngles.get(1)) {
+                            strokeWeight(2);
+                            stroke(blue);
+                            edge(tracePoints.get(l).point, right.get(0));                        
+                        } else if (rightAngles.get(0) > rightAngles.get(1)) {
+                            strokeWeight(2);
+                            stroke(blue);
+                            edge(tracePoints.get(k).point, right.get(1)); 
+                        }
+                    }
             }
         }
         stroke(red);
