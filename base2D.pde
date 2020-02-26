@@ -24,6 +24,7 @@ int refineCounter = 6;
 int maxTraceCount = 1;
 float step = 0.1;
 int iterations = 5000;
+int ct = 0, cs = 0;
 
 int f=0, df=int(pow(2, refineCounter));
 float ft=0;
@@ -39,6 +40,7 @@ boolean
     showFAM=false, 
     showGrid=false, 
     showSubDivision=false,
+    showCurrentSubTriangle=true,
     showCorners=true;
 
 boolean shown = false;
@@ -202,6 +204,10 @@ void draw()      // executed at each frame
         if (showSubDivision) {
             showSubdivision();
         }
+
+        if (showCurrentSubTriangle) {
+            selectSubTriangle();
+        }
     }
 
     // ==================== TRACING FIELD ====================
@@ -222,6 +228,7 @@ void draw()      // executed at each frame
         }
         ArrayList<TracePoint> tracePoints[][] = null;
         if (corner != -1) {
+            // corner = 0;
             tracePoints = TraceMeshStartingFrom(corner);
             if (showLabels) showId(Pm, "M");
             noFill();

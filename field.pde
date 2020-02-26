@@ -97,6 +97,18 @@ pt[] getSubDivisionK(int i, int k) {
     return subPoints;  
 }
 
+void selectSubTriangle () {
+    pt Pm = Mouse();
+    for (int t = 0; t < M.nc; t++) {
+        int x = isInsideSubTriangle(t, Pm);
+        if (x != -1) {
+            ct = t;
+            cs = x;
+            break;
+        }
+    }
+}
+
 void showSubdivision() {
     for (int i = 0; i < M.nt; i++) {
         pt[] subPoints = getSubDivision(i);
@@ -448,7 +460,7 @@ void drawMeshInSubdivision(ArrayList<TracePoint> tracePoints, pt[] vertices, int
                     if (vAngle > 0) {
                         right.add(vertices[i]);
                         rightAngles.add(vAngle);
-                        if (t == 0 && s == 0) {
+                        if (t == ct && s == cs) {
                             fill(magenta);
                             show(vertices[i], 10);
                             noFill();                           
@@ -456,42 +468,61 @@ void drawMeshInSubdivision(ArrayList<TracePoint> tracePoints, pt[] vertices, int
                     } else {
                         left.add(vertices[i]);
                         leftAngles.add(vAngle);
-                        if (t == 0 && s == 0) {
+                        if (t == ct && s == cs) {
                             fill(black);
                             show(vertices[i], 10);
                             noFill();                     
                         }
                     }
                 }
-stroke(red);
-                    fill(yellow);
+                if (t == ct && s == cs) {
+                    stroke(red);
                     show(tracePoints.get(k).point, 5);
                     noFill();
-                    stroke(red);
-                    fill(yellow);
+                    stroke(green);
                     show(tracePoints.get(l).point, 5);
                     noFill();
-                    if (left.size() == 2) {
-                        if (leftAngles.get(0) > leftAngles.get(1)) {
-                            strokeWeight(2);
-                            stroke(blue);
-                            edge(tracePoints.get(l).point, left.get(0));                        
-                        } else if (leftAngles.get(0) < leftAngles.get(1)) {
-                            strokeWeight(2);
-                            stroke(blue);
-                            edge(tracePoints.get(k).point, left.get(1)); 
-                        }
-                    } else if (right.size() == 2) {
-                        if (rightAngles.get(0) < rightAngles.get(1)) {
-                            strokeWeight(2);
-                            stroke(blue);
-                            edge(tracePoints.get(l).point, right.get(0));                        
-                        } else if (rightAngles.get(0) > rightAngles.get(1)) {
-                            strokeWeight(2);
-                            stroke(blue);
-                            edge(tracePoints.get(k).point, right.get(1)); 
-                        }
+                    println();
+                }
+                if (left.size() == 2) {
+                    int zero = 0, one = 1;
+                    if (abs(turnAngle(left.get(0), tracePoints.get(k).point, right.get(0))) < 1e-6) {
+                        zero = 1;
+                        one = 0;
                     }
+                    if (t == ct && s == cs) {
+                        println("zero", turnAngle(left.get(0), tracePoints.get(k).point, right.get(0)));
+                        println("one", turnAngle(left.get(1), tracePoints.get(k).point, right.get(0)));
+                    }
+                    if (leftAngles.get(zero) > leftAngles.get(one)) {
+                        strokeWeight(2);
+                        stroke(blue);
+                        edge(tracePoints.get(l).point, left.get(one));                        
+                    } else {
+                        strokeWeight(2);
+                        stroke(blue);
+                        edge(tracePoints.get(k).point, left.get(zero)); 
+                    }
+                } else if (right.size() == 2) {
+                    int zero = 0, one = 1;
+                    if (abs(turnAngle(right.get(0), tracePoints.get(k).point, left.get(0))) < 1e-6) {
+                        zero = 1;
+                        one = 0;
+                    }
+                    if (t == ct && s == cs) {
+                        println("zero", turnAngle(right.get(0), tracePoints.get(k).point, left.get(0)));
+                        println("one", turnAngle(right.get(1), tracePoints.get(k).point, left.get(0)));
+                    }
+                    if (rightAngles.get(zero) > rightAngles.get(one)) {
+                        strokeWeight(2);
+                        stroke(blue);
+                        edge(tracePoints.get(l).point, right.get(one));                        
+                    } else {
+                        strokeWeight(2);
+                        stroke(blue);
+                        edge(tracePoints.get(k).point, right.get(zero)); 
+                    }
+                }
             }
         }
         stroke(red);
