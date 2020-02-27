@@ -200,14 +200,6 @@ void draw()      // executed at each frame
             pen(blue, 2);
             M.drawArrows();
         }
-
-        if (showSubDivision) {
-            showSubdivision();
-        }
-
-        if (showCurrentSubTriangle) {
-            selectSubTriangle();
-        }
     }
 
     // ==================== TRACING FIELD ====================
@@ -237,6 +229,14 @@ void draw()      // executed at each frame
             }
         }
     }
+
+            if (showSubDivision) {
+            showSubdivision();
+        }
+
+        if (showCurrentSubTriangle) {
+            selectSubTriangle();
+        }
 
     // ==================== SHOW POINTER AT MOUSE ====================
     pt End = P(Mouse(), 1, V(-2, 3)), Start = P(End, 20, V(-2, 3)); // show semi-opaque grey arrow pointing to mouse location (useful for demos and videos)

@@ -176,6 +176,9 @@ pt getStartingPoint(int corner, int face) {
 // returns 0 if trace lies inside triangle, 1 if exited via (B,C), 2 if exited via (C,A), 3 if exited via (A,B),
 int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc, vec Vc, pt E, color c, boolean[][] visitedT, int t, int traceId, ArrayList<TracePoint>[][] tracePoints, boolean first) {
     
+    ArrayList<pt> points = new ArrayList<pt>();
+    ArrayList<Integer> subtriangles = new ArrayList<Integer>();
+
     // Begin the shape marker for tracing
     pt P = P(Q);
 
@@ -184,8 +187,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
         tracePoints[t][subtIndex].add(new TracePoint(P, traceId));
     }
 
-    beginShape();
-    v(P);
+    points.add(P(P));
 
     int i = 0;
     boolean inTriangle = true; // flag that the trace point is inside the triangle
@@ -193,6 +195,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
     while (i < iterations && inTriangle)
     {
         int subtIndex1 = isInsideSubTriangle(t, P);
+
         vec V = computeVectorField(P, Pa, Va, Pb, Vb, Pc, Vc);
         pt Pn = P(P, step, V);
         inTriangle = isOnTriangleFace(Pn, Pa, Pb, Pc);
@@ -218,7 +221,10 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
             Pn = E;
         } else {
             int subtIndex2 = isInsideSubTriangle(t, Pn);
+            
             visitedT[t][subtIndex1] = true;
+            subtriangles.add(subtIndex1);
+
             if (subtIndex2 != subtIndex1) {
                 pt[] subPoints = getSubDivision(t);
                 pt sa, sb, sc;
@@ -275,9 +281,7 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
                 }
             }
         }
-        strokeWeight(2);
-        stroke(c);
-        v(Pn);
+        points.add(P(Pn));
         P = Pn;
         i++;
     }
@@ -286,7 +290,28 @@ int[] drawCorrectedTraceInTriangleFrom(pt Q, pt Pa, vec Va, pt Pb, vec Vb, pt Pc
     ret[0] = r;
     ret[1] = i;
 
-    endShape(POINTS);
+    // fill the triangles
+    for (int q = 0; q < subtriangles.size(); q++) {
+        // display the subtriangle in yellow
+        pt[] verts = getSubDivisionK(t, subtriangles.get(q));
+        fill(yellow);
+        noStroke();
+        beginShape(TRIANGLES);
+        for (int s = 0; s < 3; s++) {
+            vertex(verts[s].x, verts[s].y);
+        }
+        endShape();
+        noFill();    
+    }
+
+    // draw the trace 
+    beginShape();
+    strokeWeight(2);
+    stroke(c);
+    for (int q = 0; q < points.size(); q++) {
+        v(points.get(q));
+    }
+    endShape();
 
     return ret;
 }
@@ -490,10 +515,10 @@ void drawMeshInSubdivision(ArrayList<TracePoint> tracePoints, pt[] vertices, int
                         zero = 1;
                         one = 0;
                     }
-                    if (t == ct && s == cs) {
-                        println("zero", turnAngle(left.get(0), tracePoints.get(k).point, right.get(0)));
-                        println("one", turnAngle(left.get(1), tracePoints.get(k).point, right.get(0)));
-                    }
+                    // if (t == ct && s == cs) {
+                    //     println("zero", turnAngle(left.get(0), tracePoints.get(k).point, right.get(0)));
+                    //     println("one", turnAngle(left.get(1), tracePoints.get(k).point, right.get(0)));
+                    // }
                     if (leftAngles.get(zero) > leftAngles.get(one)) {
                         strokeWeight(2);
                         stroke(blue);
@@ -509,10 +534,10 @@ void drawMeshInSubdivision(ArrayList<TracePoint> tracePoints, pt[] vertices, int
                         zero = 1;
                         one = 0;
                     }
-                    if (t == ct && s == cs) {
-                        println("zero", turnAngle(right.get(0), tracePoints.get(k).point, left.get(0)));
-                        println("one", turnAngle(right.get(1), tracePoints.get(k).point, left.get(0)));
-                    }
+                    // if (t == ct && s == cs) {
+                    //     println("zero", turnAngle(right.get(0), tracePoints.get(k).point, left.get(0)));
+                    //     println("one", turnAngle(right.get(1), tracePoints.get(k).point, left.get(0)));
+                    // }
                     if (rightAngles.get(zero) > rightAngles.get(one)) {
                         strokeWeight(2);
                         stroke(blue);
