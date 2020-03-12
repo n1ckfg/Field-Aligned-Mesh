@@ -1,0 +1,6 @@
+.vscode/settings.json
+.vscode/tasks.json
+data/.DS_Store
+data/jarek.pts
+out/
+.DS_Store
