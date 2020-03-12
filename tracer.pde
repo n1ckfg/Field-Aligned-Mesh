@@ -163,7 +163,7 @@ class tracer {
     }
 
     void showAllTraces () {
-        println("Traces:", allTraces.size());
+        // println("Traces:", allTraces.size());
         for (int i = 0; i < allTraces.size(); i++) {
             for (int j = 0; j < allTraces.get(i).size(); j++) {
                 drawTrace(allTraces.get(i).get(j).points, allTraces.get(i).get(j).steps, allTraces.get(i).get(j).direction);
@@ -178,5 +178,12 @@ class tracer {
                 sphere(stabs.get(i).get(j), 2*rt);
             }
         }
+    }
+
+    void showStabsForCorner (int i) {
+        for (int j = 0; j < stabs.get(i).size(); j++) {
+            fill(blue);
+            sphere(stabs.get(i).get(j), 2.5*rt);
+        }        
     }
 }
