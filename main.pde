@@ -159,7 +159,10 @@ void draw() {
     if (step5) {
         live = false;
         fill(magenta);
-        if (showCorner) M.showCurrentCorner(20);
+        if (showCorner) {
+            M.showCurrentCorner(20);
+            TRACER.showStabsForCorner(M.c);
+        }
     }
 
     if (step6) {
