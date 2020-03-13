@@ -72,7 +72,7 @@ void keyPressed() {
     if (key == 'q');
     if (key == 'r') M.right();
     if (key == 's') M.swing();
-    if (key == 't');
+    if (key == 't') subdivide = true;
     if (key == 'u') M.unswing();
     if (key == 'v');
     if (key == 'w') P.savePts("data/pts"); // save vertices to pts 
