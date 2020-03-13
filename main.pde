@@ -17,6 +17,7 @@ Boolean
     showCorner = true,
     showVectors = true,
     showTraces = false,
+    subdivide = false,
     live = true, // updates mesh at each frame
 
     step1 = false,
@@ -63,6 +64,7 @@ pts R, S, T;
 EdgeSet BP = new EdgeSet();
 MESH M = new MESH();
 tracer TRACER = new tracer();
+subdivider SUBDIVIDER = new subdivider();
 
 void setup() {
     myFace = loadImage("data/pic.jpg"); // load image from file pic.jpg in folder data *** replace that file with your pic of your own face
@@ -154,6 +156,10 @@ void draw() {
     if (step4) {
         for (int i = 0; i<10; i++) M.smoothenInterior();
         M.writeVerticesTo(R);
+        if (subdivide) {
+            SUBDIVIDER.subdivide();
+            subdivide = false;
+        }
     }
 
     if (step5) {
