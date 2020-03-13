@@ -118,13 +118,13 @@ void draw() {
             M.loadVertices(R.G, R.nv);
             M.loadVectors(R.V, R.nv);
             M.triangulate();
-            TRACER.getAllTraces();
+            if (subdivide) {
+                SUBDIVIDER.subdivide();
+                subdivide = false;
+                live = false;
+            }
         }
         if (showTriangles) M.showTriangles();
-        if (showTraces) {
-            TRACER.showAllTraces();
-            TRACER.showAllStabs();
-        }
         noStroke();
         popMatrix();
     }
@@ -156,10 +156,6 @@ void draw() {
     if (step4) {
         for (int i = 0; i<10; i++) M.smoothenInterior();
         M.writeVerticesTo(R);
-        if (subdivide) {
-            SUBDIVIDER.subdivide();
-            subdivide = false;
-        }
     }
 
     if (step5) {
@@ -167,7 +163,14 @@ void draw() {
         fill(magenta);
         if (showCorner) {
             M.showCurrentCorner(20);
-            TRACER.showStabsForCorner(M.c);
+        }
+        if (showTraces) {
+            TRACER.getAllTraces();
+            TRACER.showAllTraces();
+            TRACER.showAllStabs();
+            if (showCorner) {
+                TRACER.showStabsForCorner(M.c);
+            }
         }
     }
 
@@ -181,18 +184,8 @@ void draw() {
         if (showVoronoi) M.showVoronoiEdges();
         stroke(red);
         if (showArcs) M.showArcs();
-
         noStroke();
         popMatrix();
-    }
-
-    if (step6) {
-        //fill(blue); show(R.G[0],1.1*rb);
-        //fill(orange); beam(P.G[0],P.G[1],rt);
-        //fill(grey); beam(R.G[0],R.G[1],1.1*rt); beam(R.G[1],R.G[2],1.1*rt); beam(R.G[2],R.G[0],1.1*rt);
-        //fill(red); show(CircumCenter(R.G[0],R.G[1],R.G[2]),15);
-        //fill(magenta,200); show(CircumCenter(R.G[0],R.G[1],R.G[2]),circumRadius(R.G[0],R.G[1],R.G[2])-rb);
-        //
     }
 
     if (step7) {
