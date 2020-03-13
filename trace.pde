@@ -15,3 +15,13 @@ class trace {
         direction = d;
     }
 }
+
+class tracePt {
+    pt point;
+    int traceId;
+
+    tracePt (pt p, int tid) {
+        point = P(p);
+        traceId = tid;
+    }
+}
