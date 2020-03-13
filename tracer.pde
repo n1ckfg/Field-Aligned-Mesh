@@ -6,7 +6,7 @@ class tracer {
     color backwardColor = #d01c8b;
     int maxTraceCount = 1;
     boolean[] visited = new boolean[300];
-    ArrayList<ArrayList<pt>> stabs = new ArrayList<ArrayList<pt>>();
+    ArrayList<ArrayList<tracePt>> stabs = new ArrayList<ArrayList<tracePt>>();
     ArrayList<ArrayList<trace>> allTraces = new ArrayList<ArrayList<trace>>();
 
     tracer () {
@@ -58,20 +58,20 @@ class tracer {
             pt E2 = getIntersection(tp, tpn, vertices[1], vertices[2]);
             pt E3 = getIntersection(tp, tpn, vertices[2], vertices[0]);
             if (E1 != null) {
-                stabs.get(corner).add(P(E1));
-                stabs.get(M.p(M.u(corner))).add(E1);
+                stabs.get(corner).add(new tracePt(E1, id));
+                stabs.get(M.p(M.u(corner))).add(new tracePt(E1, id));
                 exitCorner = corner;
                 tracePoints.add(P(tpn));
                 break;
             } else if (E2 != null) {
-                stabs.get(M.n(corner)).add(P(E2));
-                stabs.get(M.p(M.u(M.n(corner)))).add(E2);
+                stabs.get(M.n(corner)).add(new tracePt(E2, id));
+                stabs.get(M.p(M.u(M.n(corner)))).add(new tracePt(E2, id));
                 exitCorner = M.n(corner);
                 tracePoints.add(P(tpn));
                 break;
             } else if (E3 != null) {
-                stabs.get(M.n(M.n(corner))).add(P(E3));
-                stabs.get(M.p(M.u(M.n(M.n(corner))))).add(E3);
+                stabs.get(M.n(M.n(corner))).add(new tracePt(E3, id));
+                stabs.get(M.p(M.u(M.n(M.n(corner))))).add(new tracePt(E3, id));
                 exitCorner = M.n(M.n(corner));
                 tracePoints.add(P(tpn));
                 break;
@@ -121,12 +121,12 @@ class tracer {
 
     void getAllTraces () {
         int corner = 0;
-        stabs = new ArrayList<ArrayList<pt>>();
+        stabs = new ArrayList<ArrayList<tracePt>>();
         allTraces = new ArrayList<ArrayList<trace>>();
         // println("Started Tracing from: ", corner);
         Arrays.fill(visited, false);
         for (int i = 0; i < M.nc; i++) {
-            stabs.add(new ArrayList<pt>());
+            stabs.add(new ArrayList<tracePt>());
         }
         // begin tracing
         int traceCount = 0;
@@ -175,7 +175,7 @@ class tracer {
         for (int i = 0; i < stabs.size(); i++) {
             for (int j = 0; j < stabs.get(i).size(); j++) {
                 fill(red);
-                sphere(stabs.get(i).get(j), 2*rt);
+                sphere(stabs.get(i).get(j).point, 2*rt);
             }
         }
     }
@@ -183,7 +183,7 @@ class tracer {
     void showStabsForCorner (int i) {
         for (int j = 0; j < stabs.get(i).size(); j++) {
             fill(blue);
-            sphere(stabs.get(i).get(j), 2.5*rt);
+            sphere(stabs.get(i).get(j).point, 2.5*rt);
         }        
     }
 }
