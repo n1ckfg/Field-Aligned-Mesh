@@ -16,6 +16,7 @@ Boolean
     showArcs = true,
     showCorner = true,
     showVectors = true,
+    showFAM = true,
     showTraces = false,
     subdivide = false,
     live = true, // updates mesh at each frame
@@ -65,6 +66,7 @@ EdgeSet BP = new EdgeSet();
 MESH M = new MESH();
 tracer TRACER = new tracer();
 subdivider SUBDIVIDER = new subdivider();
+fieldMesh FMESH = new fieldMesh();
 
 void setup() {
     myFace = loadImage("data/pic.jpg"); // load image from file pic.jpg in folder data *** replace that file with your pic of your own face
@@ -164,13 +166,16 @@ void draw() {
         if (showCorner) {
             M.showCurrentCorner(20);
         }
+        TRACER.getAllTraces();
         if (showTraces) {
-            TRACER.getAllTraces();
             TRACER.showAllTraces();
             TRACER.showAllStabs();
             if (showCorner) {
                 TRACER.showStabsForCorner(M.c);
             }
+        }
+        if (showFAM) {
+            FMESH.show();
         }
     }
 
