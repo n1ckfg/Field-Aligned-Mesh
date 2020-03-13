@@ -179,6 +179,10 @@
          pv = pp;
          return this;
      }
+     pts movePickedV (vec v) {
+         V[pv].add(v);
+         return this;
+     }
      pts movePicked(vec V) {
          G[pv].add(V);
          return this;

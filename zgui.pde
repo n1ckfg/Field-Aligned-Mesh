@@ -206,6 +206,7 @@ void mouseDragged() {
         Of.add(ToK(V((float)(mouseX - pmouseX), (float)(mouseY - pmouseY), 0)));
     };
     if (keyPressed && key == 'x') R.movePicked(ToIJ(V((float)(mouseX - pmouseX), (float)(mouseY - pmouseY), 0)));
+    if (keyPressed && key == 'v') R.movePickedV(ToIJ(V((float)(mouseX - pmouseX), (float)(mouseY - pmouseY), 0)));
     if (keyPressed && key == 'z') R.movePicked(ToK(V((float)(mouseX - pmouseX), (float)(mouseY - pmouseY), 0)));
     if (keyPressed && key == 'X') R.moveAll(ToIJ(V((float)(mouseX - pmouseX), (float)(mouseY - pmouseY), 0)));
     if (keyPressed && key == 'Z') R.moveAll(ToK(V((float)(mouseX - pmouseX), (float)(mouseY - pmouseY), 0)));
