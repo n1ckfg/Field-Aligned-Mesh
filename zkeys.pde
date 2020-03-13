@@ -43,3 +43,8 @@ MY PHASES
 ...
 
 */
+
+
+// After Step 5, hit "M", this will initiate the tracing
+// Use right arrow key to add more traces
+// The stab for the edge made by the current corner and the next corner vertex is is shown in blue sphere
