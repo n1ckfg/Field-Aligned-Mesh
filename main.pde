@@ -175,6 +175,7 @@ void draw() {
             if (showCorner) {
                 TRACER.showStabsForCorner(M.c);
             }
+            TRACER.showStabbedTriangles();
         }
         if (showFAM) {
             FMESH.show();

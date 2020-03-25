@@ -186,4 +186,18 @@ class tracer {
             sphere(stabs.get(i).get(j).point, 2.5*rt);
         }        
     }
+
+    void showStabbedTriangles () {
+        fill(orange);
+        for (int i = 0; i < M.nt; i++) {
+            if (visited[i]) {
+                int c = 3*i;
+                show(
+                    P(M.g(c).x, M.g(c).y, M.g(c).z+6.5),
+                    P(M.g(M.n(c)).x, M.g(M.n(c)).y, M.g(M.n(c)).z+6.5),
+                    P(M.g(M.n(M.n(c))).x, M.g(M.n(M.n(c))).y, M.g(M.n(M.n(c))).z+6.5)
+                );
+            }
+        }        
+    }
 }
