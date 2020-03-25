@@ -39,7 +39,7 @@ class subdivider {
             M.V[M.n(i)] = w(M.n(i)); 
             M.V[M.p(i)] = w(M.p(i));
         }
-        M.nt = 4 * M.nt; 
+        M.nt = 4 * M.nt;
         M.nc = 3 * M.nt;
     }
 

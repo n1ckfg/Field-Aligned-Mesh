@@ -3,7 +3,7 @@ void keyPressed() {
     if (key == '!') snapPicture();
     if (key == '@'); // make a .TIF picture of the canvas, better quality, but large file
     if (key == '#') exit();
-    if (key == '$');
+    if (key == '$') TRACER.maxTraceCount = 300;
     if (key == '%') P.makeRandom(30, 1500, 10);
     if (key == '^') showCorner = !showCorner;
     if (key == '&');

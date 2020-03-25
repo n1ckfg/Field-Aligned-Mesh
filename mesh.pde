@@ -103,7 +103,7 @@ class MESH {
         return (O[c] == c);
     }; // not a border corner
     boolean subd(int c) {
-        println(c, n(c), p(c), oc, nc);
+        // println(c, n(c), p(c), oc, nc);
         return (n(c) >= oc) && (p(c) >= oc);
     }
     // CURRENT CORNER OPERATORS
