@@ -10,7 +10,7 @@ class MESH {
     boolean[] isInterior = new boolean[maxnv];
     // CORNERS 
     int c = 0; // current corner                                                              
-    int nc = 0;
+    int nc = 0, oc = 0;
     int[] V = new int[3 * maxnt];
     int[] O = new int[3 * maxnt];
     // current corner that can be edited with keys
@@ -21,6 +21,7 @@ class MESH {
         nv = 0;
         nt = 0;
         nc = 0;
+        oc = 0;
     } // removes all vertices and triangles
     void loadVertices(pt[] P, int n) {
         nv = 0;
@@ -51,6 +52,7 @@ class MESH {
         V[nc++] = j;
         V[nc++] = k;
         nt = nc / 3;
+        oc += 3;
     } // adds triangle (i,j,k) to V table
 
     // CORNER OPERATORS
@@ -100,7 +102,10 @@ class MESH {
     boolean bord(int c) {
         return (O[c] == c);
     }; // not a border corner
-
+    boolean subd(int c) {
+        println(c, n(c), p(c), oc, nc);
+        return (n(c) >= oc) && (p(c) >= oc);
+    }
     // CURRENT CORNER OPERATORS
     void next() {
         c = n(c);
@@ -164,11 +169,19 @@ class MESH {
     }; // draws all border edges of mesh
     void showNonBorderEdges() {
         for (int i = 0; i<nc; i++) {
-            if (!bord(i)) {
+            if (!bord(i) && !subd(i)) {
                 showEdge(i);
             };
         };
     }; // draws all border edges of mesh
+    void showSubdivisionEdges() {
+        for (int i = 0; i<nc; i++) {
+            if (!bord(i) && subd(i)) {
+                showEdge(i);
+            };
+        };        
+    }
+
     void showVoronoi() {}
     void classifyVertices() {
         for (int v = 0; v<nv; v++) isInterior[v] = true;

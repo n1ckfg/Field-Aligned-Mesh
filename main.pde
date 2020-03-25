@@ -137,6 +137,8 @@ void draw() {
             M.computeO();
         }
         if (showEdges) {
+            fill(pink);
+            M.showSubdivisionEdges();
             fill(yellow);
             M.showNonBorderEdges();
             fill(red);
