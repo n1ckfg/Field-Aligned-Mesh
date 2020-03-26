@@ -101,10 +101,10 @@ void keyPressed() {
     if (key == 'K');
     if (key == 'L') live = !live;
     if (key == 'M') showTraces = !showTraces;
-    if (key == 'N');
-    if (key == 'O');
+    if (key == 'N') recomputeTrace = !recomputeTrace;
+    if (key == 'O') showSTabs = !showSTabs;
     if (key == 'P') showPillars = !showPillars;
-    if (key == 'Q');
+    if (key == 'Q') paintStabbedFaces = !paintStabbedFaces;
     if (key == 'R') {
         R = P;
         S = Q;
@@ -114,7 +114,7 @@ void keyPressed() {
         R = Q;
     };
     if (key == 'T') showTriangles = !showTriangles;
-    if (key == 'U');
+    if (key == 'U') showVectors = !showVectors;
     if (key == 'V') showVoronoi = !showVoronoi;
     if (key == 'W') {P.savePts("data/" + FileName + ".pts"); P.saveVecs("data/f" + FileName + ".pts");}
     if (key == 'X'); // hold to move all vertices with mouse

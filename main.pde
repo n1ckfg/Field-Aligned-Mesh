@@ -18,7 +18,10 @@ Boolean
     showVectors = true,
     showFAM = true,
     showTraces = false,
+    showSTabs = true,
+    paintStabbedFaces = true,
     subdivide = false,
+    recomputeTrace = true,
     live = true, // updates mesh at each frame
 
     step1 = false,
@@ -137,7 +140,7 @@ void draw() {
             M.computeO();
         }
         if (showEdges) {
-            fill(pink);
+            fill(grey);
             M.showSubdivisionEdges();
             fill(yellow);
             M.showNonBorderEdges();
@@ -168,14 +171,21 @@ void draw() {
         if (showCorner) {
             M.showCurrentCorner(20);
         }
-        TRACER.getAllTraces();
+        if (recomputeTrace) {
+            TRACER.getAllTraces();
+            recomputeTrace = false;
+        }
         if (showTraces) {
             TRACER.showAllTraces();
-            TRACER.showAllStabs();
+            if (showSTabs) {
+                TRACER.showAllStabs();
+            }
             if (showCorner) {
                 TRACER.showStabsForCorner(M.c);
             }
-            TRACER.showStabbedTriangles();
+            if (paintStabbedFaces) {
+                TRACER.showStabbedTriangles();
+            }
         }
         if (showFAM) {
             FMESH.show();
