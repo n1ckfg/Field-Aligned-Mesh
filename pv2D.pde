@@ -49,7 +49,7 @@ pt getIntersection(pt p1, pt p2, pt p3, pt p4)
     s2_x = x4 - x3;     s2_y = y4 - y3;
     s = (-s1_y * (x1 - x3) + s1_x * (y1 - y3)) / (-s2_x * s1_y + s1_x * s2_y);
     t = ( s2_x * (y1 - y3) - s2_y * (x1 - x3)) / (-s2_x * s1_y + s1_x * s2_y);
-    if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+    if (s > 0+1e-3 && s < 1-1e-3 && t > 0+1e-3 && t < 1-1e-3)
     {
         return P(x1 + (t * s1_x), y1 + (t * s1_y), 0);
     }
