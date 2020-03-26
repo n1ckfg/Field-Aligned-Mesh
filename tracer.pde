@@ -1,7 +1,7 @@
 class tracer {
 
     int maxSteps = 5000;
-    float stepSize = 0.1;
+    float stepSize = 0.05;
     color forwardColor = #4dac26;
     color backwardColor = #d01c8b;
     int maxTraceCount = 1;
@@ -58,24 +58,40 @@ class tracer {
             pt E2 = getIntersection(tp, tpn, vertices[1], vertices[2]);
             pt E3 = getIntersection(tp, tpn, vertices[2], vertices[0]);
             if (E1 != null) {
+                // println(tp, tpn, E1);
                 stabs.get(corner).add(new tracePt(E1, id));
                 stabs.get(M.p(M.u(corner))).add(new tracePt(E1, id));
                 exitCorner = corner;
-                tracePoints.add(P(tpn));
+                tracePoints.add(P(E1));
                 break;
             } else if (E2 != null) {
+                // println(tp, tpn, E2);
                 stabs.get(M.n(corner)).add(new tracePt(E2, id));
                 stabs.get(M.p(M.u(M.n(corner)))).add(new tracePt(E2, id));
                 exitCorner = M.n(corner);
-                tracePoints.add(P(tpn));
+                tracePoints.add(P(E2));
                 break;
             } else if (E3 != null) {
+                // println(tp, tpn, E3);
                 stabs.get(M.n(M.n(corner))).add(new tracePt(E3, id));
                 stabs.get(M.p(M.u(M.n(M.n(corner))))).add(new tracePt(E3, id));
                 exitCorner = M.n(M.n(corner));
-                tracePoints.add(P(tpn));
+                tracePoints.add(P(E3));
                 break;
             }
+            // println(
+            //     angle(V(tp, vertices[0]), V(tpn, vertices[0])),
+            //     angle(V(tp, vertices[0]), V(vertices[1], vertices[0])),
+            //     angle(V(tpn, vertices[0]), V(vertices[1], vertices[0])),
+            //     "|",
+            //     angle(V(tp, vertices[1]), V(tpn, vertices[1])),
+            //     angle(V(tp, vertices[1]), V(vertices[2], vertices[1])),
+            //     angle(V(tpn, vertices[1]), V(vertices[2], vertices[1])),
+            //     "|",
+            //     angle(V(tp, vertices[2]), V(tpn, vertices[2])),
+            //     angle(V(tp, vertices[2]), V(vertices[0], vertices[2])),
+            //     angle(V(tpn, vertices[2]), V(vertices[0], vertices[2]))
+            // );
             tp = P(tpn);
             ntp += 1;
         }
