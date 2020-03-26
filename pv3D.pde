@@ -197,6 +197,10 @@ class pt {
 		z += s * (P.z - z);
 		return this;
 	}; // transalte by ratio s towards P
+
+	String toString() {
+		return "(" + Float.toString(x) + "," + Float.toString(y) + "," + Float.toString(z) + ")";
+	}
 }
 
 // =====  vector functions
