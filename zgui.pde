@@ -75,7 +75,7 @@ void keyPressed() {
     if (key == 't') subdivide = true;
     if (key == 'u') M.unswing();
     if (key == 'v');
-    if (key == 'w') P.savePts("data/pts"); // save vertices to pts 
+    if (key == 'w') {P.savePts("data/pts"); P.saveVecs("data/fpts");}// save vertices to pts 
     if (key == 'x'); // hold to move selected vertex with mouse
     if (key == 'y');
     if (key == 'z');
@@ -116,7 +116,7 @@ void keyPressed() {
     if (key == 'T') showTriangles = !showTriangles;
     if (key == 'U');
     if (key == 'V') showVoronoi = !showVoronoi;
-    if (key == 'W') P.savePts("data/" + FileName + ".pts");
+    if (key == 'W') {P.savePts("data/" + FileName + ".pts"); P.saveVecs("data/f" + FileName + ".pts");}
     if (key == 'X'); // hold to move all vertices with mouse
     if (key == 'Y');
     if (key == 'Z');

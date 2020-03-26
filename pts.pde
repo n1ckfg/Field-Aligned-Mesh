@@ -214,6 +214,16 @@
          saveStrings(fn, inppts);
      };
 
+    void saveVecs(String fn) {
+         String[] inppts = new String[nv + 1];
+         int s = 0;
+         inppts[s++] = str(nv);
+         for (int i = 0; i<nv; i++) {
+             inppts[s++] = str(V[i].x) + "," + str(V[i].y) + "," + str(V[i].z) + "," + L[i];
+         }
+         saveStrings(fn, inppts);
+     };
+
      void loadPts(String fn) {
          println("loading: " + fn);
          String[] ss = loadStrings(fn);
