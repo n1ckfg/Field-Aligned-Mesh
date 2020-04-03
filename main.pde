@@ -50,6 +50,7 @@ float
     h_floor = 0, h_ceiling = 600, h = h_floor;
 
 int
+    mode = 0,
     f = 0,
     maxf = 2 * 30,
     level = 4,
@@ -286,6 +287,15 @@ void draw() {
     if (step10) ST = ST + "X";
     ST = ST + ".";
     scribeHeader(" STEPS: " + ST, line++);
+    if (mode == 0) {
+        scribeHeader("FAT MODE: Longer Edge", line++);
+    } else if (mode == 1) {
+        scribeHeader("FAT MODE: Shorter Edge", line++);
+    } else if (mode == 2) {
+        scribeHeader("FAT MODE: Trace ALigned Edge", line++);
+    } else if (mode == 3) {
+        scribeHeader("FAT MODE: Delaunay Edge", line++);
+    }
     // used for demos to show red circle when mouse/key is pressed and what key (disk may be hidden by the 3D model)
     if (mousePressed) {
         stroke(cyan);
