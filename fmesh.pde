@@ -1,4 +1,62 @@
 class fieldMesh {
+    boolean ChooseEdge (pt p1, pt p2, pt p3, pt p4) {
+        if (mode == 0) {
+            // Longer Edge
+            return d(p1, p3) > d(p2, p4);
+        } else if (mode == 1) {
+            // Shorter Edge
+            return d(p1, p3) < d(p2, p4);
+        } else if (mode == 2) {
+            // Edge aligned to the Trace
+            return abs(dot(U(p1, p2), U(p1, p3))) > abs(dot(U(p1, p2), U(p2, p4)));
+        } else if (mode == 3) {
+            // Delaunay Criterion
+            pt c1 = CircumCenter(p1, p2, p3);
+            pt c2 = CircumCenter(p3, p4, p1);
+            if (d(c1, p4) > d(c1, p1) && d(c2, p2) > d(c2, p1)) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    boolean ShowFATM (int c1, int c2, int c3) {
+        boolean fatEdgeDone = false;
+        for (int i = 0; i < TRACER.stabs.get(c1).size(); i++) {
+            for (int j = 0; j < TRACER.stabs.get(c2).size(); j++) {
+                tracePt p1 = TRACER.stabs.get(c1).get(i);
+                tracePt p2 = TRACER.stabs.get(c2).get(j);
+                if (p1.traceId == p2.traceId) {
+                    fill(magenta);
+                    beam(p1.point, p2.point, rt);
+                    sphere(p1.point, 2*rt);
+                    sphere(p2.point, 2*rt);
+                    fatEdgeDone = true;
+                    // Draw the Non Fat Edges
+                    if (TRACER.stabs.get(c3).size() == 1) {
+                        // Connect with the opposite tracepoint
+                        tracePt p3 = TRACER.stabs.get(c3).get(0);
+                        fill(grey);
+                        beam(p1.point, p3.point, rt);
+                        beam(p2.point, p3.point, rt);
+                    } else {
+                        // Connect with one of the vertices, c1 or c3
+                        pt p31 = M.g(c1), p32 = M.g(c3);
+                        if (ChooseEdge(p1.point, p2.point, p32, p31)) {
+                            fill(grey);
+                            beam(p1.point, p32, rt);
+                        } else {
+                            fill(grey);
+                            beam(p2.point, p31, rt);
+                        }
+                    }
+                }
+            }
+        }
+        return fatEdgeDone;
+    }
+
     void show () {
         // println("SHOWING STABS");
         // Use TRACER Stabs to Construct the new Edges
@@ -12,83 +70,13 @@ class fieldMesh {
             boolean fatEdgeDone = false;
             int fc = -1, sc = -1, tc = -1;
             if (!fatEdgeDone) {
-                for (int i = 0; i < TRACER.stabs.get(c1).size(); i++) {
-                    for (int j = 0; j < TRACER.stabs.get(c2).size(); j++) {
-                        tracePt p1 = TRACER.stabs.get(c1).get(i);
-                        tracePt p2 = TRACER.stabs.get(c2).get(j);
-                        if (p1.traceId == p2.traceId) {
-                            beam(p1.point, p2.point, 2*rt);
-                            fatEdgeDone = true;
-                            // Draw the Non Fat Edges
-                            if (TRACER.stabs.get(c3).size() == 1) {
-                                // Connect with the opposite tracepoint
-                                tracePt p3 = TRACER.stabs.get(c3).get(0);
-                                beam(p1.point, p3.point, rt);
-                                beam(p2.point, p3.point, rt);
-                            } else {
-                                // Connect with one of the vertices, c1 or c3
-                                pt p31 = M.g(c1), p32 = M.g(c3);
-                                if (d(p1.point, p32) > d(p2.point, p31)) {
-                                    beam(p1.point, p32, rt);
-                                } else {
-                                    beam(p2.point, p31, rt);
-                                }
-                            }
-                        }
-                    }
-                }
+                fatEdgeDone = ShowFATM(c1, c2, c3);
             }
             if (!fatEdgeDone) {
-                for (int i = 0; i < TRACER.stabs.get(c2).size(); i++) {
-                    for (int j = 0; j < TRACER.stabs.get(c3).size(); j++) {
-                        tracePt p1 = TRACER.stabs.get(c2).get(i);
-                        tracePt p2 = TRACER.stabs.get(c3).get(j);
-                        if (p1.traceId == p2.traceId) {
-                            beam(p1.point, p2.point, 2*rt);
-                            fatEdgeDone = true;
-                            // Draw the Non Fat Edges
-                            if (TRACER.stabs.get(c1).size() == 1) {
-                                tracePt p3 = TRACER.stabs.get(c1).get(0);
-                                beam(p1.point, p3.point, rt);
-                                beam(p2.point, p3.point, rt);
-                            } else {
-                                // Connect with one of the vertices, c1 or c3
-                                pt p31 = M.g(c2), p32 = M.g(c1);
-                                if (d(p1.point, p32) > d(p2.point, p31)) {
-                                    beam(p1.point, p32, rt);
-                                } else {
-                                    beam(p2.point, p31, rt);
-                                }
-                            }
-                        }
-                    }
-                }
+                fatEdgeDone = ShowFATM(c2, c3, c1);
             }
             if (!fatEdgeDone) {
-                for (int i = 0; i < TRACER.stabs.get(c3).size(); i++) {
-                    for (int j = 0; j < TRACER.stabs.get(c1).size(); j++) {
-                        tracePt p1 = TRACER.stabs.get(c3).get(i);
-                        tracePt p2 = TRACER.stabs.get(c1).get(j);
-                        if (p1.traceId == p2.traceId) {
-                            beam(p1.point, p2.point, 2*rt);
-                            fatEdgeDone = true;
-                            // Draw the Non Fat Edges
-                            if (TRACER.stabs.get(c2).size() == 1) {
-                                tracePt p3 = TRACER.stabs.get(c2).get(0);
-                                beam(p1.point, p3.point, rt);
-                                beam(p2.point, p3.point, rt);
-                            } else {
-                                // Connect with one of the vertices, c1 or c3
-                                pt p31 = M.g(c3), p32 = M.g(c2);
-                                if (d(p1.point, p32) > d(p2.point, p31)) {
-                                    beam(p1.point, p32, rt);
-                                } else {
-                                    beam(p2.point, p31, rt);
-                                }
-                            }
-                        }
-                    }
-                }   
+                fatEdgeDone = ShowFATM(c3, c1, c2);   
             }
         }
     }
