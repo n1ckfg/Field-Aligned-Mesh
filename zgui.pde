@@ -118,7 +118,7 @@ void keyPressed() {
     if (key == 'V') showVoronoi = !showVoronoi;
     if (key == 'W') {P.savePts("data/" + FileName + ".pts"); P.saveVecs("data/f" + FileName + ".pts");}
     if (key == 'X'); // hold to move all vertices with mouse
-    if (key == 'Y');
+    if (key == 'Y') mode = (mode + 1)%4;
     if (key == 'Z');
 
     if (key == '{');
