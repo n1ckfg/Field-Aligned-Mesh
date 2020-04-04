@@ -124,11 +124,11 @@ void draw() {
             M.loadVertices(R.G, R.nv);
             M.loadVectors(R.V, R.nv);
             M.triangulate();
-            if (subdivide) {
-                SUBDIVIDER.subdivide();
-                subdivide = false;
-                live = false;
-            }
+        }
+        if (subdivide) {
+            SUBDIVIDER.subdivide();
+            subdivide = false;
+            live = false;
         }
         if (showTriangles) M.showTriangles();
         noStroke();
