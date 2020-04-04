@@ -37,17 +37,17 @@ class fieldMesh {
                     if (TRACER.stabs.get(c3).size() == 1) {
                         // Connect with the opposite tracepoint
                         tracePt p3 = TRACER.stabs.get(c3).get(0);
-                        fill(grey);
+                        fill(metal);
                         beam(p1.point, p3.point, rt);
                         beam(p2.point, p3.point, rt);
                     } else {
                         // Connect with one of the vertices, c1 or c3
                         pt p31 = M.g(c1), p32 = M.g(c3);
                         if (ChooseEdge(p1.point, p2.point, p32, p31)) {
-                            fill(grey);
+                            fill(metal);
                             beam(p1.point, p32, rt);
                         } else {
-                            fill(grey);
+                            fill(metal);
                             beam(p2.point, p31, rt);
                         }
                     }
