@@ -71,6 +71,7 @@ MESH M = new MESH();
 tracer TRACER = new tracer();
 subdivider SUBDIVIDER = new subdivider();
 fieldMesh FMESH = new fieldMesh();
+collapser COLLAPSER = new collapser();
 
 void setup() {
     myFace = loadImage("data/pic.jpg"); // load image from file pic.jpg in folder data *** replace that file with your pic of your own face
