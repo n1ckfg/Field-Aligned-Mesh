@@ -69,7 +69,7 @@ void keyPressed() {
     if (key == 'n') M.next();
     if (key == 'o') M.opposite();
     if (key == 'p') M.previous();
-    if (key == 'q') COLLAPSER.collapse(M.c);
+    if (key == 'q') {COLLAPSER.collapse(M.c); M.c = M.l(M.c);}
     if (key == 'r') M.right();
     if (key == 's') M.swing();
     if (key == 't') subdivide = true;
