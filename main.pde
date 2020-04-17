@@ -57,6 +57,7 @@ int
     method = 5,
     PTris = 0,
     QTris = 0,
+    subdivided = 0,
     tetCount = 0;
 
 String SDA = "angle";
@@ -127,9 +128,10 @@ void draw() {
             M.triangulate();
         }
         if (subdivide) {
-            SUBDIVIDER.subdivide();
+            SUBDIVIDER.subdivide(M);
             subdivide = false;
             live = false;
+            subdivided ++;
         }
         if (showTriangles) M.showTriangles();
         noStroke();

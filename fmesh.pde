@@ -1,4 +1,17 @@
 class fieldMesh {
+    MESH AM;
+
+    void initiate() {
+        AM = new MESH();
+        AM.loadVertices(R.G, R.nv);
+        AM.loadVectors(R.V, R.nv);
+        AM.triangulate();
+        for (int i = 0; i < subdivided; i++) {
+            SUBDIVIDER.subdivide(AM);
+        }
+        // println("Original Triangles", AM.nt, M.nt);
+    }
+
     boolean ChooseEdge (pt p1, pt p2, pt p3, pt p4) {
         if (mode == 0) {
             // Longer Edge
@@ -30,8 +43,13 @@ class fieldMesh {
                 if (p1.traceId == p2.traceId) {
                     fill(magenta);
                     beam(p1.point, p2.point, rt);
+                    // display two spheres
                     sphere(p1.point, 2*rt);
                     sphere(p2.point, 2*rt);
+                    // create new vertices in the mesh
+                    AM.G[p1.vid] = P(p1.point);
+                    AM.G[p2.vid] = P(p2.point);
+                    AM.nv += 2;
                     fatEdgeDone = true;
                     // Draw the Non Fat Edges
                     if (TRACER.stabs.get(c3).size() == 1) {
@@ -40,16 +58,45 @@ class fieldMesh {
                         fill(metal);
                         beam(p1.point, p3.point, rt);
                         beam(p2.point, p3.point, rt);
+                        // update corner table
+                        AM.V[3*AM.nt] = p1.vid;
+                        AM.V[AM.n(3*AM.nt)] = AM.V[c2];
+                        AM.V[AM.p(3*AM.nt)] = p2.vid;
+                        AM.V[1+3*AM.nt] = p3.vid;
+                        AM.V[AM.n(1+3*AM.nt)] = p1.vid;
+                        AM.V[AM.p(1+3*AM.nt)] = p2.vid;
+                        AM.V[2+3*AM.nt] = p3.vid;
+                        AM.V[AM.n(2+3*AM.nt)] = p2.vid;
+                        AM.V[AM.p(2+3*AM.nt)] = AM.V[c3];
+                        AM.V[c2] = p1.vid;
+                        AM.V[c3] = p3.vid;
+                        // update counts
+                        AM.nt += 3;
+                        AM.nc += 9;
                     } else {
                         // Connect with one of the vertices, c1 or c3
                         pt p31 = M.g(c1), p32 = M.g(c3);
                         if (ChooseEdge(p1.point, p2.point, p32, p31)) {
                             fill(metal);
                             beam(p1.point, p32, rt);
+                            // update corner table
+                            AM.V[AM.p(3*AM.nt)] = AM.V[c3];
+                            AM.V[c2] = p1.vid;
                         } else {
                             fill(metal);
                             beam(p2.point, p31, rt);
+                            // update corner table
+                            AM.V[AM.p(3*AM.nt)] = AM.V[c1];
+                            AM.V[c2] = p2.vid;
                         }
+                        AM.V[3*AM.nt] = p1.vid;
+                        AM.V[AM.n(3*AM.nt)] = p2.vid;
+                        AM.V[1+3*AM.nt] = p1.vid;
+                        AM.V[AM.n(1+3*AM.nt)] = AM.V[c2];
+                        AM.V[AM.p(1+3*AM.nt)] = p2.vid;
+                        // update counts
+                        AM.nt += 2;
+                        AM.nc += 6;
                     }
                 }
             }
@@ -58,6 +105,7 @@ class fieldMesh {
     }
 
     void show () {
+        initiate();
         // println("SHOWING STABS");
         // Use TRACER Stabs to Construct the new Edges
         for (int c = 0; c < M.nt; c++) {
@@ -79,5 +127,7 @@ class fieldMesh {
                 fatEdgeDone = ShowFATM(c3, c1, c2);   
             }
         }
+        // println("FAT Mesh Triangles", AM.nt);
+        AM.computeO();
     }
 }

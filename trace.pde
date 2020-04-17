@@ -19,9 +19,11 @@ class trace {
 class tracePt {
     pt point;
     int traceId;
+    int vid;
 
-    tracePt (pt p, int tid) {
+    tracePt (pt p, int tid, int v) {
         point = P(p);
         traceId = tid;
+        vid = v;
     }
 }

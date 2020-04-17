@@ -1,8 +1,8 @@
 class subdivider {
 
-    int[] W = new int [3*M.maxnt];
+    int[] W = null;
 
-    void splitEdges () {
+    void splitEdges (MESH M) {
         for (int i = 0; i < M.nc; i++) {
             if (M.bord(i)) {
                 M.G[M.nv] = P(M.g(M.n(i)), M.g(M.p(i))); 
@@ -24,7 +24,7 @@ class subdivider {
         return W[i];
     }
 
-    void splitTriangles() {    // splits each tirangle into 4
+    void splitTriangles(MESH M) {    // splits each tirangle into 4
         for (int i = 0; i < 3*M.nt; i = i+3) {
             M.V[3*M.nt+i] = M.v(i); 
             M.V[M.n(3*M.nt+i)] = w(M.p(i)); 
@@ -43,10 +43,11 @@ class subdivider {
         M.nc = 3 * M.nt;
     }
 
-    void subdivide () {
-        splitEdges();
+    void subdivide (MESH M) {
+        W = new int [3*M.maxnt];
+        splitEdges(M);
         println("Edge Split Done");
-        splitTriangles();
+        splitTriangles(M);
         println("Triangle Split Done");
         M.computeO();
         println("ComputeO Done");
