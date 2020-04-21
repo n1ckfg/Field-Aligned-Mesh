@@ -168,23 +168,34 @@ class fieldMesh {
     void show () {
         initiate();
         Compute();
-        // fill(yellow);
-        // M.showNonBorderEdges();
-        // fill(red);
-        // AM.showBorderEdges();
         for (int i = 0; i < AM.nt; i++) {
             int c1 = 3*i,
                 c2 = AM.n(c1),
                 c3 = AM.p(c1);
             pt v1 = AM.g(c1), v2 = AM.g(c2), v3 = AM.g(c3);
             pt ct = P(v1, v2, v3);
-            pt p1 = P(v1, 0.2, ct), p2 = P(v2, 0.2, ct), p3 = P(v3, 0.2, ct);
+            pt p1 = P(v1, 0.3, ct), p2 = P(v2, 0.3, ct), p3 = P(v3, 0.3, ct);
             sphere(p1, rt);
             sphere(p2, rt);
             sphere(p3, rt);
+            fill(GetEdgeColor(c1, c2, c3));
             beam(v1, v2, rt);
+            fill(GetEdgeColor(c2, c3, c1));
             beam(v2, v3, rt);
+            fill(GetEdgeColor(c3, c1, c2));
             beam(v3, v1, rt);
+        }
+    }
+
+    color GetEdgeColor(int c1, int c2, int c3) {
+        if (CT[c1] == CT[c2]) {
+            if (CT[c1] == 1) {
+                return magenta;
+            } else {
+                return yellow;
+            }
+        } else {
+            return metal;
         }
     }
 }
