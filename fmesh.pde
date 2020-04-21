@@ -1,14 +1,23 @@
 class fieldMesh {
     MESH AM;
+    int[] CT;  //encodes the type of corner
+    // 0: the original mesh vertex corner
+    // 1: stab vertex corner
 
     void initiate() {
         AM = new MESH();
+        CT = new int[3 * M.maxnt];
+        AM.reset();
         AM.loadVertices(R.G, R.nv);
         AM.loadVectors(R.V, R.nv);
         AM.triangulate();
         for (int i = 0; i < subdivided; i++) {
             SUBDIVIDER.subdivide(AM);
         }
+        for (int i = 0; i < AM.nc; i++) {
+            CT[i] = 0;
+        }
+        AM.computeO();
         // println("Original Triangles", AM.nt, M.nt);
     }
 
@@ -34,66 +43,92 @@ class fieldMesh {
         return true;
     }
 
-    boolean ShowFATM (int c1, int c2, int c3) {
+    boolean ComputeFATM (int c1, int c2, int c3) {
         boolean fatEdgeDone = false;
         for (int i = 0; i < TRACER.stabs.get(c1).size(); i++) {
             for (int j = 0; j < TRACER.stabs.get(c2).size(); j++) {
                 tracePt p1 = TRACER.stabs.get(c1).get(i);
                 tracePt p2 = TRACER.stabs.get(c2).get(j);
                 if (p1.traceId == p2.traceId) {
-                    fill(magenta);
-                    beam(p1.point, p2.point, rt);
+                    // fill(magenta);
+                    // beam(p1.point, p2.point, rt);
                     // display two spheres
                     sphere(p1.point, 2*rt);
                     sphere(p2.point, 2*rt);
                     // create new vertices in the mesh
-                    AM.G[p1.vid] = P(p1.point);
-                    AM.G[p2.vid] = P(p2.point);
+                    AM.G[p1.vid] = P(p1.point); // println(p1.vid);
+                    AM.G[p2.vid] = P(p2.point); // println(p2.vid); println(AM.nv);
                     AM.nv += 2;
                     fatEdgeDone = true;
                     // Draw the Non Fat Edges
                     if (TRACER.stabs.get(c3).size() == 1) {
                         // Connect with the opposite tracepoint
                         tracePt p3 = TRACER.stabs.get(c3).get(0);
-                        fill(metal);
-                        beam(p1.point, p3.point, rt);
-                        beam(p2.point, p3.point, rt);
+                        // fill(metal);
+                        // beam(p1.point, p3.point, rt);
+                        // beam(p2.point, p3.point, rt);
                         // update corner table
-                        AM.V[3*AM.nt] = p1.vid;
-                        AM.V[AM.n(3*AM.nt)] = AM.V[c2];
-                        AM.V[AM.p(3*AM.nt)] = p2.vid;
-                        AM.V[1+3*AM.nt] = p3.vid;
-                        AM.V[AM.n(1+3*AM.nt)] = p1.vid;
-                        AM.V[AM.p(1+3*AM.nt)] = p2.vid;
-                        AM.V[2+3*AM.nt] = p3.vid;
-                        AM.V[AM.n(2+3*AM.nt)] = p2.vid;
-                        AM.V[AM.p(2+3*AM.nt)] = AM.V[c3];
-                        AM.V[c2] = p1.vid;
-                        AM.V[c3] = p3.vid;
+                        AM.V[3*AM.nt] = p1.vid; 
+                        CT[3*AM.nt] = 1;
+                        AM.V[AM.n(3*AM.nt)] = AM.V[c2]; 
+                        CT[AM.n(3*AM.nt)] = 0;
+                        AM.V[AM.p(3*AM.nt)] = p2.vid; 
+                        CT[AM.p(3*AM.nt)] = 1;
+
+                        AM.V[3+3*AM.nt] = p3.vid; 
+                        CT[3+3*AM.nt] = 1;
+                        AM.V[AM.n(3+3*AM.nt)] = p1.vid; 
+                        CT[AM.n(3+3*AM.nt)] = 1;
+                        AM.V[AM.p(3+3*AM.nt)] = p2.vid; 
+                        CT[AM.p(3+3*AM.nt)] = 1;
+                        
+                        AM.V[6+3*AM.nt] = p3.vid; 
+                        CT[6+3*AM.nt] = 1;
+                        AM.V[AM.n(6+3*AM.nt)] = p2.vid; 
+                        CT[AM.n(6+3*AM.nt)] = 1;
+                        AM.V[AM.p(6+3*AM.nt)] = AM.V[c3]; 
+                        CT[AM.p(6+3*AM.nt)] = 0;
+
+                        AM.V[c2] = p1.vid; 
+                        CT[c2] = 1;
+                        AM.V[c3] = p3.vid; 
+                        CT[c3] = 1;
                         // update counts
                         AM.nt += 3;
                         AM.nc += 9;
                     } else {
+                        // println("here");
                         // Connect with one of the vertices, c1 or c3
+                        AM.V[3*AM.nt] = p1.vid;
+                        CT[3*AM.nt] = 1;
+                        AM.V[AM.n(3*AM.nt)] = p2.vid;
+                        CT[AM.n(3*AM.nt)] = 1;
+
+                        AM.V[3+3*AM.nt] = p1.vid;
+                        CT[3+3*AM.nt] = 1;
+                        AM.V[AM.n(3+3*AM.nt)] = AM.V[c2];
+                        CT[AM.n(3+3*AM.nt)] = 0;
+                        AM.V[AM.p(3+3*AM.nt)] = p2.vid;
+                        CT[AM.p(3+3*AM.nt)] = 1;
+                        
                         pt p31 = M.g(c1), p32 = M.g(c3);
                         if (ChooseEdge(p1.point, p2.point, p32, p31)) {
-                            fill(metal);
-                            beam(p1.point, p32, rt);
+                            // fill(metal);
+                            // beam(p1.point, p32, rt);
                             // update corner table
                             AM.V[AM.p(3*AM.nt)] = AM.V[c3];
+                            CT[AM.p(3*AM.nt)] = 0;
                             AM.V[c2] = p1.vid;
+                            CT[c2] = 1;
                         } else {
-                            fill(metal);
-                            beam(p2.point, p31, rt);
+                            // fill(metal);
+                            // beam(p2.point, p31, rt);
                             // update corner table
                             AM.V[AM.p(3*AM.nt)] = AM.V[c1];
+                            CT[AM.p(3*AM.nt)] = 0;
                             AM.V[c2] = p2.vid;
+                            CT[c2] = 1;
                         }
-                        AM.V[3*AM.nt] = p1.vid;
-                        AM.V[AM.n(3*AM.nt)] = p2.vid;
-                        AM.V[1+3*AM.nt] = p1.vid;
-                        AM.V[AM.n(1+3*AM.nt)] = AM.V[c2];
-                        AM.V[AM.p(1+3*AM.nt)] = p2.vid;
                         // update counts
                         AM.nt += 2;
                         AM.nc += 6;
@@ -104,8 +139,7 @@ class fieldMesh {
         return fatEdgeDone;
     }
 
-    void show () {
-        initiate();
+    void Compute () {
         // println("SHOWING STABS");
         // Use TRACER Stabs to Construct the new Edges
         for (int c = 0; c < M.nt; c++) {
@@ -118,16 +152,39 @@ class fieldMesh {
             boolean fatEdgeDone = false;
             int fc = -1, sc = -1, tc = -1;
             if (!fatEdgeDone) {
-                fatEdgeDone = ShowFATM(c1, c2, c3);
+                fatEdgeDone = ComputeFATM(c1, c2, c3);
             }
             if (!fatEdgeDone) {
-                fatEdgeDone = ShowFATM(c2, c3, c1);
+                fatEdgeDone = ComputeFATM(c2, c3, c1);
             }
             if (!fatEdgeDone) {
-                fatEdgeDone = ShowFATM(c3, c1, c2);   
+                fatEdgeDone = ComputeFATM(c3, c1, c2);   
             }
         }
         // println("FAT Mesh Triangles", AM.nt);
         AM.computeO();
+    }
+
+    void show () {
+        initiate();
+        Compute();
+        // fill(yellow);
+        // M.showNonBorderEdges();
+        // fill(red);
+        // AM.showBorderEdges();
+        for (int i = 0; i < AM.nt; i++) {
+            int c1 = 3*i,
+                c2 = AM.n(c1),
+                c3 = AM.p(c1);
+            pt v1 = AM.g(c1), v2 = AM.g(c2), v3 = AM.g(c3);
+            pt ct = P(v1, v2, v3);
+            pt p1 = P(v1, 0.2, ct), p2 = P(v2, 0.2, ct), p3 = P(v3, 0.2, ct);
+            sphere(p1, rt);
+            sphere(p2, rt);
+            sphere(p3, rt);
+            beam(v1, v2, rt);
+            beam(v2, v3, rt);
+            beam(v3, v1, rt);
+        }
     }
 }
