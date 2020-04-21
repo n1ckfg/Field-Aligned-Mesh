@@ -4,6 +4,8 @@ class fieldMesh {
     // 0: the original mesh vertex corner
     // 1: stab vertex corner
 
+    int corner = 0;
+
     void initiate() {
         AM = new MESH();
         CT = new int[3 * M.maxnt];
@@ -18,7 +20,6 @@ class fieldMesh {
             CT[i] = 0;
         }
         AM.computeO();
-        // println("Original Triangles", AM.nt, M.nt);
     }
 
     boolean ChooseEdge (pt p1, pt p2, pt p3, pt p4) {
@@ -52,9 +53,6 @@ class fieldMesh {
                 if (p1.traceId == p2.traceId) {
                     // fill(magenta);
                     // beam(p1.point, p2.point, rt);
-                    // display two spheres
-                    sphere(p1.point, 2*rt);
-                    sphere(p2.point, 2*rt);
                     // create new vertices in the mesh
                     AM.G[p1.vid] = P(p1.point); // println(p1.vid);
                     AM.G[p2.vid] = P(p2.point); // println(p2.vid); println(AM.nv);
@@ -140,6 +138,7 @@ class fieldMesh {
     }
 
     void Compute () {
+        initiate();
         // println("SHOWING STABS");
         // Use TRACER Stabs to Construct the new Edges
         for (int c = 0; c < M.nt; c++) {
@@ -166,8 +165,6 @@ class fieldMesh {
     }
 
     void show () {
-        initiate();
-        Compute();
         for (int i = 0; i < AM.nt; i++) {
             int c1 = 3*i,
                 c2 = AM.n(c1),
@@ -175,9 +172,37 @@ class fieldMesh {
             pt v1 = AM.g(c1), v2 = AM.g(c2), v3 = AM.g(c3);
             pt ct = P(v1, v2, v3);
             pt p1 = P(v1, 0.3, ct), p2 = P(v2, 0.3, ct), p3 = P(v3, 0.3, ct);
-            sphere(p1, rt);
-            sphere(p2, rt);
-            sphere(p3, rt);
+
+            // display spheres
+            if (CT[c1] == 0) fill(green); else fill(black);
+            sphere(v1, 2*rt);
+            if (CT[c2] == 0) fill(green); else fill(black);
+            sphere(v2, 2*rt);
+            if (CT[c3] == 0) fill(green); else fill(black);
+            sphere(v3, 2*rt);
+
+            if (c1 == AM.c) {
+                fill(magenta);
+                sphere(p1, 1.5*rt);
+            } else {
+                fill(orange);
+                sphere(p1, rt);  
+            }
+            if (c2 == AM.c) {
+                fill(magenta);
+                sphere(p2, 1.5*rt);
+            } else {
+                fill(orange);
+                sphere(p2, rt);  
+            }
+            if (c3 == AM.c) {
+                fill(magenta);
+                sphere(p3, 1.5*rt);
+            } else {
+                fill(orange);
+                sphere(p3, rt);                
+            }
+
             fill(GetEdgeColor(c1, c2, c3));
             beam(v1, v2, rt);
             fill(GetEdgeColor(c2, c3, c1));
@@ -188,6 +213,9 @@ class fieldMesh {
     }
 
     color GetEdgeColor(int c1, int c2, int c3) {
+        if (AM.o(c3) == c3) {
+            return red;
+        }
         if (CT[c1] == CT[c2]) {
             if (CT[c1] == 1) {
                 return magenta;

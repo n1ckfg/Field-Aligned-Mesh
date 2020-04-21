@@ -22,6 +22,7 @@ Boolean
     paintStabbedFaces = true,
     subdivide = false,
     recomputeTrace = true,
+    fatmComputed = false,
     live = true, // updates mesh at each frame
 
     step1 = false,
@@ -192,6 +193,10 @@ void draw() {
             }
         }
         if (showFAM) {
+            if (!fatmComputed) {
+                FMESH.Compute();
+                fatmComputed = true;
+            }
             FMESH.show();
         }
     }

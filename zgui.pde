@@ -87,7 +87,7 @@ void keyPressed() {
         println("PicturesFileName=" + FileName);
         pictureCounter = 0;
     } // uses clipboard content to set file name for images 
-    if (key == 'D');
+    if (key == 'D') {println(FMESH.AM.c); FMESH.AM.opposite(); println(FMESH.AM.c);}
     if (key == 'E') showEdges = !showEdges;
     if (key == 'F'); // press to adjust height of focus with mouse pressed
     if (key == 'G') {
@@ -95,13 +95,13 @@ void keyPressed() {
         R = P;
         S = Q;
     } // jarek
-    if (key == 'H');
-    if (key == 'I');
-    if (key == 'J');
-    if (key == 'K');
+    if (key == 'H') {println(FMESH.AM.c); FMESH.AM.next(); println(FMESH.AM.c);}
+    if (key == 'I') {println(FMESH.AM.c); FMESH.AM.previous(); println(FMESH.AM.c);}
+    if (key == 'J') {println(FMESH.AM.c); FMESH.AM.swing(); println(FMESH.AM.c);}
+    if (key == 'K') {println(FMESH.AM.c); FMESH.AM.unswing(); println(FMESH.AM.c);}
     if (key == 'L') live = !live;
     if (key == 'M') showTraces = !showTraces;
-    if (key == 'N') recomputeTrace = !recomputeTrace;
+    if (key == 'N') {recomputeTrace = !recomputeTrace; fatmComputed = false;}
     if (key == 'O') showSTabs = !showSTabs;
     if (key == 'P') showPillars = !showPillars;
     if (key == 'Q') paintStabbedFaces = !paintStabbedFaces;
@@ -118,7 +118,7 @@ void keyPressed() {
     if (key == 'V') showVoronoi = !showVoronoi;
     if (key == 'W') {P.savePts("data/" + FileName + ".pts"); P.saveVecs("data/f" + FileName + ".pts");}
     if (key == 'X'); // hold to move all vertices with mouse
-    if (key == 'Y') mode = (mode + 1)%4;
+    if (key == 'Y') {mode = (mode + 1)%4;fatmComputed = false;}
     if (key == 'Z') showFAM = !showFAM;
 
     if (key == '{');
