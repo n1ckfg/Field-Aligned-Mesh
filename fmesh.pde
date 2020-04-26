@@ -17,7 +17,7 @@ class fieldMesh {
             SUBDIVIDER.subdivide(AM);
         }
         for (int i = 0; i < AM.nc; i++) {
-            CT[i] = 0;
+            CT[i] = -1;
         }
         AM.computeO();
     }
@@ -67,30 +67,30 @@ class fieldMesh {
                         // beam(p2.point, p3.point, rt);
                         // update corner table
                         AM.V[3*AM.nt] = p1.vid; 
-                        CT[3*AM.nt] = 1;
+                        CT[3*AM.nt] = p1.traceId;
                         AM.V[AM.n(3*AM.nt)] = AM.V[c2]; 
-                        CT[AM.n(3*AM.nt)] = 0;
+                        CT[AM.n(3*AM.nt)] = -1;
                         AM.V[AM.p(3*AM.nt)] = p2.vid; 
-                        CT[AM.p(3*AM.nt)] = 1;
+                        CT[AM.p(3*AM.nt)] = p2.traceId;
 
                         AM.V[3+3*AM.nt] = p3.vid; 
-                        CT[3+3*AM.nt] = 1;
+                        CT[3+3*AM.nt] = p3.traceId;
                         AM.V[AM.n(3+3*AM.nt)] = p1.vid; 
-                        CT[AM.n(3+3*AM.nt)] = 1;
+                        CT[AM.n(3+3*AM.nt)] = p1.traceId;
                         AM.V[AM.p(3+3*AM.nt)] = p2.vid; 
-                        CT[AM.p(3+3*AM.nt)] = 1;
+                        CT[AM.p(3+3*AM.nt)] = p2.traceId;
                         
                         AM.V[6+3*AM.nt] = p3.vid; 
-                        CT[6+3*AM.nt] = 1;
+                        CT[6+3*AM.nt] = p3.traceId;
                         AM.V[AM.n(6+3*AM.nt)] = p2.vid; 
-                        CT[AM.n(6+3*AM.nt)] = 1;
+                        CT[AM.n(6+3*AM.nt)] = p2.traceId;
                         AM.V[AM.p(6+3*AM.nt)] = AM.V[c3]; 
-                        CT[AM.p(6+3*AM.nt)] = 0;
+                        CT[AM.p(6+3*AM.nt)] = -1;
 
                         AM.V[c2] = p1.vid; 
-                        CT[c2] = 1;
+                        CT[c2] = p1.traceId;
                         AM.V[c3] = p3.vid; 
-                        CT[c3] = 1;
+                        CT[c3] = p3.traceId;
                         // update counts
                         AM.nt += 3;
                         AM.nc += 9;
@@ -98,16 +98,16 @@ class fieldMesh {
                         // println("here");
                         // Connect with one of the vertices, c1 or c3
                         AM.V[3*AM.nt] = p1.vid;
-                        CT[3*AM.nt] = 1;
+                        CT[3*AM.nt] = p1.traceId;
                         AM.V[AM.n(3*AM.nt)] = p2.vid;
-                        CT[AM.n(3*AM.nt)] = 1;
+                        CT[AM.n(3*AM.nt)] = p2.traceId;
 
                         AM.V[3+3*AM.nt] = p1.vid;
-                        CT[3+3*AM.nt] = 1;
+                        CT[3+3*AM.nt] = p1.traceId;
                         AM.V[AM.n(3+3*AM.nt)] = AM.V[c2];
-                        CT[AM.n(3+3*AM.nt)] = 0;
+                        CT[AM.n(3+3*AM.nt)] = -1;
                         AM.V[AM.p(3+3*AM.nt)] = p2.vid;
-                        CT[AM.p(3+3*AM.nt)] = 1;
+                        CT[AM.p(3+3*AM.nt)] = p2.traceId;
                         
                         pt p31 = M.g(c1), p32 = M.g(c3);
                         if (ChooseEdge(p1.point, p2.point, p32, p31)) {
@@ -115,17 +115,17 @@ class fieldMesh {
                             // beam(p1.point, p32, rt);
                             // update corner table
                             AM.V[AM.p(3*AM.nt)] = AM.V[c3];
-                            CT[AM.p(3*AM.nt)] = 0;
+                            CT[AM.p(3*AM.nt)] = -1;
                             AM.V[c2] = p1.vid;
-                            CT[c2] = 1;
+                            CT[c2] = p1.traceId;
                         } else {
                             // fill(metal);
                             // beam(p2.point, p31, rt);
                             // update corner table
                             AM.V[AM.p(3*AM.nt)] = AM.V[c1];
-                            CT[AM.p(3*AM.nt)] = 0;
+                            CT[AM.p(3*AM.nt)] = -1;
                             AM.V[c2] = p2.vid;
-                            CT[c2] = 1;
+                            CT[c2] = p2.traceId;
                         }
                         // update counts
                         AM.nt += 2;
@@ -174,11 +174,11 @@ class fieldMesh {
             pt p1 = P(v1, 0.3, ct), p2 = P(v2, 0.3, ct), p3 = P(v3, 0.3, ct);
 
             // display spheres
-            if (CT[c1] == 0) fill(green); else fill(black);
+            if (CT[c1] == -1) fill(green); else fill(black);
             sphere(v1, 2*rt);
-            if (CT[c2] == 0) fill(green); else fill(black);
+            if (CT[c2] == -1) fill(green); else fill(black);
             sphere(v2, 2*rt);
-            if (CT[c3] == 0) fill(green); else fill(black);
+            if (CT[c3] == -1) fill(green); else fill(black);
             sphere(v3, 2*rt);
 
             if (c1 == AM.c) {
@@ -217,10 +217,10 @@ class fieldMesh {
             return red;
         }
         if (CT[c1] == CT[c2]) {
-            if (CT[c1] == 1) {
-                return magenta;
-            } else {
+            if (CT[c1] == -1) {
                 return yellow;
+            } else {
+                return magenta;
             }
         } else {
             return metal;

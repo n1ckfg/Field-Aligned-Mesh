@@ -4,7 +4,7 @@ class tracer {
     float stepSize = 0.05;
     color forwardColor = #4dac26;
     color backwardColor = #d01c8b;
-    int maxTraceCount = 300;
+    int maxTraceCount = 20;
     boolean[] visited = new boolean[300];
     ArrayList<ArrayList<tracePt>> stabs = new ArrayList<ArrayList<tracePt>>();
     ArrayList<ArrayList<trace>> allTraces = new ArrayList<ArrayList<trace>>();
