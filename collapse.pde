@@ -1,27 +1,29 @@
 class collapser {
-    float threshold = 80.0;
+    float threshold = 100.0;
     int[] validity;
+    int maxRecursionDepth = 5;
 
 
-    void CollapseFATMesh() {
-        validity = new int[FMESH.AM.nc];
-        for (int i = 0; i < FMESH.AM.nc; i++) {
-            validity[i] = 1;
+    void CollapseFATMesh(int depth) {
+        if (depth >= maxRecursionDepth) {
+            return;
+        }
+        println("Depth:", depth);
+        if (depth == 0) {
+            validity = new int[FMESH.AM.nc];
+            for (int i = 0; i < FMESH.AM.nc; i++) {
+                validity[i] = 1;
+            }
         }
 
         for (int i = 0; i < FMESH.AM.nc; i++) {
-            if (validity[i] == 1) {
-                if (FMESH.AM.o(i) != i) { // not a border edge
-                    int p = FMESH.AM.p(i), n = FMESH.AM.n(i);
-                    if (FMESH.CT[p] != FMESH.CT[n]) { // not an original/trace edge
-                        if (d(FMESH.AM.g(p), FMESH.AM.g(n)) < threshold) {
-                            collapse(i);
-                        }
-                    }
-                }
+            int p = FMESH.AM.p(i), n = FMESH.AM.n(i);
+            if (d(FMESH.AM.g(p), FMESH.AM.g(n)) < threshold) {
+                collapse(i);
             }
         }
         FMESH.AM.c = 0;
+        CollapseFATMesh(depth+1);
     }
 
     void collapse (int c) {
@@ -37,11 +39,12 @@ class collapser {
         // collapse the edge opposite to c by collapsing prev(c) into next(c)
         if (validity[c] == 1 && 
             FMESH.AM.o(c) != c && 
-            FMESH.CT[FMESH.AM.p(c)] == 0 && 
-            FMESH.CT[FMESH.AM.n(c)] == 1 && 
+            FMESH.CT[FMESH.AM.p(c)] == -1 && 
+            FMESH.CT[FMESH.AM.n(c)] != -1  && 
             FMESH.AM.o(FMESH.AM.n(c)) != FMESH.AM.n(c) && 
             FMESH.AM.o(FMESH.AM.u(FMESH.AM.n(c))) != FMESH.AM.u(FMESH.AM.n(c))
         ) {
+            println("collapsed edge opposite to corner:", c);
             for (int a = b; a != FMESH.AM.n(oc); a = FMESH.AM.p(FMESH.AM.r(a))) {
                 FMESH.AM.V[a] = vnc;
             }
