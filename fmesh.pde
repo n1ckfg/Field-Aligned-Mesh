@@ -3,7 +3,8 @@ class fieldMesh {
     int[] CT;  //encodes the type of corner
     // 0: the original mesh vertex corner
     // 1: stab vertex corner
-
+    int[] validity;
+    int skinnyThreshold = 8;
     int corner = 0;
 
     void initiate() {
@@ -20,6 +21,33 @@ class fieldMesh {
             CT[i] = -1;
         }
         AM.computeO();
+    }
+
+    int CountNarrowTriangles() {
+        int skinny = 0;
+        for (int i = 0; i < AM.nt; i++) {
+            int a = 3*i, b = AM.n(3*i), c = AM.p(3*i);
+            if (validity[a] == 1 && validity[b] == 1 && validity[c] == 1) {
+                // this is an uncollapsed triangle, check if it is skinny
+                float e1l = d(AM.g(a), AM.g(b));
+                float e2l = d(AM.g(b), AM.g(c));
+                float e3l = d(AM.g(c), AM.g(a));
+
+                float cR = e1l*e2l*e3l/sqrt((e1l+e2l+e3l)*(-1*e1l+e2l+e3l)*(e1l-e2l+e3l)*(e1l+e2l-e3l));
+                float iR = e1l*e2l*e3l/(2*cR*(e1l+e2l+e3l));
+
+                if (cR/iR > skinnyThreshold) {
+                    skinny += 1;
+                    fill(orange);
+                    show(P(AM.g(a).x, AM.g(a).y, AM.g(a).z+8.5), 
+                         P(AM.g(b).x, AM.g(b).y, AM.g(b).z+8.5),
+                         P(AM.g(c).x, AM.g(c).y, AM.g(c).z+8.5)
+                    );
+                }
+            } 
+        }
+        println("Skinny Triangles:", skinny);
+        return skinny;
     }
 
     boolean ChooseEdge (pt p1, pt p2, pt p3, pt p4) {
@@ -162,54 +190,59 @@ class fieldMesh {
         }
         // println("FAT Mesh Triangles", AM.nt);
         AM.computeO();
+        validity = new int[FMESH.AM.nc];
+        for (int i = 0; i < FMESH.AM.nc; i++) {
+            validity[i] = 1;
+        }
     }
 
-    void show () {
+    void Show () {
         for (int i = 0; i < AM.nt; i++) {
-            int c1 = 3*i,
-                c2 = AM.n(c1),
-                c3 = AM.p(c1);
-            pt v1 = AM.g(c1), v2 = AM.g(c2), v3 = AM.g(c3);
-            pt ct = P(v1, v2, v3);
-            pt p1 = P(v1, 0.3, ct), p2 = P(v2, 0.3, ct), p3 = P(v3, 0.3, ct);
+            int c1 = 3*i, c2 = AM.n(c1), c3 = AM.p(c1);
+            if (validity[c1] == 1 && validity[c2] == 1 && validity[c3] == 1) {
+                pt v1 = AM.g(c1), v2 = AM.g(c2), v3 = AM.g(c3);
+                pt ct = P(v1, v2, v3);
+                pt p1 = P(v1, 0.3, ct), p2 = P(v2, 0.3, ct), p3 = P(v3, 0.3, ct);
 
-            // display spheres
-            if (CT[c1] == -1) fill(green); else fill(black);
-            sphere(v1, 2*rt);
-            if (CT[c2] == -1) fill(green); else fill(black);
-            sphere(v2, 2*rt);
-            if (CT[c3] == -1) fill(green); else fill(black);
-            sphere(v3, 2*rt);
+                // display spheres
+                if (CT[c1] == -1) fill(green); else fill(black);
+                sphere(v1, 2*rt);
+                if (CT[c2] == -1) fill(green); else fill(black);
+                sphere(v2, 2*rt);
+                if (CT[c3] == -1) fill(green); else fill(black);
+                sphere(v3, 2*rt);
 
-            if (c1 == AM.c) {
-                fill(magenta);
-                sphere(p1, 1.5*rt);
-            } else {
-                fill(orange);
-                sphere(p1, rt);  
-            }
-            if (c2 == AM.c) {
-                fill(magenta);
-                sphere(p2, 1.5*rt);
-            } else {
-                fill(orange);
-                sphere(p2, rt);  
-            }
-            if (c3 == AM.c) {
-                fill(magenta);
-                sphere(p3, 1.5*rt);
-            } else {
-                fill(orange);
-                sphere(p3, rt);                
-            }
+                // if (c1 == AM.c) {
+                //     fill(magenta);
+                //     sphere(p1, 1.5*rt);
+                // } else {
+                //     fill(orange);
+                //     sphere(p1, rt);  
+                // }
+                // if (c2 == AM.c) {
+                //     fill(magenta);
+                //     sphere(p2, 1.5*rt);
+                // } else {
+                //     fill(orange);
+                //     sphere(p2, rt);  
+                // }
+                // if (c3 == AM.c) {
+                //     fill(magenta);
+                //     sphere(p3, 1.5*rt);
+                // } else {
+                //     fill(orange);
+                //     sphere(p3, rt);                
+                // }
 
-            fill(GetEdgeColor(c1, c2, c3));
-            beam(v1, v2, rt);
-            fill(GetEdgeColor(c2, c3, c1));
-            beam(v2, v3, rt);
-            fill(GetEdgeColor(c3, c1, c2));
-            beam(v3, v1, rt);
+                fill(GetEdgeColor(c1, c2, c3));
+                beam(v1, v2, rt);
+                fill(GetEdgeColor(c2, c3, c1));
+                beam(v2, v3, rt);
+                fill(GetEdgeColor(c3, c1, c2));
+                beam(v3, v1, rt);
+            }
         }
+        CountNarrowTriangles();
     }
 
     color GetEdgeColor(int c1, int c2, int c3) {
