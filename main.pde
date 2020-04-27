@@ -197,7 +197,7 @@ void draw() {
                 FMESH.Compute();
                 fatmComputed = true;
             }
-            FMESH.show();
+            FMESH.Show();
         }
     }
 
