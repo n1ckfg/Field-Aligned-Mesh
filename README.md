@@ -22,7 +22,7 @@ Our algorithm involves the following steps:
 n order to visualize the approximate vector field with the given constraint darts, it is first partitioned into triangular faces using the delaunay triangulation algorithm andthen the field is defined inside each triangle by assuming a linear interpolation of the constraints. This linear interpolation can be achieved using the normalized barycentric co-ordinates of a point inside a triangle.
 
 ## Mesh Subdivision
-In order to perform dense tracing, we may choose to subdi-vide the base mesh.  This is done by joining the midpointsof the edges of each triangle to form four smaller triangles.
+In order to perform dense tracing, we may choose to subdivide the base mesh.  This is done by joining the midpointsof the edges of each triangle to form four smaller triangles.
 
 ## Tracing the Vector Field
 In order to create a field aligned mesh, we first generatea set of curves which define the shape of the vector field inside a triangle.  For each unvisited triangle we start thetrace from it’s centroid and keep tracing in the direction of the field until we reach a visited triangle or a border orif the trace dies off within a triangle.  In a similar way wetrace backwards from the centroid as well. 
