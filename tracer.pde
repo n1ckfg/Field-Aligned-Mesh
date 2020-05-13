@@ -62,7 +62,9 @@ class tracer {
             if (E1 != null) {
                 // println(tp, tpn, E1);
                 stabs.get(corner).add(new tracePt(E1, id, vid));
-                stabs.get(M.p(M.u(corner))).add(new tracePt(E1, id, vid));
+                if (M.u(corner) != M.n(corner)) {
+                    stabs.get(M.p(M.u(corner))).add(new tracePt(E1, id, vid));
+                }
                 vid ++;
                 exitCorner = corner;
                 tracePoints.add(P(E1));
@@ -70,7 +72,9 @@ class tracer {
             } else if (E2 != null) {
                 // println(tp, tpn, E2);
                 stabs.get(M.n(corner)).add(new tracePt(E2, id, vid));
-                stabs.get(M.p(M.u(M.n(corner)))).add(new tracePt(E2, id, vid));
+                if (M.u(M.n(corner)) != M.n(M.n(corner))) {
+                    stabs.get(M.p(M.u(M.n(corner)))).add(new tracePt(E2, id, vid));
+                }
                 exitCorner = M.n(corner);
                 tracePoints.add(P(E2));
                 vid ++;
@@ -78,7 +82,9 @@ class tracer {
             } else if (E3 != null) {
                 // println(tp, tpn, E3);
                 stabs.get(M.n(M.n(corner))).add(new tracePt(E3, id, vid));
-                stabs.get(M.p(M.u(M.n(M.n(corner))))).add(new tracePt(E3, id, vid));
+                if (M.u(M.n(M.n(corner))) != M.n(M.n(M.n(corner)))) {
+                    stabs.get(M.p(M.u(M.n(M.n(corner))))).add(new tracePt(E3, id, vid));
+                }
                 exitCorner = M.n(M.n(corner));
                 tracePoints.add(P(E3));
                 vid ++;
