@@ -51,7 +51,7 @@ float
     h_floor = 0, h_ceiling = 600, h = h_floor;
 
 int
-    mode = 0,
+    mode = 3,
     f = 0,
     maxf = 2 * 30,
     level = 4,
